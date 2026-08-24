@@ -78,45 +78,6 @@ veloop/
 └── README.md                # Master Documentation
 ```
 
----
-
-## API Documentation
-
-### Authentication (`/api/auth/*`)
-* `POST /api/auth/register` - Create user. Body: `{ username, password }`
-* `POST /api/auth/login` - Authenticate user. Body: `{ username, password }`
-* `GET /api/auth/me` - Get current session profile. Header: `Authorization: Bearer <TOKEN>`
-
-### Core Tap Mechanics (`/api/tap/*`)
-* `POST /api/tap` - Process physical tap event. Body: `{ requestId, timestamp }`
-* `GET /api/tap/history` - Fetch paginated Reward Ledger transaction history.
-* `POST /api/tap/boost/activate` - Trigger active 30s Boost (2x effective tap multiplier).
-* `POST /api/tap/upgrade` - Purchase capacity/speed upgrades. Body: `{ upgradeType }`
-* `POST /api/tap/energy-bank/purchase` - Upgrade Energy Bank capacity (VE-priced).
-* `POST /api/tap/shield/purchase` - Purchase/activate 30s Energy Shield (100 VE).
-* `GET /api/tap/missions` - List achievements and user progress.
-* `POST /api/tap/missions/:id/claim` - Claim reward for a completed mission.
-* `GET /api/tap/daily-challenge` - Fetch daily 1k taps target status.
-* `POST /api/tap/daily-challenge/claim` - Claim daily challenge 50t reward.
-* `GET /api/tap/lucky` - Fetch Lucky Spin eligibility parameters.
-* `POST /api/tap/lucky/spin` - Spin the Lucky wheel. Body: `{ requestId }`
-* `GET /api/tap/league` - Get top 100 rankings and My Rank sticky statistics.
-* `GET /api/tap/season` - Fetch active season timer and past season archives.
-* `GET /api/tap/notifications` - Fetch in-app notifications feeds.
-* `POST /api/tap/notifications/read` - Mark all notifications as read.
-* `GET /api/tap/streak` - Get current and best tap streaks.
-* `POST /api/tap/ads/log` - Log and reward completed ad views. Body: `{ requestId, adType }`
-* `POST /api/tap/fragments/convert` - Convert VE Fragments to VE. Body: `{ amount }`
-
-### Admin Control Center (`/api/admin/tap-economy/*`)
-* `GET /api/admin/tap-economy/config` - Get economy parameters.
-* `POST /api/admin/tap-economy/config` - Adjust parameters. Body: `{ key, value, reason }`
-* `GET /api/admin/tap-economy/config/audit` - Get audit log of key changes.
-* `GET /api/admin/tap-economy/analytics` - View general telemetry (Total taps, reward distributions).
-* `POST /api/admin/tap-economy/season/rollover` - Manual season rollover. Body: `{ reason }`
-* `GET /api/admin/tap-economy/users/:id/preview` - Impersonation preview of player stats.
-
----
 
 ## Setup & Running Guide
 
