@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, ChevronLeft, Award, HelpCircle, Inbox } from 'lucide-react';
+import { API_URL } from '../config';
 import styles from './SeasonPage.module.css';
 
 export default function SeasonPage() {
@@ -18,7 +19,7 @@ export default function SeasonPage() {
 
   const fetchSeasons = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/tap/season', {
+      const res = await fetch(`${API_URL}/api/tap/season`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

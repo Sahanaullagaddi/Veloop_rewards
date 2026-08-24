@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ChevronLeft, Bell, CheckSquare } from 'lucide-react';
+import { API_URL } from '../config';
 import styles from './NotificationsPage.module.css';
 
 export default function NotificationsPage() {
@@ -17,7 +18,7 @@ export default function NotificationsPage() {
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/tap/notifications', {
+      const res = await fetch(`${API_URL}/api/tap/notifications`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -33,7 +34,7 @@ export default function NotificationsPage() {
 
   const handleMarkAllRead = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/tap/notifications/read', {
+      const res = await fetch(`${API_URL}/api/tap/notifications/read`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });

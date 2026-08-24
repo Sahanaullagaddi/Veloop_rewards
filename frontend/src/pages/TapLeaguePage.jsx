@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ChevronLeft, Trophy, Calendar, RefreshCw } from 'lucide-react';
+import { API_URL } from '../config';
 import styles from './TapLeaguePage.module.css';
 
 export default function TapLeaguePage() {
@@ -21,7 +22,7 @@ export default function TapLeaguePage() {
   const fetchLeaderboard = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/tap/league', {
+      const res = await fetch(`${API_URL}/api/tap/league`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

@@ -1,8 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { API_URL } from '../config';
 
 const AuthContext = createContext();
-
-const API_URL = 'http://localhost:5000/api';
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('veloop_token'));
@@ -22,7 +21,7 @@ export function AuthProvider({ children }) {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch(`${API_URL}/auth/me`, {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -44,7 +43,7 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -68,7 +67,7 @@ export function AuthProvider({ children }) {
   const register = async (username, password) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/register`, {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

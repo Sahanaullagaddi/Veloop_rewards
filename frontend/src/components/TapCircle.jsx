@@ -3,6 +3,7 @@ import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useAd } from '../context/AdContext';
+import { API_URL } from '../config';
 import styles from './TapCircle.module.css';
 
 export default function TapCircle() {
@@ -93,7 +94,7 @@ export default function TapCircle() {
     // Reconcile with Server
     const requestId = `tap-${now}-${Math.random().toString(36).substr(2, 9)}`;
     try {
-      const res = await fetch('http://localhost:5000/api/tap', {
+      const res = await fetch(`${API_URL}/api/tap`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

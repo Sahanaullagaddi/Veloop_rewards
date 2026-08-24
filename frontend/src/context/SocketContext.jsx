@@ -1,10 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
+import { SOCKET_URL } from '../config';
 
 const SocketContext = createContext();
-
-const SOCKET_URL = 'http://localhost:5000';
 
 export function SocketProvider({ children }) {
   const { user, token, logout } = useAuth();

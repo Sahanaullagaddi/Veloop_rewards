@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
+import { API_URL } from '../config';
 import { 
   ChevronLeft, BarChart2, Save, RefreshCw, Users, ShieldAlert, Zap, Award, Search, Eye
 } from 'lucide-react';
@@ -40,7 +41,7 @@ export default function AdminPanel() {
     setLoading(true);
     try {
       // 1. Get configs
-      const configRes = await fetch('http://localhost:5000/api/admin/tap-economy/config', {
+      const configRes = await fetch(`${API_URL}/api/admin/tap-economy/config`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const configData = await configRes.json();
@@ -49,7 +50,7 @@ export default function AdminPanel() {
       }
 
       // 2. Get audits
-      const auditRes = await fetch('http://localhost:5000/api/admin/tap-economy/config/audit', {
+      const auditRes = await fetch(`${API_URL}/api/admin/tap-economy/config/audit`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const auditData = await auditRes.json();
@@ -58,7 +59,7 @@ export default function AdminPanel() {
       }
 
       // 3. Get analytics
-      const analyticsRes = await fetch('http://localhost:5000/api/admin/tap-economy/analytics', {
+      const analyticsRes = await fetch(`${API_URL}/api/admin/tap-economy/analytics`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const analyticsData = await analyticsRes.json();
@@ -86,7 +87,7 @@ export default function AdminPanel() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/admin/tap-economy/config', {
+      const res = await fetch(`${API_URL}/api/admin/tap-economy/config`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,7 +112,7 @@ export default function AdminPanel() {
   const handleSeasonRollover = async () => {
     if (!window.confirm('Trigger Season Rollover? This freezes rankings, issues prizes, and archives progress.')) return;
     try {
-      const res = await fetch('http://localhost:5000/api/admin/tap-economy/season/rollover', {
+      const res = await fetch(`${API_URL}/api/admin/tap-economy/season/rollover`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ export default function AdminPanel() {
     const targetId = id || previewUserId;
     if (!targetId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/tap-economy/users/${targetId}/preview`, {
+      const res = await fetch(`${API_URL}/api/admin/tap-economy/users/${targetId}/preview`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();

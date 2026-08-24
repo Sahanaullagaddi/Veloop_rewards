@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useSocket } from './SocketContext';
+import { API_URL } from '../config';
 
 const AdContext = createContext();
 
@@ -60,7 +61,7 @@ export function AdProvider({ children }) {
     // Call backend to log and verify reward
     const requestId = `ad-reward-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     try {
-      const res = await fetch('http://localhost:5000/api/tap/ads/log', {
+      const res = await fetch(`${API_URL}/api/tap/ads/log`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

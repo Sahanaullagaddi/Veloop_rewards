@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
   ChevronLeft, Wallet, ArrowUpRight, ArrowDownLeft, ChevronRight, BarChart2, Activity
 } from 'lucide-react';
+import { API_URL } from '../config';
 import styles from './WalletPage.module.css';
 
 export default function WalletPage() {
@@ -59,7 +60,7 @@ export default function WalletPage() {
     
     setWithdrawing(true);
     try {
-      const res = await fetch('http://localhost:5000/api/tap/wallet/withdraw', {
+      const res = await fetch(`${API_URL}/api/tap/wallet/withdraw`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +89,7 @@ export default function WalletPage() {
   const fetchLedger = async (page) => {
     setLoadingLedger(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/tap/history?page=${page}&limit=7`, {
+      const res = await fetch(`${API_URL}/api/tap/history?page=${page}&limit=7`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
