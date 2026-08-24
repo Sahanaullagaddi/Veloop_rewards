@@ -25,12 +25,12 @@ services:
         fromService:
           type: web
           name: veloop-backend
-          property: host
+          property: url
       - key: VITE_SOCKET_URL
         fromService:
           type: web
           name: veloop-backend
-          property: host
+          property: url
     routes:
       - type: rewrite
         source: /*
