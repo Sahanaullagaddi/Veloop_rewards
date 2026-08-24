@@ -1,0 +1,128 @@
+.btnBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.btnBack:hover {
+  text-decoration: underline;
+}
+
+.headerBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.titleInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleInfo h2 {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.iconBlue {
+  color: var(--accent-blue);
+}
+
+.btnAction {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.btnAction:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.emptyState {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 32px 16px;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+/* Feed list */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.item.unread {
+  border-left: 3px solid var(--accent-blue);
+  background-color: rgba(0, 112, 243, 0.03);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.reward { background-color: rgba(244, 196, 48, 0.15); color: var(--accent-gold); }
+.mission { background-color: rgba(0, 112, 243, 0.15); color: var(--accent-blue); }
+.season { background-color: rgba(156, 39, 176, 0.15); color: #e040fb; }
+.system { background-color: rgba(154, 160, 166, 0.15); color: var(--text-secondary); }
+
+.time {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.itemTitle {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.itemMessage {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}

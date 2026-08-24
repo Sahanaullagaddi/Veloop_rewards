@@ -1,0 +1,371 @@
+.btnBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.btnBack:hover {
+  text-decoration: underline;
+}
+
+.walletHeader {
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, rgba(22, 24, 39, 0.4) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.titleInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleInfo h2 {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.statusBadge {
+  font-size: 9px;
+  font-weight: 800;
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid #4caf50;
+  color: #4caf50;
+  padding: 3px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+}
+
+.primaryBalance {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--accent-gold);
+}
+
+.primaryBalance span {
+  font-size: 18px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.actionRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btnAction {
+  flex: 1;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.btnAction:hover {
+  border-color: var(--accent-blue);
+  background-color: rgba(0, 112, 243, 0.05);
+}
+
+/* Grids */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.gridCard {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.gridValue {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.iconGold {
+  color: var(--accent-gold);
+}
+
+.iconBlue {
+  color: var(--accent-blue);
+}
+
+/* Charts */
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.chartWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.svgChart {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ledger List */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ledgerLoading, .ledgerEmpty {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+.ledgerList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ledgerItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.ledgerType {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ledgerTime {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.ledgerAmt {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.credit {
+  color: #4caf50;
+}
+
+.debit {
+  color: #ff3333;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.pageBtn {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.pageBtn:disabled {
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+/* Modal Overlay & Container */
+.modalOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 16, 28, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalHeader h3 {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.modalHeader button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.withdrawForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modalDesc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.modalInput {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  outline: none;
+}
+
+.modalInput:focus {
+  border-color: var(--accent-blue);
+}
+
+.inputHint {
+  font-size: 10px;
+  color: var(--accent-blue);
+}
+
+.withdrawSummary {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.withdrawSummary strong {
+  color: var(--accent-gold);
+}
+
+.withdrawError {
+  background-color: rgba(255, 51, 51, 0.12);
+  color: #ff3333;
+  border: 1px solid rgba(255, 51, 51, 0.25);
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 700;
+}
+

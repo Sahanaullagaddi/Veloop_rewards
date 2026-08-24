@@ -1,0 +1,404 @@
+.btnBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.btnBack:hover {
+  text-decoration: underline;
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-blue);
+  box-shadow: 0 4px 20px rgba(0, 112, 243, 0.3);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 2000;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.adminHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.adminHeader h2 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.btnRollover {
+  background-color: var(--danger-color);
+  color: white;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+/* User Impersonation Search */
+.searchRow {
+  display: flex;
+  gap: 10px;
+}
+
+.inputSearch {
+  flex: 1;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.inputSearch:focus {
+  border-color: var(--accent-blue);
+}
+
+.btnSearch {
+  background-color: var(--accent-blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.previewDataBlock {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--accent-blue);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.previewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.previewHeader h4 {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent-blue);
+}
+
+.btnClosePreview {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.previewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  font-size: 11px;
+}
+
+.previewGrid strong {
+  color: var(--accent-gold);
+}
+
+/* Selected list items */
+.listSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.usersMiniList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.userMiniRow {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.userMiniRow:hover {
+  border-color: var(--accent-blue);
+}
+
+.userMiniScore {
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Telemetry Stats */
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.analyticsStat {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.analyticsStat span {
+  font-size: 10px;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.analyticsStat strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.ledgerAgg {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  font-size: 12px;
+  background-color: var(--bg-primary);
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.ledgerAgg strong {
+  color: var(--accent-gold);
+}
+
+/* Config editing list */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.inputReason {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.inputReason:focus {
+  border-color: var(--accent-blue);
+}
+
+.configList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.configItem {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.configHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.configKey {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+.btnSaveConfig {
+  background-color: transparent;
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btnSaveConfig:hover {
+  background-color: rgba(0, 112, 243, 0.05);
+}
+
+.inputConfigValue {
+  width: 100%;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  outline: none;
+}
+
+.inputConfigValue:focus {
+  border-color: var(--accent-gold);
+}
+
+/* Audit logs list */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section h3 {
+  font-size: 15px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+}
+
+.auditFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emptyAudits {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px;
+  background-color: var(--bg-tertiary);
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+}
+
+.auditItem {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auditHeader {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+}
+
+.auditChanges {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.auditReason {
+  font-size: 11px;
+  background-color: var(--bg-primary);
+  padding: 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+.auditAdmin {
+  font-size: 10px;
+  color: var(--accent-blue);
+  font-weight: 700;
+  text-align: right;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.iconGold { color: var(--accent-gold); }
+.iconBlue { color: var(--accent-blue); }

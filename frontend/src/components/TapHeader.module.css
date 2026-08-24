@@ -1,0 +1,161 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 16px;
+  gap: 8px;
+  z-index: 100;
+}
+
+.logoSection {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.wordmark {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-gold);
+}
+
+.navRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.navItem:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 8px var(--accent-blue-glow);
+}
+
+.navItem.active {
+  border-color: var(--accent-blue);
+  background-color: rgba(0, 112, 243, 0.1);
+}
+
+/* Avatar profile btn */
+.profileBtn {
+  padding: 3px 8px 3px 4px;
+}
+
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--accent-blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.levelBadge {
+  font-size: 11px;
+}
+
+/* Balance chip */
+.balanceChip {
+  gap: 4px;
+}
+
+.iconGold {
+  color: var(--accent-gold);
+}
+
+/* Season strip */
+.seasonStrip {
+  gap: 4px;
+  border-color: rgba(0, 112, 243, 0.4);
+}
+
+.iconBlue {
+  color: var(--accent-blue);
+}
+
+/* Streak flame */
+.streakFlame {
+  gap: 4px;
+}
+
+.iconOrange {
+  color: #ff5722;
+}
+
+.glowingFlame {
+  box-shadow: 0 0 10px rgba(255, 87, 34, 0.4);
+  border-color: #ff5722;
+  animation: pulseGlow 1.5s infinite;
+}
+
+/* Bell & Settings */
+.bellBtn, .settingsBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--danger-color);
+  color: white;
+  font-size: 9px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+@media (max-width: 480px) {
+  .navItem {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .avatar {
+    width: 20px;
+    height: 20px;
+    font-size: 9px;
+  }
+}

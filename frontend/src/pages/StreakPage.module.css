@@ -1,0 +1,200 @@
+.btnBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.btnBack:hover {
+  text-decoration: underline;
+}
+
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.activeStreak {
+  border-color: #ff5722;
+  box-shadow: 0 0 20px rgba(255, 87, 34, 0.2);
+}
+
+.flameCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.glowingFlame {
+  color: #ff5722;
+  filter: drop-shadow(0 0 8px rgba(255, 87, 34, 0.6));
+  animation: pulseGlow 1s infinite alternate;
+}
+
+.coldFlame {
+  color: var(--text-secondary);
+}
+
+.streakCount {
+  font-size: 40px;
+  font-weight: 800;
+  margin-top: -10px;
+}
+
+.label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Timer */
+.timerBar {
+  width: 100%;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.timerLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.progressContainer {
+  width: 100%;
+  height: 6px;
+  background-color: var(--bg-primary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #ff5722;
+  border-radius: 3px;
+  transition: width 0.5s linear;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.gridCard {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.gridValue {
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+/* Explainer */
+.explainerHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.explainerHeader h3 {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.explainerText {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  width: 100%;
+}
+
+.iconGold {
+  color: var(--accent-gold);
+}
+
+/* Milestones */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+}
+
+.milestoneList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.milestoneItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.milestoneItem h4 {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.milestoneItem p {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.milestoneStatus {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.completed {
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.completed .milestoneStatus {
+  color: #4caf50;
+}

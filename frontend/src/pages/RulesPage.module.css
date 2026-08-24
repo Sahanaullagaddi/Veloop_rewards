@@ -1,0 +1,242 @@
+.btnBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.btnBack:hover {
+  text-decoration: underline;
+}
+
+.rulesHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.rulesHeader h2 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardHeader h3 {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.statusBox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.statusBox strong {
+  color: var(--accent-gold);
+}
+
+/* User Balances Box Styles */
+.balancesPreviewBox {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.balancesPreviewHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (min-width: 480px) {
+  .balancesPreviewHeader {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.totalRupeeBalance {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.totalRupeeBalance strong {
+  color: var(--accent-gold);
+  font-size: 13px;
+  margin-left: 4px;
+}
+
+.balancesTitle {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.balancesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 480px) {
+  .balancesGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.balanceItem {
+  font-size: 12px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+}
+
+.balanceItem strong {
+  color: var(--accent-gold);
+  display: block;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.fiatVal {
+  display: block;
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.balancesNote {
+  font-size: 10px;
+  color: var(--accent-blue);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.alertBox {
+  display: flex;
+  gap: 8px;
+  background-color: rgba(0, 112, 243, 0.05);
+  border: 1px solid rgba(0, 112, 243, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.alertBox strong {
+  color: var(--accent-blue);
+}
+
+.tableList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 6px;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.tableRow span {
+  font-weight: 700;
+}
+
+.tableRow strong {
+  color: var(--accent-gold);
+}
+
+.bullets {
+  padding-left: 18px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bullets li {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.bullets strong {
+  color: var(--text-primary);
+}
+
+.note {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.iconGold { color: var(--accent-gold); }
+.iconBlue { color: var(--accent-blue); }

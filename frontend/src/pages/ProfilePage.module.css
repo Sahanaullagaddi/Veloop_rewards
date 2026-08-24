@@ -1,0 +1,197 @@
+.btnBack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.btnBack:hover {
+  text-decoration: underline;
+}
+
+.profileHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.largeAvatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: var(--accent-blue);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  box-shadow: 0 4px 16px var(--accent-blue-glow);
+}
+
+.username {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.securityTag {
+  font-size: 10px;
+  font-weight: 800;
+  background-color: rgba(0, 112, 243, 0.1);
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  padding: 4px 10px;
+  border-radius: 12px;
+  letter-spacing: 1px;
+}
+
+.card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.levelText {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--accent-gold);
+}
+
+.xpRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.progressContainer {
+  height: 8px;
+  background-color: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--accent-blue);
+  border-radius: 4px;
+}
+
+.infoCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 24px;
+}
+
+.iconBlue {
+  color: var(--accent-blue);
+}
+
+.infoText {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.iconGold {
+  color: var(--accent-gold);
+}
+
+.emptyBadges {
+  text-align: center;
+  padding: 32px 16px;
+  background-color: var(--bg-tertiary);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+}
+
+.emptyBadges p {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.emptyBadges span {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.badgesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.badgeCard {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.badgeIcon {
+  color: var(--accent-gold);
+}
+
+.badgeName {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badgeDate {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
