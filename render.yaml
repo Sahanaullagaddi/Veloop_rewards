@@ -1,3 +1,4 @@
+# Blueprint configuration for VELoop full-stack MERN deployment
 services:
   - type: web
     name: veloop-backend
