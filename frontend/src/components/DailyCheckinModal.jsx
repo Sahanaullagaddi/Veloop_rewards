@@ -92,7 +92,12 @@ export default function DailyCheckinModal({ onClose }) {
         </div>
 
         <div className={styles.body}>
-          {claimedReward ? (
+          {!status ? (
+            <div style={{ textAlign: 'center', padding: '20px 0', color: '#ff5252' }}>
+              <p style={{ marginBottom: '15px', fontSize: '14px' }}>Failed to retrieve check-in status from server.</p>
+              <button onClick={onClose} className={styles.btnFinish} style={{ background: '#2a2a4e', color: '#fff' }}>Close</button>
+            </div>
+          ) : claimedReward ? (
             <div className={styles.successScreen}>
               <CheckCircle size={56} className={styles.iconSuccess} />
               <h3>Day {consecutiveCheckins} Claimed!</h3>
@@ -108,7 +113,7 @@ export default function DailyCheckinModal({ onClose }) {
 
               {/* 7 Day Grid */}
               <div className={styles.grid}>
-                {rewards.map(reward => {
+                {rewards && rewards.map(reward => {
                   const isClaimed = reward.day <= consecutiveCheckins && !eligible;
                   const isCurrent = reward.day === (eligible ? consecutiveCheckins + 1 : consecutiveCheckins);
                   
