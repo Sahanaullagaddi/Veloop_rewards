@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import TapCircle from '../components/TapCircle';
 import DailyCheckinModal from '../components/DailyCheckinModal';
 import { 
-  Zap, Trophy, Award, Gift, ArrowRight, Shield, Layers, X, ChevronRight, Check, Activity, Sparkles
+  Zap, Trophy, Award, Gift, ArrowRight, Shield, Layers, X, ChevronRight, Check, Activity, Sparkles, Calendar
 } from 'lucide-react';
 import { API_URL } from '../config';
 import styles from './TapEarnPage.module.css';
