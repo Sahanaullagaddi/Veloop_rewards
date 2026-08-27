@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider, useSocket } from './context/SocketContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
@@ -41,6 +41,8 @@ function AppContent() {
   const { isConnected } = useSocket();
   const { showTutorial, activeStep, nextStep, prevStep, completeTutorial } = useTutorial();
   const { showAdModal, adPlaying, adProgress, earnedReward, closeAdModal, playAd, currentAdType } = useAd();
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/login';
 
   const tutorialSteps = [
     { title: "Tap Circle Core", text: "Tap the central core to generate VE and SVE yield. Maintain your streak to unlock achievements!" },
@@ -50,8 +52,8 @@ function AppContent() {
   ];
 
   return (
-    <div className="app-container" style={token ? { paddingBottom: '70px' } : {}}>
-      {token && <TapHeader />}
+    <div className="app-container" style={token && !isLoginPage ? { paddingBottom: '70px' } : {}}>
+      {token && !isLoginPage && <TapHeader />}
       
       {/* Offline awareness ribbon */}
       {token && !isConnected && (
@@ -132,7 +134,7 @@ function AppContent() {
           </div>
         </div>
       )}
-      {token && <BottomNavigation />}
+      {token && !isLoginPage && <BottomNavigation />}
     </div>
   );
 }

@@ -2,16 +2,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: radial-gradient(circle at 10% 20%, rgba(18, 19, 36, 1) 0%, rgba(8, 9, 17, 1) 90%);
+  min-height: 100vh;
+  background: radial-gradient(circle at center, #1b1b36 0%, #07070f 100%);
   padding: 20px;
 }
 
 .card {
-  background-color: rgba(22, 24, 39, 0.6);
+  background-color: rgba(22, 24, 39, 0.7);
   backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
   border-radius: 20px;
   padding: 36px;
   max-width: 420px;
@@ -19,6 +19,19 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
+  animation: cardEntrance 0.6s cubic-bezier(0.1, 0.8, 0.1, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .logoSection {
@@ -114,8 +127,8 @@
 }
 
 .inputGroup input:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 10px rgba(0, 112, 243, 0.2);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
 }
 
 .toggle {
@@ -179,16 +192,32 @@
   font-size: 13px;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
   width: 100%;
 }
 
 .googleBtn:hover {
-  background-color: #e5e5e5;
+  background-color: #f1f1f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
 }
 
 .googleBtn:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
+}
+
+.form button[type="submit"] {
+  transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.form button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.form button[type="submit"]:active {
+  transform: translateY(0);
 }
 
 .googleIcon {
