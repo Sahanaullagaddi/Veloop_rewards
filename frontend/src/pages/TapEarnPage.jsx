@@ -671,22 +671,21 @@ export default function TapEarnPage() {
         <div className={styles.infoColumn}>
           
           <div className={styles.badgePill}>
-            <Sparkles size={12} className={styles.iconGold} /> VELOOP TASK GATEWAY
+            <Sparkles size={12} className={styles.iconGold} /> TAP & EARN
           </div>
 
           <h1 className={styles.gradientTitle}>
-            Complete Taps, <br />
-            <span className={styles.accentText}>Earn Rewards</span>
+            Tap to earn.
           </h1>
 
           <p className={styles.descriptionText}>
-            Tap the central interactive core to generate VE and SVE yield. Complete milestone achievements and climb the seasonal league leaderboard.
+            Use your energy to tap. Your reward is calculated securely by VELoop.
           </p>
 
           {/* Action Row */}
           <div className={styles.actionRow}>
             <button onClick={() => setShowUpgrades(true)} className={styles.btnStart}>
-              Upgrade Core <ArrowRight size={16} />
+              Upgrades <ArrowRight size={16} />
             </button>
             <button onClick={openMissionsModal} className={styles.btnOutline}>
               Missions
@@ -694,10 +693,10 @@ export default function TapEarnPage() {
           </div>
 
           {/* User Progress Stats Card */}
-          <div className={`${styles.infoCard} ${styles.fragmentsCard}`}>
+          <div className={styles.infoCard}>
             <div className={styles.cardHeader}>
               <Activity size={16} className={styles.iconBlue} />
-              <span className={styles.cardTitle}>SECURITY NODE LEVEL</span>
+              <span className={styles.cardTitle}>YOUR LEVEL</span>
             </div>
             <div className={styles.statsRow}>
               <span>Node Level: <strong>Lvl {liveState.level || 1}</strong></span>
@@ -709,10 +708,10 @@ export default function TapEarnPage() {
           </div>
 
           {/* Fragments Conversion Widget */}
-          <div className={styles.infoCard}>
+          <div className={`${styles.infoCard} ${styles.fragmentsCard}`}>
             <div className={styles.cardHeader}>
               <Layers size={16} className={styles.iconGold} />
-              <span className={styles.cardTitle}>VE FRAGMENTS CONVERSION</span>
+              <span className={styles.cardTitle}>FRAGMENTS</span>
             </div>
             <div className={styles.statsRow}>
               <span>Balance: <strong>{parseVal(liveState.fragmentBalance)}</strong></span>
@@ -764,7 +763,7 @@ export default function TapEarnPage() {
             {/* Core Energy indicators directly below circle */}
             <div className={styles.energyIndicator}>
               <div className={styles.rowBetween}>
-                <span className={styles.label}>CORE ENERGY</span>
+                <span className={styles.label}>ENERGY</span>
                 <span className={styles.energyVal}>
                   {liveState.currentEnergy} / {liveState.energyCapacity || 500}
                 </span>
@@ -776,8 +775,8 @@ export default function TapEarnPage() {
                 />
               </div>
               <div className={styles.energyMeta}>
-                <span>Recharging: {rechargeTime}</span>
-                <span>Multiplier: x{liveState.currentCombo > 0 ? (1 + Math.floor(liveState.currentCombo / 10) * 0.05).toFixed(2) : '1.00'}</span>
+                <span>Recharges in {rechargeTime}</span>
+                <span>Reward confirmed by server</span>
               </div>
             </div>
           </div>
@@ -818,7 +817,7 @@ export default function TapEarnPage() {
             <Check size={20} />
           </div>
           <div>
-            <h4>Daily Challenge</h4>
+              <h4>Today</h4>
             <p>
               {liveState.dailyChallengeClaimed 
                 ? 'Claimed!' 

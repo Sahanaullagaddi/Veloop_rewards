@@ -24,12 +24,26 @@
   margin-bottom: 24px;
 }
 
+.coreColumn {
+  order: -1;
+}
+
 @media (min-width: 768px) {
   .dashboardLayout {
     display: grid;
-    grid-template-columns: 1.1fr 1.0fr;
+    grid-template-columns: minmax(320px, 1.1fr) minmax(280px, 0.9fr);
     gap: 32px;
     align-items: center;
+  }
+
+  .coreColumn {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .infoColumn {
+    grid-column: 2;
+    grid-row: 1;
   }
 }
 
@@ -56,11 +70,11 @@
 }
 
 .gradientTitle {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 800;
   line-height: 1.2;
   color: var(--text-primary);
-  letter-spacing: -1px;
+  letter-spacing: 0;
 }
 
 .accentText {
@@ -74,7 +88,7 @@
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.6;
-  max-width: 420px;
+  max-width: 360px;
 }
 
 /* Dashboard Actions */
