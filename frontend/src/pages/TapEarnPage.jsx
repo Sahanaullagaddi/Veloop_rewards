@@ -688,9 +688,6 @@ export default function TapEarnPage() {
             <button onClick={() => setShowUpgrades(true)} className={styles.btnStart}>
               Upgrade Core <ArrowRight size={16} />
             </button>
-            <button onClick={() => setShowStaking(true)} className={styles.btnOutline}>
-              Yield Vaults
-            </button>
             <button onClick={openMissionsModal} className={styles.btnOutline}>
               Missions
             </button>
@@ -839,17 +836,6 @@ export default function TapEarnPage() {
           <div>
             <h4>Lucky Spin</h4>
             <p>{luckyEligible ? 'Ready to Spin!' : '30 Tap Target'}</p>
-          </div>
-        </div>
-
-        {/* Metric 5: PvP Clash */}
-        <div className={styles.metricCard} onClick={() => setShowPvp(true)}>
-          <div className={styles.metricIconCircleBlue}>
-            <Trophy size={20} className="gold-text" />
-          </div>
-          <div>
-            <h4>PvP Arena Duel</h4>
-            <p>Clash & win +25 VE</p>
           </div>
         </div>
 

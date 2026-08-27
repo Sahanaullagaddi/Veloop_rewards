@@ -601,6 +601,50 @@
 .btnClaimMini { background-color: var(--accent-gold); color: black; font-size: 11px; padding: 6px 12px; border-radius: 4px; }
 .emptyState { font-size: 13px; color: var(--text-secondary); text-align: center; padding: 20px; }
 
+/* Keep the first viewport focused on the verified tap economy. */
+.premiumPlansSection,
+.adminTip,
+.bottomMetricsGrid .metricCard:nth-child(5) {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .dashboardLayout {
+    grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+    gap: 24px;
+  }
+
+  .pedestalCard {
+    max-width: 360px;
+  }
+}
+
+@media (max-width: 767px) {
+  .content-container {
+    padding: 16px 14px 84px;
+  }
+
+  .gradientTitle {
+    font-size: 28px;
+    letter-spacing: 0;
+  }
+
+  .descriptionText {
+    max-width: none;
+  }
+
+  .actionRow {
+    flex-wrap: wrap;
+  }
+
+  .btnStart,
+  .btnOutline {
+    flex: 1 1 140px;
+    justify-content: center;
+    padding-inline: 14px;
+  }
+}
+
 /* Staking Vaults drawer additions */
 .lockForm {
   background-color: var(--bg-tertiary);
