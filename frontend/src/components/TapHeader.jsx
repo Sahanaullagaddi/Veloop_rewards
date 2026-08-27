@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
-import { Flame, Bell, Settings, Wallet, User as UserIcon, Calendar, BookOpen } from 'lucide-react';
+import { Flame, Bell, Settings, Wallet, User as UserIcon, Calendar, BookOpen, Users } from 'lucide-react';
 import styles from './TapHeader.module.css';
 
 export default function TapHeader() {
@@ -76,6 +76,15 @@ export default function TapHeader() {
         >
           <Flame size={16} className={styles.iconOrange} />
           <span className={styles.streakText}>{liveState.currentStreak || 0}</span>
+        </div>
+
+        {/* Invites link */}
+        <div 
+          className={`${styles.navItem} ${styles.bellBtn} ${isCurrent('/invites') ? styles.active : ''}`}
+          onClick={() => navigate('/invites')}
+          title="Invite Friends"
+        >
+          <Users size={16} className={styles.iconGold} />
         </div>
 
         {/* Notification Bell */}

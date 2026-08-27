@@ -21,6 +21,7 @@ import TapLeaguePage from './pages/TapLeaguePage';
 import AdminPanel from './pages/AdminPanel';
 import LoginPage from './pages/LoginPage';
 import RulesPage from './pages/RulesPage';
+import InvitesPage from './pages/InvitesPage';
 
 // CSS
 import './index.css';
@@ -70,6 +71,7 @@ function AppContent() {
         <Route path="/league" element={<ProtectedRoute><TapLeaguePage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
         <Route path="/rules" element={<ProtectedRoute><RulesPage /></ProtectedRoute>} />
+        <Route path="/invites" element={<ProtectedRoute><InvitesPage /></ProtectedRoute>} />
       </Routes>
 
       {/* Onboarding On-screen Tutorial Coachmark Overlay */}

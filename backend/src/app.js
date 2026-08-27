@@ -3,6 +3,10 @@ const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const tapRoutes = require('./routes/tap.routes');
 const adminRoutes = require('./routes/admin.routes');
+const referralRoutes = require('./routes/referral.routes');
+const checkinRoutes = require('./routes/checkin.routes');
+const adminWithdrawalRoutes = require('./routes/adminWithdrawal.routes');
+const leaderboardRoutes = require('./routes/leaderboard.routes');
 
 const app = express();
 
@@ -13,6 +17,10 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/tap', tapRoutes);
 app.use('/api/admin/tap-economy', adminRoutes);
+app.use('/api/referrals', referralRoutes);
+app.use('/api/checkin', checkinRoutes);
+app.use('/api/admin/withdrawals', adminWithdrawalRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // Base route
 app.get('/', (req, res) => {

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { API_URL } from '../config';
 import { 
-  ChevronLeft, BarChart2, Save, RefreshCw, Users, ShieldAlert, Zap, Award, Search, Eye
+  ChevronLeft, BarChart2, Save, RefreshCw, Users, ShieldAlert, Zap, Award, Search, Eye, Check, X
 } from 'lucide-react';
 import styles from './AdminPanel.module.css';
 
@@ -17,6 +17,12 @@ export default function AdminPanel() {
   const [config, setConfig] = useState({});
   const [auditLog, setAuditLog] = useState([]);
   const [analytics, setAnalytics] = useState(null);
+  const [withdrawals, setWithdrawals] = useState([]);
+  const [processingId, setProcessingId] = useState(null);
+  
+  // Withdrawal inputs
+  const [txRefInputs, setTxRefInputs] = useState({});
+  const [commentInputs, setCommentInputs] = useState({});
   
   // Impersonate / Preview state
   const [previewUserId, setPreviewUserId] = useState('');
@@ -65,6 +71,15 @@ export default function AdminPanel() {
       const analyticsData = await analyticsRes.json();
       if (analyticsData.success) {
         setAnalytics(analyticsData.analytics);
+      }
+
+      // 4. Get withdrawals list
+      const withdrawalsRes = await fetch(`${API_URL}/api/admin/withdrawals`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const withdrawalsData = await withdrawalsRes.json();
+      if (withdrawalsData.success) {
+        setWithdrawals(withdrawalsData.withdrawals);
       }
     } catch (err) {
       console.error(err);
@@ -148,6 +163,64 @@ export default function AdminPanel() {
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleApproveWithdrawal = async (id) => {
+    const txRef = txRefInputs[id] || '';
+    if (!txRef.trim()) {
+      showToast('Please enter the UPI Transaction Reference ID.');
+      return;
+    }
+    setProcessingId(id);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/withdrawals/${id}/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ txRef, adminComment: commentInputs[id] || '' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Withdrawal approved successfully!');
+        fetchAdminData();
+      } else {
+        showToast(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error approving withdrawal');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleRejectWithdrawal = async (id) => {
+    if (!window.confirm('Are you sure you want to reject this withdrawal? The VE balance will be fully refunded to the user.')) return;
+    setProcessingId(id);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/withdrawals/${id}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ adminComment: commentInputs[id] || 'Rejected by Admin' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Withdrawal request rejected. VE balance refunded.');
+        fetchAdminData();
+      } else {
+        showToast(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error rejecting withdrawal');
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -236,6 +309,123 @@ export default function AdminPanel() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Player Payout Requests (UPI) */}
+      <div className={styles.card}>
+        <h3>Player Payout Requests (UPI)</h3>
+        <p className={styles.subtitle}>Review pending withdrawal transactions, approve with UPI reference keys, or reject to trigger auto-refunds.</p>
+
+        {withdrawals.length === 0 ? (
+          <div className={styles.emptyAudits}>No withdrawal requests found.</div>
+        ) : (
+          <div className={styles.withdrawalList}>
+            {withdrawals.map(w => (
+              <div key={w.id} className={styles.withdrawalRow} style={{
+                borderBottom: '1px solid #1a1a2e',
+                padding: '15px 0',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <strong>{w.username}</strong>
+                    <span style={{ fontSize: '12px', color: '#666', marginLeft: '10px' }}>
+                      {new Date(w.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <span style={{
+                    fontWeight: '800',
+                    fontSize: '15px',
+                    color: w.status === 'approved' ? '#4caf50' : w.status === 'rejected' ? '#f44336' : '#ff9800'
+                  }}>
+                    Rs. {w.amount.toFixed(2)} ({w.status.toUpperCase()})
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '13px', color: '#aaa' }}>
+                  UPI ID: <strong style={{ color: '#fff' }}>{w.upiId}</strong>
+                </div>
+
+                {w.status === 'pending' ? (
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '5px', flexWrap: 'wrap' }}>
+                    <input 
+                      type="text" 
+                      placeholder="UPI Tx Ref ID (Required to Approve)"
+                      value={txRefInputs[w.id] || ''}
+                      onChange={(e) => setTxRefInputs(prev => ({ ...prev, [w.id]: e.target.value }))}
+                      style={{
+                        flex: 1,
+                        background: '#0f0f1e',
+                        border: '1px solid #333',
+                        color: '#fff',
+                        padding: '6px 10px',
+                        borderRadius: '6px',
+                        fontSize: '12px'
+                      }}
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Admin comment (Optional)"
+                      value={commentInputs[w.id] || ''}
+                      onChange={(e) => setCommentInputs(prev => ({ ...prev, [w.id]: e.target.value }))}
+                      style={{
+                        flex: 1,
+                        background: '#0f0f1e',
+                        border: '1px solid #333',
+                        color: '#fff',
+                        padding: '6px 10px',
+                        borderRadius: '6px',
+                        fontSize: '12px'
+                      }}
+                    />
+                    <button 
+                      onClick={() => handleApproveWithdrawal(w.id)}
+                      disabled={processingId === w.id}
+                      className={styles.btnApprove}
+                      style={{
+                        background: '#4caf50',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '6px 14px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Approve
+                    </button>
+                    <button 
+                      onClick={() => handleRejectWithdrawal(w.id)}
+                      disabled={processingId === w.id}
+                      className={styles.btnReject}
+                      style={{
+                        background: '#f44336',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '6px 14px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '12px', color: '#666', background: '#0c0c17', padding: '8px', borderRadius: '4px' }}>
+                    {w.txRef && <div>Tx Ref: <strong style={{ color: '#999' }}>{w.txRef}</strong></div>}
+                    {w.adminComment && <div>Comment: <em>{w.adminComment}</em></div>}
+                    {w.processedAt && <div>Processed: {new Date(w.processedAt).toLocaleString()}</div>}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

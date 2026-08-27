@@ -69,6 +69,25 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  referralCode: {
+    type: String,
+    unique: true,
+    sparse: true,
+    index: true
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  lastCheckinDate: {
+    type: Date,
+    default: null
+  },
+  consecutiveCheckins: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now

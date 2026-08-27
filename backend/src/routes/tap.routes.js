@@ -1324,7 +1324,16 @@ router.post('/wallet/withdraw', auth, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Insufficient VE balance to withdraw.' });
     }
 
-    const requestId = `withdraw-${Date.now()}`;
+    // Create persistent WithdrawalRequest
+    const WithdrawalRequest = require('../models/withdrawal.model');
+    const withdrawal = await WithdrawalRequest.create({
+      userId,
+      amount: toDecimal128(amt),
+      upiId,
+      status: 'pending'
+    });
+
+    const requestId = `withdraw-${withdrawal._id}`;
     await RewardLedger.create({
       userId,
       requestId,
@@ -1332,8 +1341,20 @@ router.post('/wallet/withdraw', auth, async (req, res) => {
       amount: toDecimal128(-amt),
       currency: 'VE',
       timestamp: new Date(),
-      details: { withdrawalUpi: upiId }
+      details: { withdrawalUpi: upiId, withdrawalRequestId: withdrawal._id }
     });
+
+    // Emit liveState socket update
+    const io = getIO();
+    if (io) {
+      io.to(userId.toString()).emit('stateUpdate', {
+        veBalance: user.veBalance.toString(),
+        sveBalance: user.sveBalance.toString(),
+        tokenBalance: user.tokenBalance.toString(),
+        gemBalance: user.gemBalance.toString(),
+        spinBalance: user.spinBalance
+      });
+    }
 
     res.json({
       success: true,

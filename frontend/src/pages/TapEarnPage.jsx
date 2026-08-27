@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import TapCircle from '../components/TapCircle';
+import DailyCheckinModal from '../components/DailyCheckinModal';
 import { 
   Zap, Trophy, Award, Gift, ArrowRight, Shield, Layers, X, ChevronRight, Check, Activity, Sparkles
 } from 'lucide-react';
@@ -21,6 +22,7 @@ export default function TapEarnPage() {
   const [showLuckyModal, setShowLuckyModal] = useState(false);
   const [showMissions, setShowMissions] = useState(false);
   const [showStaking, setShowStaking] = useState(false);
+  const [showCheckin, setShowCheckin] = useState(false);
 
   // Staking states
   const [stakingList, setStakingList] = useState([]);
@@ -343,6 +345,26 @@ export default function TapEarnPage() {
 
     return () => clearInterval(interval);
   }, [showStaking, stakingList.length]);
+
+  useEffect(() => {
+    if (token) {
+      checkCheckinEligibility();
+    }
+  }, [token]);
+
+  const checkCheckinEligibility = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/checkin/status`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success && data.eligible) {
+        setShowCheckin(true);
+      }
+    } catch (err) {
+      console.error('Checkin check failed:', err);
+    }
+  };
 
   useEffect(() => {
     if (!liveState) return;
@@ -683,12 +705,18 @@ export default function TapEarnPage() {
           </p>
 
           {/* Action Row */}
-          <div className={styles.actionRow}>
+          <div className={styles.actionRow} style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
             <button onClick={() => setShowUpgrades(true)} className={styles.btnStart}>
               Upgrades <ArrowRight size={16} />
             </button>
             <button onClick={openMissionsModal} className={styles.btnOutline}>
               Missions
+            </button>
+            <button onClick={() => setShowStaking(true)} className={styles.btnOutline}>
+              Staking
+            </button>
+            <button onClick={() => setShowCheckin(true)} className={styles.btnOutline} style={{ borderColor: '#ffd700', color: '#ffd700' }}>
+              Daily Check-in
             </button>
           </div>
 
@@ -1238,6 +1266,9 @@ export default function TapEarnPage() {
           </div>
         </div>
       )}
+
+      {/* Daily Check-in Modal */}
+      {showCheckin && <DailyCheckinModal onClose={() => setShowCheckin(false)} />}
 
       {/* E. Missions Panel */}
       {showMissions && (

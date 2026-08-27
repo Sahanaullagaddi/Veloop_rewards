@@ -1,0 +1,267 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 80px 16px 40px 16px;
+  color: #fff;
+}
+
+.heroSection {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.iconCircle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px auto;
+  border: 1px dashed #ffd700;
+}
+
+.iconGold {
+  color: #ffd700;
+}
+
+.heroSection h2 {
+  font-size: 26px;
+  margin: 0 0 8px 0;
+  font-weight: 800;
+}
+
+.heroSection p {
+  color: #ccc;
+  font-size: 15px;
+  margin: 0;
+}
+
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4e;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #aaa;
+}
+
+.linkWrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.inputLink {
+  flex: 1;
+  background: #0f0f1e;
+  border: 1px solid #333;
+  color: #ccc;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.btnCopy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffd700;
+  color: #0f0f1e;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnCopy:hover {
+  opacity: 0.9;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.summaryCard {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4e;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+}
+
+.summaryCard h4 {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.summaryCard p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.glowing {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.15);
+}
+
+.claimableCount {
+  color: #ffd700;
+}
+
+.listSection {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4e;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.listSection h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.spinnerWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 30px 0;
+  color: #888;
+}
+
+.spinner {
+  animation: spin 1.5s linear infinite;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+.friendList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.friendRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0f0f1e;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #222;
+}
+
+.friendDetails {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #333;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.friendDetails h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+}
+
+.friendDetails p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.friendAction {
+  display: flex;
+  align-items: center;
+}
+
+.badgeClaimed {
+  color: #4caf50;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badgePending {
+  color: #ff9800;
+  background: rgba(255, 152, 0, 0.1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.btnClaim {
+  background: #ffd700;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnClaim:hover {
+  opacity: 0.9;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffd700;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 1000;
+  animation: fadeInUp 0.3s;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}

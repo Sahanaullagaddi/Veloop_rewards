@@ -12,7 +12,7 @@ function hashPassword(password) {
 
 // @route   POST /api/auth/register
 router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, refCode } = req.body;
   if (!username || !password) {
     return res.status(400).json({ success: false, message: 'Please provide username and password' });
   }
@@ -24,11 +24,36 @@ router.post('/register', async (req, res) => {
     }
 
     const hashedPassword = hashPassword(password);
+    
+    // Generate unique referral code
+    const cleanUsername = username.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const randomSuffix = Math.floor(100 + Math.random() * 900);
+    const referralCode = `${cleanUsername}${randomSuffix}`;
+
     const user = new User({
       username,
-      password: hashedPassword
+      password: hashedPassword,
+      referralCode
     });
+
+    // Check if referred by someone
+    if (refCode) {
+      const referrer = await User.findOne({ referralCode: refCode.trim() });
+      if (referrer) {
+        user.referredBy = referrer._id;
+      }
+    }
+
     await user.save();
+
+    // If referred, create Referral record
+    if (user.referredBy) {
+      const Referral = require('../models/referral.model');
+      await Referral.create({
+        referrerId: user.referredBy,
+        refereeId: user._id
+      });
+    }
 
     // Create default TapState
     const tapState = new TapState({ userId: user._id });
@@ -46,7 +71,8 @@ router.post('/register', async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        level: user.level
+        level: user.level,
+        referralCode: user.referralCode
       }
     });
   } catch (err) {
@@ -88,7 +114,8 @@ router.post('/login', async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        level: user.level
+        level: user.level,
+        referralCode: user.referralCode
       }
     });
   } catch (err) {
