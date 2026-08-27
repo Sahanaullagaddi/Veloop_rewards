@@ -1,0 +1,59 @@
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: rgba(15, 15, 30, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid #2a2a4e;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1500;
+  padding: 0 10px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #888;
+  gap: 4px;
+  cursor: pointer;
+  width: 60px;
+  height: 100%;
+  transition: color 0.2s, transform 0.1s;
+  padding: 0;
+}
+
+.navItem span {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.navItem:active {
+  transform: scale(0.95);
+}
+
+.active {
+  color: #ffd700;
+}
+
+.active svg {
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.3));
+}
+
+.adminIcon {
+  color: #ff5252;
+}
+
+.active .adminIcon {
+  color: #ff5252;
+  filter: drop-shadow(0 0 4px rgba(255, 82, 82, 0.3));
+}

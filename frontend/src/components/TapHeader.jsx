@@ -36,16 +36,14 @@ export default function TapHeader() {
 
       {/* Nav Elements */}
       <div className={styles.navRow}>
-        {/* Profile Avatar */}
+        {/* Streak Flame */}
         <div 
-          className={`${styles.navItem} ${styles.profileBtn} ${isCurrent('/profile') ? styles.active : ''}`}
-          onClick={() => navigate('/profile')}
-          title="Profile"
+          className={`${styles.navItem} ${styles.streakFlame} ${liveState.currentStreak > 0 ? styles.glowingFlame : ''} ${isCurrent('/streak') ? styles.active : ''}`}
+          onClick={() => navigate('/streak')}
+          title="Tap Streak"
         >
-          <div className={styles.avatar}>
-            {user.username.substring(0, 2).toUpperCase()}
-          </div>
-          <span className={styles.levelBadge}>Lvl {liveState.level || 1}</span>
+          <Flame size={16} className={styles.iconOrange} />
+          <span className={styles.streakText}>{liveState.currentStreak || 0}</span>
         </div>
 
         {/* VE Balance Chip */}
@@ -58,35 +56,6 @@ export default function TapHeader() {
           <span className={styles.balanceText}>{formatBalance(liveState.veBalance)} VE</span>
         </div>
 
-        {/* Season Strip */}
-        <div 
-          className={`${styles.navItem} ${styles.seasonStrip} ${isCurrent('/season') ? styles.active : ''}`}
-          onClick={() => navigate('/season')}
-          title="Season Progress"
-        >
-          <Calendar size={14} className={styles.iconBlue} />
-          <span className={styles.seasonText}>S3 · 4d 12h</span>
-        </div>
-
-        {/* Streak Flame */}
-        <div 
-          className={`${styles.navItem} ${styles.streakFlame} ${liveState.currentStreak > 0 ? styles.glowingFlame : ''} ${isCurrent('/streak') ? styles.active : ''}`}
-          onClick={() => navigate('/streak')}
-          title="Tap Streak"
-        >
-          <Flame size={16} className={styles.iconOrange} />
-          <span className={styles.streakText}>{liveState.currentStreak || 0}</span>
-        </div>
-
-        {/* Invites link */}
-        <div 
-          className={`${styles.navItem} ${styles.bellBtn} ${isCurrent('/invites') ? styles.active : ''}`}
-          onClick={() => navigate('/invites')}
-          title="Invite Friends"
-        >
-          <Users size={16} className={styles.iconGold} />
-        </div>
-
         {/* Notification Bell */}
         <div 
           className={`${styles.navItem} ${styles.bellBtn} ${isCurrent('/notifications') ? styles.active : ''}`}
@@ -97,15 +66,6 @@ export default function TapHeader() {
           {liveState.notificationsCount > 0 && (
             <span className={styles.badge}>{liveState.notificationsCount}</span>
           )}
-        </div>
-
-        {/* Rules Icon */}
-        <div 
-          className={`${styles.navItem} ${styles.settingsBtn} ${isCurrent('/rules') ? styles.active : ''}`}
-          onClick={() => navigate('/rules')}
-          title="Module Rules & Mechanics"
-        >
-          <BookOpen size={16} />
         </div>
 
         {/* Settings Icon */}

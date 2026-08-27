@@ -704,20 +704,104 @@ export default function TapEarnPage() {
             Use your energy to tap. Your reward is calculated securely by VELoop.
           </p>
 
-          {/* Action Row */}
-          <div className={styles.actionRow} style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            <button onClick={() => setShowUpgrades(true)} className={styles.btnStart}>
-              Upgrades <ArrowRight size={16} />
-            </button>
-            <button onClick={openMissionsModal} className={styles.btnOutline}>
-              Missions
-            </button>
-            <button onClick={() => setShowStaking(true)} className={styles.btnOutline}>
-              Staking
-            </button>
-            <button onClick={() => setShowCheckin(true)} className={styles.btnOutline} style={{ borderColor: '#ffd700', color: '#ffd700' }}>
-              Daily Check-in
-            </button>
+          {/* Action Grid Deck */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '12px',
+            margin: '20px 0'
+          }}>
+            <div 
+              onClick={() => setShowUpgrades(true)} 
+              style={{
+                background: '#1a1a2e',
+                border: '1px solid #2a2a4e',
+                borderRadius: '10px',
+                padding: '12px 15px',
+                cursor: 'pointer',
+                transition: 'border-color 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Zap size={16} style={{ color: '#ffd700' }} />
+                <span style={{ fontWeight: '700', fontSize: '14px' }}>Upgrades</span>
+              </div>
+              <span style={{ fontSize: '11px', color: '#666' }}>Boost stats & rates</span>
+            </div>
+
+            <div 
+              onClick={openMissionsModal} 
+              style={{
+                background: '#1a1a2e',
+                border: '1px solid #2a2a4e',
+                borderRadius: '10px',
+                padding: '12px 15px',
+                cursor: 'pointer',
+                transition: 'border-color 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Award size={16} style={{ color: '#00c2ff' }} />
+                <span style={{ fontWeight: '700', fontSize: '14px' }}>Missions</span>
+              </div>
+              <span style={{ fontSize: '11px', color: '#666' }}>Complete achievements</span>
+            </div>
+
+            <div 
+              onClick={() => setShowStaking(true)} 
+              style={{
+                background: '#1a1a2e',
+                border: '1px solid #2a2a4e',
+                borderRadius: '10px',
+                padding: '12px 15px',
+                cursor: 'pointer',
+                transition: 'border-color 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Layers size={16} style={{ color: '#9135ff' }} />
+                <span style={{ fontWeight: '700', fontSize: '14px' }}>Staking</span>
+              </div>
+              <span style={{ fontSize: '11px', color: '#666' }}>Lock assets for APY</span>
+            </div>
+
+            <div 
+              onClick={() => setShowCheckin(true)} 
+              style={{
+                background: '#1a1a2e',
+                border: '1px solid #2a2a4e',
+                borderRadius: '10px',
+                padding: '12px 15px',
+                cursor: 'pointer',
+                transition: 'border-color 0.2s',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Calendar size={16} style={{ color: '#ffd700' }} />
+                <span style={{ fontWeight: '700', fontSize: '14px', color: '#ffd700' }}>Daily Check-in</span>
+              </div>
+              <span style={{ fontSize: '11px', color: '#666' }}>Claim daily login reward</span>
+            </div>
           </div>
 
           {/* User Progress Stats Card */}

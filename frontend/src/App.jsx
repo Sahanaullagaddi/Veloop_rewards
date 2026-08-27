@@ -8,6 +8,7 @@ import { AdProvider, useAd } from './context/AdContext';
 
 // Header
 import TapHeader from './components/TapHeader';
+import BottomNavigation from './components/BottomNavigation';
 
 // Pages
 import TapEarnPage from './pages/TapEarnPage';
@@ -49,7 +50,7 @@ function AppContent() {
   ];
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={token ? { paddingBottom: '70px' } : {}}>
       {token && <TapHeader />}
       
       {/* Offline awareness ribbon */}
@@ -131,6 +132,7 @@ function AppContent() {
           </div>
         </div>
       )}
+      {token && <BottomNavigation />}
     </div>
   );
 }
