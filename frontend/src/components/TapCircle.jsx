@@ -43,48 +43,12 @@ export default function TapCircle() {
       return;
     }
 
-    // 3. Physical vs Effective Multipliers
-    let multitapMultiplier = 1;
-    if (liveState.multitapExpiry && new Date(liveState.multitapExpiry) > now) {
-      multitapMultiplier = liveState.multitapLevel || 2;
-    }
-    const isBoostActive = liveState.activeBoostExpiry && new Date(liveState.activeBoostExpiry) > now;
-    const boostMultiplier = isBoostActive ? 2 : 1;
-    const effectiveTaps = 1 * multitapMultiplier * boostMultiplier;
-
-    // Optimistic Update
-    // Decrement energy locally
-    let nextEnergy = liveState.currentEnergy;
-    let nextBank = liveState.energyBankBalance;
-    if (nextEnergy >= energyCost) {
-      nextEnergy -= energyCost;
-    } else {
-      nextBank -= (energyCost - nextEnergy);
-      nextEnergy = 0;
-    }
-
     // Capture coordinates inside the tap circle
     const rect = circleRef.current.getBoundingClientRect();
     const x = e.clientX ? e.clientX - rect.left : rect.width / 2;
     const y = e.clientY ? e.clientY - rect.top : rect.height / 2;
 
     const floatId = `${now}-${Math.random()}`;
-    const initialRewardText = `+${effectiveTaps} Taps`;
-    
-    setFloats(prev => [...prev, { id: floatId, x, y, text: initialRewardText, currency: 'VE' }]);
-    
-    // Set optimistic values
-    setLiveState(prev => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        currentEnergy: nextEnergy,
-        energyBankBalance: nextBank,
-        currentCombo: (prev.currentCombo || 0) + 1,
-        currentStreak: (prev.currentStreak || 0) + 1
-      };
-    });
-
     setIsPressing(true);
     triggerHaptic(80); // successful tap vibration
 

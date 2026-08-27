@@ -637,6 +637,23 @@
     flex-wrap: wrap;
   }
 
+  .dashboardLayout {
+    gap: 16px;
+  }
+
+  .coreColumn {
+    order: -1;
+  }
+
+  .pedestalCard {
+    padding: 18px;
+    max-width: 360px;
+  }
+
+  .fragmentsCard {
+    display: none;
+  }
+
   .btnStart,
   .btnOutline {
     flex: 1 1 140px;

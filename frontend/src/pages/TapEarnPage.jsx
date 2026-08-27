@@ -694,7 +694,7 @@ export default function TapEarnPage() {
           </div>
 
           {/* User Progress Stats Card */}
-          <div className={styles.infoCard}>
+          <div className={`${styles.infoCard} ${styles.fragmentsCard}`}>
             <div className={styles.cardHeader}>
               <Activity size={16} className={styles.iconBlue} />
               <span className={styles.cardTitle}>SECURITY NODE LEVEL</span>
