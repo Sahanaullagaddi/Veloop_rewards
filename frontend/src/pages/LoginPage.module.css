@@ -47,12 +47,28 @@
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 800;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.eyebrow {
+  color: var(--accent-gold);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  margin-top: -12px;
 }
 
 .error {
@@ -188,6 +204,19 @@
   font-size: 11px;
   color: var(--text-secondary);
   line-height: 1.6;
+}
+
+.demoButton {
+  background: transparent;
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  font-size: 12px;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.demoButton:hover {
+  background: rgba(0, 112, 243, 0.12);
 }
 
 .demoCredits strong {

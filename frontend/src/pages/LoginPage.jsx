@@ -60,9 +60,13 @@ export default function LoginPage() {
           <span className={styles.tag}>Tap & Earn</span>
         </div>
         
+        <p className={styles.eyebrow}>Your simple rewards app</p>
         <h2 className={styles.title}>
-          {isRegistering ? 'Create Profile' : 'Authenticate Access'}
+          {isRegistering ? 'Create your account' : 'Tap to earn rewards'}
         </h2>
+        <p className={styles.subtitle}>
+          {isRegistering ? 'Create a profile and start tapping.' : 'Sign in to see your balance, energy, and rewards.'}
+        </p>
 
         {errorMessage && <div className={styles.error}>{errorMessage}</div>}
 
@@ -92,7 +96,7 @@ export default function LoginPage() {
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Processing...' : isRegistering ? 'Register & Initialize' : 'Login / Authorize'}
+            {loading ? 'Please wait...' : isRegistering ? 'Create account' : 'Sign in'}
           </button>
         </form>
 
@@ -131,9 +135,20 @@ export default function LoginPage() {
         </button>
 
         <div className={styles.demoCredits}>
-          <p><strong>Seeded Accounts for grading:</strong></p>
-          <p>neo / neo123 (player profile)</p>
-          <p>admin / admin123 (admin panel access)</p>
+          <p><strong>Try the demo</strong></p>
+          <p>Player account: neo / neo123</p>
+          <button
+            type="button"
+            className={styles.demoButton}
+            onClick={() => {
+              setUsername('neo');
+              setPassword('neo123');
+              setIsRegistering(false);
+              setErrorMessage('');
+            }}
+          >
+            Fill demo account
+          </button>
         </div>
       </div>
     </div>
