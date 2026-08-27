@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Zap } from 'lucide-react';
 import styles from './LoginPage.module.css';
 
 export default function LoginPage() {
@@ -54,7 +55,24 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
+      {/* Floating Background Elements */}
+      <div className={`${styles.coin} ${styles.coin1}`}>🪙</div>
+      <div className={`${styles.coin} ${styles.coin2}`}>💰</div>
+      <div className={`${styles.coin} ${styles.coin3}`}>🪙</div>
+      <div className={`${styles.coin} ${styles.coin4}`}>⚡</div>
+      <div className={`${styles.coin} ${styles.coin5}`}>🪙</div>
+      <div className={`${styles.coin} ${styles.coin6}`}>💰</div>
+
+      {/* Glowing background aura */}
+      <div className={styles.bgAura}></div>
+
       <div className={styles.card}>
+        <div className={styles.heroCoinWrapper}>
+          <div className={styles.heroCoin}>
+            <Zap className={styles.heroCoinIcon} size={28} />
+          </div>
+        </div>
+
         <div className={styles.logoSection}>
           <h1 className={styles.wordmark}>VELoop</h1>
           <span className={styles.tag}>Tap & Earn</span>
