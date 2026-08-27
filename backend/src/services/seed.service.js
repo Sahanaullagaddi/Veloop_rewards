@@ -91,6 +91,7 @@ async function runSeed() {
   const adminUser = new User({
     username: 'admin',
     password: hashPassword('admin123'),
+      isAdmin: true,
     level: 1,
     currentTapSeasonId: activeSeason._id
   });

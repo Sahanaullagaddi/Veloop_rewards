@@ -27,29 +27,40 @@ const DEFAULTS = {
   recharge_speed_cost_multiplier: 1.6,
   
   energy_bank_base_capacity: 500,
+  energy_bank_capacity_step: 250,
   energy_bank_purchase_cost: 200, // VE cost for bank upgrades (up to +2, level 2 and 3)
   energy_bank_regen_amount: 20,
   energy_bank_regen_interval_mins: 120, // +20/120min
+  daily_challenge_reward_tokens: 50,
+  league_rewards: [
+    { maxRank: 1, ve: 10000, sve: 0, tokens: 0, spins: 5, gems: 0 },
+    { maxRank: 2, ve: 5000, sve: 0, tokens: 0, spins: 3, gems: 0 },
+    { maxRank: 3, ve: 1500, sve: 0, tokens: 0, spins: 1, gems: 0 },
+    { maxRank: 10, ve: 500, sve: 0, tokens: 2500, spins: 0, gems: 0 },
+    { maxRank: 25, ve: 0, sve: 5000, tokens: 1000, spins: 0, gems: 0 },
+    { maxRank: 50, ve: 0, sve: 2500, tokens: 0, spins: 0, gems: 10 },
+    { maxRank: 100, ve: 0, sve: 1000, tokens: 500, spins: 0, gems: 0 }
+  ],
   
   energy_shield_cost_ve: 100,
   energy_shield_duration_secs: 30,
   energy_shield_protection_rate: 0.90, // 90% protection
   energy_shield_cooldown_mins: 5,
   
-  multitap_x2_cost_ve: 50,
-  multitap_x3_cost_ve: 100,
+  multitap_x2_cost_ve: 1000,
+  multitap_x3_cost_ve: 1300,
   
   efficiency_level_1_cost_sve: 10,
   efficiency_level_2_cost_sve: 25,
   efficiency_level_3_cost_sve: 50,
   efficiency_multipliers: [1.0, 1.1, 1.2, 1.3],
   
-  mystery_tap_chance: 0.10, // 10% chance for test satisfaction
-  mystery_tap_interval: 25, // every 25 effective taps (down from 250)
+  mystery_tap_chance: 0.005,
+  mystery_tap_interval: 250,
   mystery_tap_sve_reward: 5.0,
   
-  lucky_tap_interval: 30, // eligible at 30 accepted taps (down from 300)
-  daily_challenge_target: 100, // eligible at 100 accepted taps (down from 1000)
+  lucky_tap_interval: 300,
+  daily_challenge_target: 1000,
 };
 
 let cache = {};
@@ -93,6 +104,17 @@ async function update(key, newValue, adminId, reason) {
   }
 
   const doc = await TapEconomyConfig.findOne({ key });
+  const probabilityKeys = ['sve_prob', 've_prob', 'spin_prob', 'gems_prob', 'tokens_prob'];
+  if (probabilityKeys.includes(key)) {
+    const values = Object.fromEntries(probabilityKeys.map(probabilityKey => [
+      probabilityKey,
+      probabilityKey === key ? parseFloat(newValue) : parseFloat(get(probabilityKey))
+    ]));
+    const sum = Object.values(values).reduce((total, value) => total + value, 0);
+    if (Math.abs(sum - 1.0) > 0.0001) {
+      throw new Error(`Probability sum is ${sum}, must sum to exactly 1.0`);
+    }
+  }
   const oldValue = doc ? doc.value : null;
 
   if (doc) {
@@ -119,19 +141,6 @@ async function update(key, newValue, adminId, reason) {
 
   // Update in-memory cache
   cache[key] = newValue;
-
-  // Re-verify that probabilities sum to 1.0 (or very close)
-  if (['sve_prob', 've_prob', 'spin_prob', 'gems_prob', 'tokens_prob'].includes(key)) {
-    const sum = 
-      parseFloat(get('sve_prob')) +
-      parseFloat(get('ve_prob')) +
-      parseFloat(get('spin_prob')) +
-      parseFloat(get('gems_prob')) +
-      parseFloat(get('tokens_prob'));
-    if (Math.abs(sum - 1.0) > 0.0001) {
-      throw new Error(`Warning: Probability sum is ${sum}, must sum to exactly 1.0`);
-    }
-  }
 
   return newValue;
 }

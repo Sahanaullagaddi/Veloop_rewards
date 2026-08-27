@@ -10,7 +10,6 @@ const RewardLedgerSchema = new mongoose.Schema({
   requestId: {
     type: String,
     required: true,
-    unique: true,
     index: true
   },
   type: {
@@ -37,5 +36,7 @@ const RewardLedgerSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed
   }
 });
+
+RewardLedgerSchema.index({ userId: 1, requestId: 1 }, { unique: true });
 
 module.exports = mongoose.model('RewardLedger', RewardLedgerSchema);

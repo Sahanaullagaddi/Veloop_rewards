@@ -32,8 +32,9 @@ function getRechargeIntervalMs(level) {
 }
 
 function getEnergyBankCapacity(level) {
-  // level 1: 500, level 2: 750, level 3: 1000
-  return 500 + (level - 1) * 250;
+  const base = ConfigService.get('energy_bank_base_capacity');
+  const step = ConfigService.get('energy_bank_capacity_step');
+  return base + (level - 1) * step;
 }
 
 function getEfficiencyMultiplier(level) {
@@ -84,11 +85,11 @@ function calculateRegen(tapState, now, isPremium = false) {
 }
 
 // Process physical tap
-async function processTap({ userId, requestId, timestamp }) {
-  const now = timestamp ? new Date(timestamp) : new Date();
+async function processTap({ userId, requestId }) {
+  const now = new Date();
 
   // 1. Idempotency Check
-  const existingLedger = await RewardLedger.findOne({ requestId });
+  const existingLedger = await RewardLedger.findOne({ userId, requestId });
   if (existingLedger) {
     // Return cached event details
     const event = await TapEvent.findOne({ requestId });

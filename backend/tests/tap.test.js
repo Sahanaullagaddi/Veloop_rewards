@@ -99,11 +99,10 @@ describe('Auth & Tap Module Integration Tests', () => {
 
   test('POST /api/tap - first tap should succeed', async () => {
     const requestId = `test-tap-1-${Date.now()}`;
-    const timestamp = new Date(baseTime).toISOString();
     const res = await request(app)
       .post('/api/tap')
       .set('Authorization', `Bearer ${token}`)
-      .send({ requestId, timestamp });
+      .send({ requestId });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.success).toBe(true);
@@ -113,12 +112,14 @@ describe('Auth & Tap Module Integration Tests', () => {
 
   test('POST /api/tap - consecutive tap under 200ms should trigger rate limit (429 Too Fast)', async () => {
     const requestId = `test-tap-2-${Date.now()}`;
-    // Explicitly send a timestamp only 10ms after the first tap to guarantee triggering rate limiter
-    const timestamp = new Date(baseTime + 10).toISOString();
+    await TapState.updateOne(
+      { userId },
+      { lastTapTime: new Date() }
+    );
     const res = await request(app)
       .post('/api/tap')
       .set('Authorization', `Bearer ${token}`)
-      .send({ requestId, timestamp });
+      .send({ requestId });
 
     expect(res.statusCode).toEqual(429);
     expect(res.body.success).toBe(false);
@@ -127,6 +128,11 @@ describe('Auth & Tap Module Integration Tests', () => {
 
   test('POST /api/tap - same requestId should return cached result (Idempotency)', async () => {
     const requestId = `test-tap-idempotency-${Date.now()}`;
+
+    await TapState.updateOne(
+      { userId },
+      { lastTapTime: new Date(0) }
+    );
     
     // First call
     const res1 = await request(app)
@@ -148,6 +154,27 @@ describe('Auth & Tap Module Integration Tests', () => {
     expect(res2.body.duplicate).toBe(true);
     expect(res2.body.rewardType).toEqual(res1.body.rewardType);
     expect(res2.body.rewardAmount).toEqual(res1.body.rewardAmount);
+  });
+
+  test('GET /api/admin/tap-economy/config rejects non-admin users', async () => {
+    const res = await request(app)
+      .get('/api/admin/tap-economy/config')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(403);
+    expect(res.body.message).toEqual('Admin access required');
+  });
+
+  test('GET /api/tap/state returns the authenticated user state', async () => {
+    const res = await request(app)
+      .get('/api/tap/state')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.tapState.currentEnergy).toBeDefined();
+    expect(res.body.tapState.energyCapacity).toBeDefined();
+    expect(res.body.user.password).toBeUndefined();
   });
 
   test('POST /api/tap/upgrade - should purchase energy capacity upgrade atomically', async () => {

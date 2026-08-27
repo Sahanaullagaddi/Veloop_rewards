@@ -16,7 +16,6 @@ const TapEventSchema = new mongoose.Schema({
   requestId: {
     type: String,
     required: true,
-    unique: true,
     index: true
   },
   timestamp: {
@@ -57,5 +56,6 @@ const TapEventSchema = new mongoose.Schema({
 // Index for query performance by user/season and time
 TapEventSchema.index({ userId: 1, timestamp: -1 });
 TapEventSchema.index({ seasonId: 1, timestamp: -1 });
+TapEventSchema.index({ userId: 1, requestId: 1 }, { unique: true });
 
 module.exports = mongoose.model('TapEvent', TapEventSchema);

@@ -105,7 +105,6 @@ export function SocketProvider({ children }) {
           subscriptionExpiry: data.user.subscriptionExpiry || null
         });
 
-        // Trigger loading of full state details
         refreshTapState();
       } else {
         logout();
@@ -119,40 +118,33 @@ export function SocketProvider({ children }) {
   const refreshTapState = async () => {
     if (!token) return;
     try {
-      const res = await fetch(`${SOCKET_URL}/api/tap/lucky`, {
+      const res = await fetch(`${SOCKET_URL}/api/tap/state`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
       if (data.success) {
-        // Find user tap state from admin preview (convenient way to fetch dynamic fields)
-        const previewRes = await fetch(`${SOCKET_URL}/api/admin/tap-economy/users/${user.id}/preview`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const state = data.tapState;
+        setLiveState(prev => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            currentEnergy: state.currentEnergy,
+            energyCapacity: state.energyCapacity,
+            energyCapacityLevel: state.energyCapacityLevel,
+            rechargeSpeedLevel: state.rechargeSpeedLevel,
+            energyBankLevel: state.energyBankLevel,
+            energyBankBalance: state.energyBankBalance,
+            energyBankCapacity: state.energyBankCapacity,
+            tapEfficiencyLevel: state.tapEfficiencyLevel,
+            currentStreak: state.currentStreak,
+            bestStreak: state.bestStreak,
+            currentCombo: state.currentCombo,
+            totalAcceptedTaps: state.totalAcceptedTaps,
+            activeBoostExpiry: state.activeBoostExpiry,
+            activeShieldExpiry: state.activeShieldExpiry,
+            shieldCooldownExpiry: state.shieldCooldownExpiry
+          };
         });
-        const previewData = await previewRes.json();
-        if (previewData.success) {
-          const state = previewData.tapState;
-          setLiveState(prev => {
-            if (!prev) return null;
-            return {
-              ...prev,
-              currentEnergy: state.currentEnergy,
-              energyCapacity: 500 + (state.energyCapacityLevel - 1) * 100,
-              energyCapacityLevel: state.energyCapacityLevel,
-              rechargeSpeedLevel: state.rechargeSpeedLevel,
-              energyBankLevel: state.energyBankLevel,
-              energyBankBalance: state.energyBankBalance,
-              energyBankCapacity: 500 + (state.energyBankLevel - 1) * 250,
-              tapEfficiencyLevel: state.tapEfficiencyLevel,
-              currentStreak: state.currentStreak,
-              bestStreak: state.bestStreak,
-              currentCombo: state.currentCombo,
-              totalAcceptedTaps: state.totalAcceptedTaps,
-              activeBoostExpiry: state.activeBoostExpiry,
-              activeShieldExpiry: state.activeShieldExpiry,
-              shieldCooldownExpiry: state.shieldCooldownExpiry
-            };
-          });
-        }
       }
     } catch (err) {
       console.error(err);

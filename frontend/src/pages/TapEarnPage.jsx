@@ -62,7 +62,7 @@ export default function TapEarnPage() {
 
   const fetchStakingVaults = async () => {
     try {
-      const res = await fetch('${API_URL}/api/tap/staking/active', {
+      const res = await fetch(`${API_URL}/api/tap/staking/active`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -82,7 +82,7 @@ export default function TapEarnPage() {
     }
 
     try {
-      const res = await fetch('${API_URL}/api/tap/staking/lock', {
+      const res = await fetch(`${API_URL}/api/tap/staking/lock`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ export default function TapEarnPage() {
 
   const handlePurchaseSubscription = async (planType) => {
     try {
-      const res = await fetch('${API_URL}/api/tap/subscription/purchase', {
+      const res = await fetch(`${API_URL}/api/tap/subscription/purchase`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,7 +184,7 @@ export default function TapEarnPage() {
     setPaying(true);
     setTimeout(async () => {
       try {
-        const res = await fetch('${API_URL}/api/tap/subscription/purchase', {
+        const res = await fetch(`${API_URL}/api/tap/subscription/purchase`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -247,7 +247,7 @@ export default function TapEarnPage() {
     const outcome = userWon ? 'victory' : 'defeat';
 
     try {
-      const res = await fetch('${API_URL}/api/tap/pvp/resolve', {
+      const res = await fetch(`${API_URL}/api/tap/pvp/resolve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -402,7 +402,7 @@ export default function TapEarnPage() {
 
   const checkLuckyEligibility = async () => {
     try {
-      const res = await fetch('${API_URL}/api/tap/lucky', {
+      const res = await fetch(`${API_URL}/api/tap/lucky`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -417,7 +417,7 @@ export default function TapEarnPage() {
 
   const handleActivateBoost = async () => {
     try {
-      const res = await fetch('${API_URL}/api/tap/boost/activate', {
+      const res = await fetch(`${API_URL}/api/tap/boost/activate`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -435,7 +435,7 @@ export default function TapEarnPage() {
 
   const handleClaimDailyChallenge = async () => {
     try {
-      const res = await fetch('${API_URL}/api/tap/daily-challenge/claim', {
+      const res = await fetch(`${API_URL}/api/tap/daily-challenge/claim`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -457,7 +457,7 @@ export default function TapEarnPage() {
 
   const handleBuyUpgrade = async (type) => {
     try {
-      const res = await fetch('${API_URL}/api/tap/upgrade', {
+      const res = await fetch(`${API_URL}/api/tap/upgrade`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -479,7 +479,7 @@ export default function TapEarnPage() {
 
   const handleBuyShield = async () => {
     try {
-      const res = await fetch('${API_URL}/api/tap/shield/purchase', {
+      const res = await fetch(`${API_URL}/api/tap/shield/purchase`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -509,7 +509,7 @@ export default function TapEarnPage() {
     }
 
     try {
-      const res = await fetch('${API_URL}/api/tap/fragments/convert', {
+      const res = await fetch(`${API_URL}/api/tap/fragments/convert`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -536,7 +536,7 @@ export default function TapEarnPage() {
   const openMissionsModal = async () => {
     setShowMissions(true);
     try {
-      const res = await fetch('${API_URL}/api/tap/missions', {
+      const res = await fetch(`${API_URL}/api/tap/missions`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -565,7 +565,7 @@ export default function TapEarnPage() {
           gemBalance: data.userBalances.gemBalance,
           spinBalance: data.userBalances.spinBalance
         }));
-        const listRes = await fetch('${API_URL}/api/tap/missions', {
+        const listRes = await fetch(`${API_URL}/api/tap/missions`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const listData = await listRes.json();
@@ -587,7 +587,7 @@ export default function TapEarnPage() {
 
     const reqId = `spin-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     try {
-      const res = await fetch('${API_URL}/api/tap/lucky/spin', {
+      const res = await fetch(`${API_URL}/api/tap/lucky/spin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

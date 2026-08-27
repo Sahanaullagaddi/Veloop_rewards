@@ -26,7 +26,7 @@ function toDecimal128(val) {
 
 // 1. POST /api/tap
 router.post('/', auth, async (req, res) => {
-  const { requestId, timestamp } = req.body;
+  const { requestId } = req.body;
   if (!requestId) {
     return res.status(400).json({ success: false, message: 'requestId is required' });
   }
@@ -35,7 +35,6 @@ router.post('/', auth, async (req, res) => {
     const result = await TapEconomyService.processTap({
       userId: req.user.id,
       requestId,
-      timestamp
     });
     res.json(result);
   } catch (err) {
@@ -84,6 +83,40 @@ router.get('/history', auth, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error fetching history' });
+  }
+});
+
+// 2. GET /api/tap/state
+router.get('/state', auth, async (req, res) => {
+  try {
+    const [user, tapState, activeSeason] = await Promise.all([
+      User.findById(req.user.id).select('-password'),
+      TapState.findOne({ userId: req.user.id }),
+      TapSeason.findOne({ status: 'active' })
+    ]);
+
+    if (!user || !tapState) {
+      return res.status(404).json({ success: false, message: 'Tap state not found' });
+    }
+
+    const energyCapacity = ConfigService.get('energy_capacity_base') +
+      (tapState.energyCapacityLevel - 1) * ConfigService.get('energy_capacity_step');
+    const energyBankCapacity = ConfigService.get('energy_bank_base_capacity') +
+      (tapState.energyBankLevel - 1) * ConfigService.get('energy_bank_capacity_step');
+
+    res.json({
+      success: true,
+      user,
+      tapState: {
+        ...tapState.toObject(),
+        energyCapacity,
+        energyBankCapacity
+      },
+      activeSeason
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error fetching tap state' });
   }
 });
 
@@ -476,14 +509,14 @@ router.get('/daily-challenge', auth, async (req, res) => {
       timestamp: { $gte: startOfDay }
     });
 
-    const target = ConfigService.get('daily_challenge_target') || 100;
+    const target = ConfigService.get('daily_challenge_target') || 1000;
 
     res.json({
       success: true,
       progress: effectiveTapsToday,
       target,
       claimed: !!claimed,
-      rewardAmount: 50,
+      rewardAmount: ConfigService.get('daily_challenge_reward_tokens'),
       rewardType: 'Token'
     });
   } catch (err) {
@@ -497,13 +530,13 @@ router.post('/daily-challenge/claim', auth, async (req, res) => {
   const userId = req.user.id;
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
-  const rewardAmount = 50;
+  const rewardAmount = ConfigService.get('daily_challenge_reward_tokens');
 
   try {
     const events = await TapEvent.find({ userId, timestamp: { $gte: startOfDay } });
     const effectiveTapsToday = events.reduce((sum, item) => sum + item.effectiveTaps, 0);
 
-    const target = ConfigService.get('daily_challenge_target') || 100;
+    const target = ConfigService.get('daily_challenge_target') || 1000;
 
     if (effectiveTapsToday < target) {
       return res.status(400).json({ success: false, message: `Daily challenge target of ${target} effective taps not met` });

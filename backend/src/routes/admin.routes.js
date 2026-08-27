@@ -10,8 +10,15 @@ const auth = require('../middleware/auth');
 const ConfigService = require('../services/config.service');
 const SeasonService = require('../services/season.service');
 
-// All admin routes are protected by JWT auth
+// All admin routes require an authenticated administrator.
 router.use(auth);
+router.use(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('isAdmin');
+  if (!user || !user.isAdmin) {
+    return res.status(403).json({ success: false, message: 'Admin access required' });
+  }
+  next();
+});
 
 // 1. GET /api/admin/tap-economy/config
 router.get('/config', async (req, res) => {

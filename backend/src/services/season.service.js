@@ -6,6 +6,7 @@ const RewardLedger = require('../models/rewardLedger.model');
 const Notification = require('../models/notification.model');
 const ConfigAudit = require('../models/configAudit.model');
 const mongoose = require('mongoose');
+const ConfigService = require('./config.service');
 
 // Helper to cast double value safely to Decimal128
 function toDecimal128(val) {
@@ -19,18 +20,9 @@ function toDecimal128(val) {
 // Rank 11-50: 100 VE
 // Rank 51-100: 50 VE
 function getLeagueRewards(rank) {
-  if (rank === 1) {
-    return { VE: 1000, SVE: 100 };
-  } else if (rank <= 3) {
-    return { VE: 500, SVE: 50 };
-  } else if (rank <= 10) {
-    return { VE: 200, SVE: 20 };
-  } else if (rank <= 50) {
-    return { VE: 100, SVE: 0 };
-  } else if (rank <= 100) {
-    return { VE: 50, SVE: 0 };
-  }
-  return null;
+  const tier = ConfigService.get('league_rewards').find(reward => rank <= reward.maxRank);
+  if (!tier) return null;
+  return { VE: tier.ve, SVE: tier.sve, Token: tier.tokens, Spin: tier.spins, Gem: tier.gems };
 }
 
 async function triggerSeasonRollover(adminId, reason = 'Scheduled season rollover') {
@@ -64,30 +56,22 @@ async function triggerSeasonRollover(adminId, reason = 'Scheduled season rollove
       const updates = {};
       const requestIdBase = `season-${activeSeason._id}-rank-${rank}`;
 
-      if (rewards.VE > 0) {
-        updates.veBalance = toDecimal128(rewards.VE);
-        await RewardLedger.create({
-          userId: item.userId._id,
-          requestId: `${requestIdBase}-ve`,
-          type: 'season_reward',
-          amount: toDecimal128(rewards.VE),
-          currency: 'VE',
-          timestamp: new Date(),
-          details: { rank, seasonName: activeSeason.name }
-        });
-      }
-
-      if (rewards.SVE > 0) {
-        updates.sveBalance = toDecimal128(rewards.SVE);
-        await RewardLedger.create({
-          userId: item.userId._id,
-          requestId: `${requestIdBase}-sve`,
-          type: 'season_reward',
-          amount: toDecimal128(rewards.SVE),
-          currency: 'SVE',
-          timestamp: new Date(),
-          details: { rank, seasonName: activeSeason.name }
-        });
+      const rewardFields = { VE: 'veBalance', SVE: 'sveBalance', Token: 'tokenBalance', Gem: 'gemBalance', Spin: 'spinBalance' };
+      for (const [currency, amount] of Object.entries(rewards)) {
+        if (currency === 'VE' || currency === 'SVE' || currency === 'Token' || currency === 'Gem' || currency === 'Spin') {
+          if (amount > 0) {
+            updates[rewardFields[currency]] = currency === 'Spin' ? amount : toDecimal128(amount);
+            await RewardLedger.create({
+              userId: item.userId._id,
+              requestId: `${requestIdBase}-${currency.toLowerCase()}`,
+              type: 'season_reward',
+              amount: toDecimal128(amount),
+              currency,
+              timestamp: new Date(),
+              details: { rank, seasonName: activeSeason.name }
+            });
+          }
+        }
       }
 
       if (Object.keys(updates).length > 0) {
