@@ -40,6 +40,11 @@ async function bootstrap() {
   await ConfigService.initializeConfig();
   console.log('Economy configurations initialized');
 
+  // Force set lucky_tap_interval to 10 for easier spins
+  const TapEconomyConfig = require('./models/tapEconomyConfig.model');
+  await TapEconomyConfig.findOneAndUpdate({ key: 'lucky_tap_interval' }, { value: 10 });
+  console.log('lucky_tap_interval configuration updated to 10 in database');
+
   // Verify active season
   const activeSeason = await TapSeason.findOne({ status: 'active' });
   if (!activeSeason) {

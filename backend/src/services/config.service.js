@@ -59,7 +59,7 @@ const DEFAULTS = {
   mystery_tap_interval: 250,
   mystery_tap_sve_reward: 5.0,
   
-  lucky_tap_interval: 300,
+  lucky_tap_interval: 10,
   daily_challenge_target: 1000,
 };
 

@@ -834,7 +834,7 @@ export default function TapEarnPage() {
           </div>
           <div>
             <h4>Lucky Spin</h4>
-            <p>{luckyEligible ? 'Ready to Spin!' : '30 Tap Target'}</p>
+            <p>{luckyEligible ? 'Ready to Spin!' : '10 Tap Target'}</p>
           </div>
         </div>
 
@@ -1184,26 +1184,26 @@ export default function TapEarnPage() {
                   className={styles.wheel} 
                   style={{ transform: `rotate(${spinDeg}deg)`, transition: spinning ? 'transform 5s cubic-bezier(0.1, 0.8, 0.1, 1)' : 'none' }}
                 >
-                  <div className={`${styles.segment} ${styles.seg0}`}>10 VE</div>
-                  <div className={`${styles.segment} ${styles.seg1}`}>50 VE</div>
-                  <div className={`${styles.segment} ${styles.seg2}`}>5 SVE</div>
-                  <div className={`${styles.segment} ${styles.seg3}`}>10 Gem</div>
-                  <div className={`${styles.segment} ${styles.seg4}`}>100t</div>
-                  <div className={`${styles.segment} ${styles.seg5}`}>500t</div>
+                  <div className={`${styles.segment} ${styles.seg0}`}>10 VE (Rs. 10)</div>
+                  <div className={`${styles.segment} ${styles.seg1}`}>50 VE (Rs. 50)</div>
+                  <div className={`${styles.segment} ${styles.seg2}`}>5 SVE (Rs. 10)</div>
+                  <div className={`${styles.segment} ${styles.seg3}`}>10 Gem (Rs. 100)</div>
+                  <div className={`${styles.segment} ${styles.seg4}`}>100 Tok (Rs. 50)</div>
+                  <div className={`${styles.segment} ${styles.seg5}`}>500 Tok (Rs. 250)</div>
                 </div>
                 <div className={styles.wheelPin} />
               </div>
 
               {spinReward && (
                 <div className={styles.spinRewardNotice}>
-                  Won: <strong className="gold-text">+{spinReward.rewardAmount} {spinReward.rewardType}</strong>!
+                  Won: <strong className="gold-text">+{spinReward.rewardAmount} {spinReward.rewardType} (Rs. {spinReward.rewardType === 'VE' ? spinReward.rewardAmount : spinReward.rewardType === 'SVE' ? spinReward.rewardAmount * 2 : spinReward.rewardType === 'Gem' ? spinReward.rewardAmount * 10 : spinReward.rewardAmount * 0.5})</strong>!
                 </div>
               )}
 
               <div className={styles.eligibilityText}>
                 {luckyEligible 
                   ? 'Eligible for Lucky Spin!' 
-                  : `Next Spin in ${luckyDetails ? luckyDetails.nextIn : 30} taps.`
+                  : `Next Spin in ${luckyDetails ? luckyDetails.nextIn : 10} taps.`
                 }
               </div>
 
@@ -1214,6 +1214,26 @@ export default function TapEarnPage() {
               >
                 {spinning ? 'Spinning...' : 'Spin Wheel'}
               </button>
+
+              <div style={{
+                marginTop: '15px',
+                padding: '12px',
+                background: '#1a1a2e',
+                borderRadius: '8px',
+                border: '1px solid #333',
+                fontSize: '13px',
+                textAlign: 'left'
+              }}>
+                <h4 style={{ margin: '0 0 8px 0', color: '#ffd700', fontSize: '14px', borderBottom: '1px solid #333', paddingBottom: '4px' }}>
+                  Your Live Balances (Rs. Value)
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <div>VE: <strong>{parseFloat(liveState.veBalance || 0).toFixed(1)}</strong> (Rs. {parseFloat(liveState.veBalance || 0).toFixed(1)})</div>
+                  <div>SVE: <strong>{parseFloat(liveState.sveBalance || 0).toFixed(1)}</strong> (Rs. {(parseFloat(liveState.sveBalance || 0) * 2).toFixed(1)})</div>
+                  <div>Gems: <strong>{parseFloat(liveState.gemBalance || 0).toFixed(1)}</strong> (Rs. {(parseFloat(liveState.gemBalance || 0) * 10).toFixed(1)})</div>
+                  <div>Tokens: <strong>{parseFloat(liveState.tokenBalance || 0).toFixed(1)}</strong> (Rs. {(parseFloat(liveState.tokenBalance || 0) * 0.5).toFixed(1)})</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

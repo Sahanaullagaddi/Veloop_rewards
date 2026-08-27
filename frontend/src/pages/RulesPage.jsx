@@ -78,7 +78,7 @@ export default function RulesPage() {
         </p>
 
         <ul className={styles.bullets}>
-          <li><strong>Spin Requirement:</strong> Accumulate exactly <strong>30 accepted taps</strong> to earn <strong>1 Lucky Spin</strong> (obtained for free via tapping).</li>
+          <li><strong>Spin Requirement:</strong> Accumulate exactly <strong>10 accepted taps</strong> to earn <strong>1 Lucky Spin</strong> (obtained for free via tapping).</li>
           <li><strong>Asset Payouts:</strong> Spins roll authoritatively on the server and award VE, SVE, Gems, or Tokens.</li>
           <li><strong>Instant Settlement:</strong> Immediately after spinning, the won reward is atomically credited. Your wallet balance is updated on screen in real-time.</li>
         </ul>

@@ -700,6 +700,18 @@ router.post('/lucky/spin', auth, async (req, res) => {
       timestamp: new Date()
     });
 
+    // Emit WebSocket update for real-time balance
+    const io = getIO();
+    if (io) {
+      io.to(req.user.id.toString()).emit('stateUpdate', {
+        veBalance: updatedUser.veBalance.toString(),
+        sveBalance: updatedUser.sveBalance.toString(),
+        tokenBalance: updatedUser.tokenBalance.toString(),
+        gemBalance: updatedUser.gemBalance.toString(),
+        spinBalance: updatedUser.spinBalance
+      });
+    }
+
     res.json({
       success: true,
       rewardType,
