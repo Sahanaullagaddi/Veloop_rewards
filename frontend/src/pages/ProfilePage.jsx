@@ -2,12 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
-import { Award, Calendar, ChevronLeft, User, ShieldCheck } from 'lucide-react';
+import { Award, Calendar, ChevronLeft, User, ShieldCheck, LogOut, Settings } from 'lucide-react';
 import styles from './ProfilePage.module.css';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { liveState } = useSocket();
 
   if (!user || !liveState) return <div className="loading-screen">Loading Profile...</div>;
@@ -24,10 +24,15 @@ export default function ProfilePage() {
 
   return (
     <div className="content-container">
-      {/* Back button */}
-      <button onClick={() => navigate('/')} className={styles.btnBack}>
-        <ChevronLeft size={16} /> Back to Dashboard
-      </button>
+      {/* Navigation Header Row */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+        <button onClick={() => navigate('/')} className={styles.btnBack} style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', background: 'transparent', border: '1px solid #1a1a2e', borderRadius: '15px', color: '#888', cursor: 'pointer' }}>
+          <ChevronLeft size={16} /> Back to Dashboard
+        </button>
+        <button onClick={() => navigate('/settings')} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'transparent', border: '1px solid #1a1a2e', borderRadius: '15px', color: '#888', cursor: 'pointer' }}>
+          <Settings size={14} /> Settings
+        </button>
+      </div>
 
       <div className={styles.profileHeader}>
         <div className={styles.largeAvatar}>
@@ -85,6 +90,33 @@ export default function ProfilePage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Logout Action */}
+      <div style={{ marginTop: '30px', padding: '0 10px' }}>
+        <button 
+          onClick={logout} 
+          style={{
+            width: '100%',
+            backgroundColor: '#ff3333',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '12px',
+            fontWeight: '800',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            boxShadow: '0 4px 15px rgba(255, 51, 51, 0.2)'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e62e2e'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ff3333'}
+        >
+          <LogOut size={16} /> Close Session & Logout
+        </button>
       </div>
     </div>
   );
