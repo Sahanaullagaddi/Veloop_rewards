@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
-import { Award, Calendar, ChevronLeft, User, ShieldCheck, LogOut, Settings } from 'lucide-react';
+import { Award, Calendar, ChevronLeft, User, ShieldCheck, LogOut, Settings, ChevronRight, BookOpen } from 'lucide-react';
 import styles from './ProfilePage.module.css';
 
 export default function ProfilePage() {
@@ -118,6 +118,18 @@ export default function ProfilePage() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Rules & Mechanics Sub-navigation Card */}
+        <div className={styles.rulesCard} onClick={() => navigate('/rules')}>
+          <div className={styles.rulesCardContent}>
+            <BookOpen size={18} className={styles.iconBlue} />
+            <div>
+              <h4 className={styles.rulesCardTitle}>Rules & Game Mechanics</h4>
+              <p className={styles.rulesCardDesc}>Read details on anti-abuse limits, multipliers, and payouts.</p>
+            </div>
+          </div>
+          <ChevronRight size={18} className={styles.rulesCardArrow} />
         </div>
 
         {/* Logout Action */}

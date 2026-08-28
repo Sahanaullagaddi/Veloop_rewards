@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Zap, Wallet, Trophy, Users, BookOpen, ShieldAlert } from 'lucide-react';
+import { Zap, Wallet, Trophy, Users, User, ShieldAlert } from 'lucide-react';
 import styles from './BottomNavigation.module.css';
 
 export default function BottomNavigation() {
@@ -48,11 +48,11 @@ export default function BottomNavigation() {
       </button>
 
       <button 
-        onClick={() => navigate('/rules')} 
-        className={`${styles.navItem} ${isActive('/rules') ? styles.active : ''}`}
+        onClick={() => navigate('/profile')} 
+        className={`${styles.navItem} ${isActive('/profile') ? styles.active : ''}`}
       >
-        <BookOpen size={20} />
-        <span>Rules</span>
+        <User size={20} />
+        <span>Profile</span>
       </button>
 
       {user.isAdmin && (
