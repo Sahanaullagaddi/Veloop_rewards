@@ -369,3 +369,25 @@
   font-weight: 700;
 }
 
+.mobileContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  gap: 16px;
+  padding: 8px 14px 80px 14px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.walletHeader,
+.gridCard,
+.card,
+.section {
+  user-select: none;
+  -webkit-user-select: none;
+}
+

@@ -56,19 +56,14 @@ export default function RulesPage() {
 
   return (
     <div className="content-container">
-      {/* Back button */}
-      <button onClick={() => navigate('/')} className={styles.btnBack}>
-        <ChevronLeft size={16} /> Back to Dashboard
-      </button>
+      <div className={styles.mobileContainer}>
+        <div className={styles.rulesHeader}>
+          <BookOpen className={styles.iconBlue} size={24} />
+          <h2>Rules & Mechanics</h2>
+        </div>
+        <p className={styles.subtitle}>Review the server-authoritative logic governing rewards, limits, and assets.</p>
 
-      <div className={styles.rulesHeader}>
-        <BookOpen className={styles.iconBlue} size={28} />
-        <h2>VELoop Rules & Mechanics</h2>
-      </div>
-      <p className={styles.subtitle}>Review the server-authoritative logic governing rewards, limits, and assets.</p>
-
-      {/* Section 1: Lucky Spin */}
-      <div className={styles.card}>
+        <div className={styles.card}>
         <div className={styles.cardHeader}>
           <Gift className={styles.iconGold} size={20} />
           <h3>Lucky Spin Wheel Rules</h3>
@@ -191,7 +186,7 @@ export default function RulesPage() {
           *Rank ties are resolved deterministically: the player who achieved the score first holds the higher placement rank.
         </p>
       </div>
-
+      </div>
     </div>
   );
 }

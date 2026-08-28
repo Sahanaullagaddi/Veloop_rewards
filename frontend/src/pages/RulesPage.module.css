@@ -240,3 +240,30 @@
 
 .iconGold { color: var(--accent-gold); }
 .iconBlue { color: var(--accent-blue); }
+
+.mobileContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  gap: 16px;
+  padding: 8px 14px 80px 14px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(22, 24, 39, 0.6) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+}

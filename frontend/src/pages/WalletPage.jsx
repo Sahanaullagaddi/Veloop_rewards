@@ -163,12 +163,8 @@ export default function WalletPage() {
 
   return (
     <div className="content-container">
-      {/* Back button */}
-      <button onClick={() => navigate('/')} className={styles.btnBack}>
-        <ChevronLeft size={16} /> Back to Dashboard
-      </button>
-
-      {/* Main Wallet Header */}
+      <div className={styles.mobileContainer}>
+        {/* Main Wallet Header */}
       <div className={styles.walletHeader}>
         <div className={styles.row}>
           <div className={styles.titleInfo}>
@@ -375,6 +371,7 @@ export default function WalletPage() {
         </div>
       )}
 
+      </div>
     </div>
   );
 }
