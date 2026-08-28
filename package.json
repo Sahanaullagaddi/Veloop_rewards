@@ -5,8 +5,7 @@
   "main": "backend/src/server.js",
   "scripts": {
     "start": "node backend/src/server.js",
-    "prebuild": "npm install --prefix frontend",
-    "build": "npm run build --prefix frontend"
+    "build": "node build-orchestrator.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
