@@ -55,6 +55,17 @@ export default function TapCircle() {
     // Let the AdProvider record a tap (may trigger ad opportunity)
     recordClientTap();
 
+    // Optimistically deduct energy on client-side
+    setLiveState(prev => {
+      if (!prev) return null;
+      if (prev.currentEnergy >= energyCost) {
+        return { ...prev, currentEnergy: prev.currentEnergy - energyCost };
+      } else if (prev.energyBankBalance >= energyCost) {
+        return { ...prev, energyBankBalance: prev.energyBankBalance - energyCost };
+      }
+      return prev;
+    });
+
     // Reconcile with Server
     const requestId = `tap-${now}-${Math.random().toString(36).substr(2, 9)}`;
     try {
@@ -74,7 +85,7 @@ export default function TapCircle() {
         const rewardDisplay = `+${data.rewardAmount} ${data.rewardType}`;
         setFloats(prev => prev.map(f => f.id === floatId ? { ...f, text: rewardDisplay, currency: data.rewardType } : f));
         
-        // Instant balance reconciliation
+        // Instant balance & energy reconciliation
         if (data.userBalances) {
           setLiveState(prev => {
             if (!prev) return null;
@@ -87,7 +98,9 @@ export default function TapCircle() {
               spinBalance: data.userBalances.spinBalance,
               fragmentBalance: data.userBalances.fragmentBalance,
               level: data.userBalances.level,
-              xp: data.userBalances.xp
+              xp: data.userBalances.xp,
+              currentEnergy: data.userBalances.currentEnergy !== undefined ? data.userBalances.currentEnergy : prev.currentEnergy,
+              energyBankBalance: data.userBalances.energyBankBalance !== undefined ? data.userBalances.energyBankBalance : prev.energyBankBalance
             };
           });
         }

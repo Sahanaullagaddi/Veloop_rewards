@@ -423,7 +423,9 @@ async function processTap({ userId, requestId }) {
       spinBalance: updatedUser.spinBalance,
       fragmentBalance: updatedUser.fragmentBalance.toString(),
       level: updatedUser.level,
-      xp: updatedUser.xp
+      xp: updatedUser.xp,
+      currentEnergy: lockedState.currentEnergy,
+      energyBankBalance: lockedState.energyBankBalance
     }
   };
 }
