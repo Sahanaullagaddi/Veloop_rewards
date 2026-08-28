@@ -18,17 +18,7 @@ export function AdProvider({ children }) {
 
   // Check if we hit the ad opportunity window
   const recordClientTap = () => {
-    setTapCount(prev => {
-      const next = prev + 1;
-      if (next >= opportunityWindow) {
-        // Trigger ad opportunity
-        setShowAdModal(true);
-        // Reset counters and roll next window
-        setOpportunityWindow(Math.floor(Math.random() * (40 - 15 + 1)) + 15);
-        return 0;
-      }
-      return next;
-    });
+    // Ad popup disabled completely by user request
   };
 
   const playAd = (type = 'video') => {
