@@ -1585,3 +1585,31 @@
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Centered Large Balance Display */
+.largeBalanceRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0 10px 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.largeCoinIcon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.5));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.largeBalanceText {
+  font-size: 38px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}

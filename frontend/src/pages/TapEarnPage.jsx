@@ -702,6 +702,19 @@ export default function TapEarnPage() {
           </div>
         </div>
 
+        {/* Large Balance Display (Hamster Kombat Style) */}
+        <div className={styles.largeBalanceRow}>
+          <img 
+            src="/gold_coin.jpg" 
+            alt="Gold Coin" 
+            className={styles.largeCoinIcon} 
+            draggable="false"
+          />
+          <span className={styles.largeBalanceText}>
+            {Number(liveState.veBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+          </span>
+        </div>
+
         {/* 2. Tapping Circle (Centered) */}
         <div className={styles.circlePedestal}>
           <div className={styles.pedestalHalo}>

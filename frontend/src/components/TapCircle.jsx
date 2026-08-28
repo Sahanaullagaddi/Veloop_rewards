@@ -179,7 +179,12 @@ export default function TapCircle() {
         }}
       >
         <div className={styles.innerCore}>
-          <span className={styles.tapSymbol}>VE</span>
+          <img 
+            src="/hamster_avatar.jpg" 
+            alt="Hamster Character" 
+            className={styles.hamsterImage}
+            draggable="false"
+          />
         </div>
 
         {/* Floating Coin Payout Animations */}

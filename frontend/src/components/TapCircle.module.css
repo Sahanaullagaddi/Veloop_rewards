@@ -127,3 +127,13 @@
   color: var(--accent-gold);
   text-shadow: 0 0 8px rgba(244, 196, 48, 0.8);
 }
+
+.hamsterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
