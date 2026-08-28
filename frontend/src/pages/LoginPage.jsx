@@ -152,22 +152,6 @@ export default function LoginPage() {
           {loading ? 'Connecting Google...' : 'Continue with Google'}
         </button>
 
-        <div className={styles.demoCredits}>
-          <p><strong>Try the demo</strong></p>
-          <p>Player account: neo / neo123</p>
-          <button
-            type="button"
-            className={styles.demoButton}
-            onClick={() => {
-              setUsername('neo');
-              setPassword('neo123');
-              setIsRegistering(false);
-              setErrorMessage('');
-            }}
-          >
-            Fill demo account
-          </button>
-        </div>
       </div>
     </div>
   );
