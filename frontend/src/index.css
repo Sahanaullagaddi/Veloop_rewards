@@ -268,3 +268,11 @@ button {
     padding-bottom: 75px;
   }
 }
+
+/* Hide Netlify collaboration drawer badge */
+netlify-drawer {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
