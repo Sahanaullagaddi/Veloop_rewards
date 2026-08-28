@@ -6,6 +6,12 @@
   position: relative;
   height: 280px;
   width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .feedback {
@@ -58,6 +64,9 @@
   transform: scale(0.94);
   border-color: var(--accent-blue);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Boosted Golden Pulse Glow */
@@ -98,8 +107,10 @@
 /* Floating Rewards Payout */
 .floatingCoin {
   position: absolute;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.5);
   transform: translate(-50%, -50%);
   pointer-events: none;
   animation: coinFloat 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;

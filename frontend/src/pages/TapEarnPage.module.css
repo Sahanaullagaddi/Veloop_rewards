@@ -1518,6 +1518,70 @@
     height: 14px;
   }
 }
+/* Hamster Kombat Style Energy / Boost Status Bar */
+.hamsterStatusBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 12px auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  padding: 0 10px;
+}
 
+.energyStats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
 
+.boltIcon {
+  font-size: 22px;
+  color: #ffd700;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+}
 
+.energyValueText {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.boostLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.boostLink:active {
+  transform: scale(0.95);
+}
+
+.rocketIcon {
+  font-size: 22px;
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+}
+
+.boostText {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Disable selection across core grids */
+.mobileContainer,
+.statCard,
+.actionCard {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}

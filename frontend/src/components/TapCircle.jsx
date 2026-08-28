@@ -33,8 +33,17 @@ export default function TapCircle() {
     lastTapRef.current = now;
 
     // 2. Client-side Energy Check
+    const isBoostActive = liveState.activeBoostExpiry && new Date(liveState.activeBoostExpiry) > now;
+    const boostMultiplier = isBoostActive ? 2 : 1;
     const shieldActive = liveState.activeShieldExpiry && new Date(liveState.activeShieldExpiry) > now;
-    const energyCost = shieldActive ? 1 : 1; // standard tap cost = 1 energy
+    
+    const multitapMultiplier = liveState.multitapLevel || 1;
+    const effectiveTaps = multitapMultiplier * boostMultiplier;
+    
+    let energyCost = effectiveTaps;
+    if (shieldActive) {
+      energyCost = Math.ceil(energyCost * 0.1); // 90% protection
+    }
     
     const hasEnergy = liveState.currentEnergy >= energyCost || liveState.energyBankBalance >= energyCost;
     if (!hasEnergy) {
@@ -49,6 +58,10 @@ export default function TapCircle() {
     const y = e.clientY ? e.clientY - rect.top : rect.height / 2;
 
     const floatId = `${now}-${Math.random()}`;
+    
+    // Add floating text immediately on client side (optimistic display)
+    setFloats(prev => [...prev, { id: floatId, x, y, text: `+${effectiveTaps}`, currency: 'VE' }]);
+    
     setIsPressing(true);
     triggerHaptic(80); // successful tap vibration
 

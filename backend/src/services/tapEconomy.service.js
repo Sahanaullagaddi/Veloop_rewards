@@ -131,10 +131,7 @@ async function processTap({ userId, requestId }) {
   }
 
   // 3. Multitap and Boost check
-  let multitapMultiplier = 1;
-  if (tapState.multitapExpiry && new Date(tapState.multitapExpiry) > now) {
-    multitapMultiplier = tapState.multitapLevel;
-  }
+  const multitapMultiplier = tapState.multitapLevel || 1;
 
   const isBoostActive = tapState.activeBoostExpiry && new Date(tapState.activeBoostExpiry) > now;
   const boostMultiplier = isBoostActive ? 2 : 1;
@@ -188,49 +185,9 @@ async function processTap({ userId, requestId }) {
   tapState.streakExpiry = new Date(now.getTime() + 5000);
   tapState.bestStreak = Math.max(tapState.bestStreak, tapState.currentStreak);
 
-  // Roll Reward via Server Config
-  const sveProb = ConfigService.get('sve_prob');
-  const veProb = ConfigService.get('ve_prob');
-  const spinProb = ConfigService.get('spin_prob');
-  const gemsProb = ConfigService.get('gems_prob');
-  const tokensProb = ConfigService.get('tokens_prob');
-
-  const roll = Math.random();
-  let rewardType = 'SVE';
-  let rawRewardAmount = 0.0;
-
-  if (roll < sveProb) {
-    rewardType = 'SVE';
-    rawRewardAmount = ConfigService.get('sve_amount');
-  } else if (roll < sveProb + veProb) {
-    rewardType = 'VE';
-    const min = ConfigService.get('ve_min');
-    const max = ConfigService.get('ve_max');
-    // Random between min and max, 1 decimal place
-    rawRewardAmount = parseFloat((Math.random() * (max - min) + min).toFixed(1));
-  } else if (roll < sveProb + veProb + spinProb) {
-    rewardType = 'Spin';
-    rawRewardAmount = 1.0;
-  } else if (roll < sveProb + veProb + spinProb + gemsProb) {
-    rewardType = 'Gem';
-    const gemsValues = ConfigService.get('gems_values') || [0.5, 0.8, 1.0, 1.2, 2.0];
-    rawRewardAmount = gemsValues[Math.floor(Math.random() * gemsValues.length)];
-  } else {
-    rewardType = 'Token';
-    const min = ConfigService.get('tokens_min');
-    const max = ConfigService.get('tokens_max');
-    rawRewardAmount = Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  // Apply Seasonal Efficiency Multiplier to value payouts (not spins)
-  let finalRewardAmount = rawRewardAmount;
-  if (['VE', 'SVE', 'Gem', 'Token'].includes(rewardType)) {
-    let effMult = getEfficiencyMultiplier(tapState.tapEfficiencyLevel);
-    if (isPremium) {
-      effMult = effMult * 1.20; // Premium 20% multiplier bonus
-    }
-    finalRewardAmount = parseFloat((finalRewardAmount * effMult).toFixed(4));
-  }
+  // Tap reward is strictly VE coins equal to effectiveTaps
+  const rewardType = 'VE';
+  const finalRewardAmount = effectiveTaps;
 
   // Check Mystery Tap (every 250 effective taps, 0.5% roll, SVE reward)
   let isMystery = false;

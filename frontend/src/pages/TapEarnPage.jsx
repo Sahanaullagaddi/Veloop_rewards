@@ -662,6 +662,7 @@ export default function TapEarnPage() {
     if (type === 'recharge_speed') return Math.floor(50 * Math.pow(1.6, currentLevel - 1));
     if (type === 'energy_bank') return 200;
     if (type === 'tap_efficiency') return [0, 10, 25, 50][currentLevel + 1] || 9999;
+    if (type === 'multitap') return Math.floor(100 * Math.pow(3, currentLevel - 1));
     return 0;
   };
 
@@ -689,63 +690,37 @@ export default function TapEarnPage() {
       {/* Mobile-First Stacked Layout */}
       <div className={styles.mobileContainer}>
         
-        {/* 1. Energy Section */}
-        <div className={styles.mobileEnergySection}>
-          <div className={styles.rowBetween}>
-            <span className={styles.energyLabel}>ENERGY</span>
-            <span className={styles.energyVal}>
-              {liveState.currentEnergy} / {liveState.energyCapacity || 500}
-            </span>
-          </div>
-          <div className={styles.progressContainer}>
-            <div 
-              className={styles.progressFillBlue} 
-              style={{ width: `${((liveState.currentEnergy || 0) / (liveState.energyCapacity || 500)) * 100}%` }} 
-            />
-          </div>
-          <div className={styles.energyMeta}>
-            <span>+{liveState.rechargeSpeedLevel || 1} / 20m</span>
-            <span>{liveState.currentEnergy === (liveState.energyCapacity || 500) ? 'Full' : 'Charging'}</span>
-          </div>
-        </div>
-
-        {/* 2. Stats Grid (Multitap & Efficiency) */}
+        {/* 1. Stats Grid (Multitap & Efficiency) */}
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>MULTITAP</span>
-            <span className={styles.statValue}>x{liveState.tapEfficiencyLevel || 1}</span>
+            <span className={styles.statValue}>x{liveState.multitapLevel || 1}</span>
           </div>
           <div className={styles.statCard}>
             <span className={styles.statLabel}>EFFICIENCY</span>
-            <span className={styles.statValue}>x{(liveState.tapEfficiencyLevel || 1).toFixed(1)}</span>
+            <span className={styles.statValue}>x{(liveState.tapEfficiencyLevel || 0).toFixed(1)}</span>
           </div>
         </div>
 
-        {/* 3. Boost Banner */}
-        <div className={styles.boostBanner}>
-          <div className={styles.boostTextSection}>
-            <span className={styles.boostTitle}>Boost</span>
-            <span className={styles.boostDesc}>
-              {boostTimeLeft > 0 
-                ? `Active: ${boostTimeLeft}s left` 
-                : 'Activate a 30s reward multiplier'
-              }
-            </span>
-          </div>
-          <button 
-            onClick={handleActivateBoost} 
-            disabled={boostTimeLeft > 0}
-            className={styles.boostBtn}
-          >
-            {boostTimeLeft > 0 ? 'Active' : 'Activate'}
-          </button>
-        </div>
-
-        {/* 4. Tapping Circle (Centered) */}
+        {/* 2. Tapping Circle (Centered) */}
         <div className={styles.circlePedestal}>
           <div className={styles.pedestalHalo}>
             <div className={styles.pedestalBase} />
             <TapCircle />
+          </div>
+        </div>
+
+        {/* 3. Hamster Kombat Style Energy / Boost Status Bar */}
+        <div className={styles.hamsterStatusBar}>
+          <div className={styles.energyStats} onClick={() => setShowBankModal(true)}>
+            <span className={styles.boltIcon}>⚡</span>
+            <span className={styles.energyValueText}>
+              {liveState.currentEnergy} / {liveState.energyCapacity || 500}
+            </span>
+          </div>
+          <div className={styles.boostLink} onClick={() => setShowUpgrades(true)}>
+            <span className={styles.rocketIcon}>🚀</span>
+            <span className={styles.boostText}>Boost</span>
           </div>
         </div>
 
@@ -961,6 +936,21 @@ export default function TapEarnPage() {
                   className={(liveState.tapEfficiencyLevel || 0) >= 3 ? styles.btnMiniDisabled : styles.btnMini}
                 >
                   {(liveState.tapEfficiencyLevel || 0) >= 3 ? 'Max' : 'Upgrade'}
+                </button>
+              </div>
+
+              <div className={styles.drawerItem}>
+                <div>
+                  <h4>Multitap Power</h4>
+                  <p>Lvl {liveState.multitapLevel || 1} / 10 (Increases tap coins & energy cost by +1)</p>
+                  <span>Cost: {getUpgradeCost('multitap', liveState.multitapLevel || 1)} VE</span>
+                </div>
+                <button 
+                  onClick={() => handleBuyUpgrade('multitap')}
+                  disabled={(liveState.multitapLevel || 1) >= 10}
+                  className={(liveState.multitapLevel || 1) >= 10 ? styles.btnMiniDisabled : styles.btnMini}
+                >
+                  {(liveState.multitapLevel || 1) >= 10 ? 'Max' : 'Upgrade'}
                 </button>
               </div>
 

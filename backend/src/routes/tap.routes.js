@@ -212,6 +212,13 @@ async function processUpgradePurchase(userId, upgradeType) {
       currency = 'SVE';
       stateField = 'tapEfficiencyLevel';
       break;
+    case 'multitap':
+      currentLevel = tapState.multitapLevel || 1;
+      maxLevel = 10; // max level is 10
+      cost = Math.floor(100 * Math.pow(3, currentLevel - 1));
+      currency = 'VE';
+      stateField = 'multitapLevel';
+      break;
     default:
       throw new Error('Invalid upgrade type');
   }
