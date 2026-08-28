@@ -87,3 +87,27 @@
 .dotGreen { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: #10b981; }
 .dotPurple { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: #8b5cf6; }
 .dotBlue { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background-color: #3b82f6; }
+
+@media (max-width: 375px) {
+  .avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+  .username {
+    font-size: 9px;
+  }
+  .level {
+    font-size: 8px;
+  }
+  .balanceText {
+    font-size: 11px;
+  }
+  .statItem {
+    font-size: 8px;
+    gap: 2px;
+  }
+  .header {
+    padding: 6px 8px;
+  }
+}

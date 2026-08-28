@@ -261,3 +261,10 @@ button {
     transform: rotate(3600deg);
   }
 }
+
+@media (max-width: 480px) {
+  .content-container {
+    padding: 10px;
+    padding-bottom: 75px;
+  }
+}

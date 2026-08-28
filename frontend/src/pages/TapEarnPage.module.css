@@ -1467,5 +1467,57 @@
   100% { box-shadow: 0 0 12px rgba(139, 92, 246, 0.4); }
 }
 
+@media (max-width: 375px) {
+  .mobileContainer {
+    padding: 6px;
+    gap: 10px;
+  }
+  .mobileEnergySection {
+    padding: 10px;
+  }
+  .statCard {
+    padding: 8px 10px;
+  }
+  .statValue {
+    font-size: 13px;
+  }
+  .boostBanner {
+    padding: 8px 10px;
+  }
+  .boostTitle {
+    font-size: 11px;
+  }
+  .boostDesc {
+    font-size: 8px;
+  }
+  .boostBtn {
+    padding: 4px 10px;
+    font-size: 9px;
+  }
+  .actionCard {
+    padding: 8px;
+    gap: 6px;
+  }
+  .actionText {
+    font-size: 9px;
+  }
+  .actionIconWrapperYellow,
+  .actionIconWrapperBlue,
+  .actionIconWrapperGold,
+  .actionIconWrapperGreen,
+  .actionIconWrapperPurple {
+    width: 22px;
+    height: 22px;
+  }
+  .actionIconWrapperYellow svg,
+  .actionIconWrapperBlue svg,
+  .actionIconWrapperGold svg,
+  .actionIconWrapperGreen svg,
+  .actionIconWrapperPurple svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
 
 
