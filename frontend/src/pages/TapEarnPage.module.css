@@ -1259,4 +1259,213 @@
   font-weight: 700;
 }
 
+/* Mobile-First Layout Styles */
+.mobileContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px 14px;
+}
+
+.mobileEnergySection {
+  background-color: rgba(22, 24, 47, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.energyLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: #888888;
+  letter-spacing: 0.5px;
+}
+
+.energyVal {
+  font-size: 13px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+
+.energyMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #555555;
+}
+
+/* Stats Grid (Multitap / Efficiency) */
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.statCard {
+  background-color: rgba(22, 24, 47, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statLabel {
+  font-size: 9px;
+  font-weight: 800;
+  color: #888888;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  font-size: 16px;
+  font-weight: 800;
+  color: #3b82f6;
+}
+
+/* Boost Banner */
+.boostBanner {
+  background-color: rgba(22, 24, 47, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boostTextSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.boostTitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.boostDesc {
+  font-size: 10px;
+  color: #888888;
+}
+
+.boostBtn {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 15px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.boostBtn:hover {
+  opacity: 0.9;
+}
+
+.boostBtn:disabled {
+  background-color: #22223b;
+  color: #555555;
+  cursor: not-allowed;
+}
+
+/* Circle Pedestal (Centered Core) */
+.circlePedestal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+/* Quick Actions Grid */
+.quickActionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.actionCard {
+  background-color: rgba(22, 24, 47, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionCard:hover {
+  border-color: #ffd700;
+  transform: translateY(-1px);
+}
+
+.actionText {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Colored Icon Circles inside cards */
+.actionIconWrapperYellow,
+.actionIconWrapperBlue,
+.actionIconWrapperGold,
+.actionIconWrapperGreen,
+.actionIconWrapperPurple {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.actionIconWrapperYellow { background-color: rgba(255, 215, 0, 0.15); color: #ffd700; }
+.actionIconWrapperBlue { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.actionIconWrapperGold { background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.actionIconWrapperGreen { background-color: rgba(16, 185, 129, 0.15); color: #10b981; }
+.actionIconWrapperPurple { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+
+/* Staking button link styling */
+.stakingLinkBtn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.stakingLinkBtn:hover {
+  color: #60a5fa;
+}
+
+/* Pulsing claim reward card glow */
+.pulseActionCard {
+  animation: pulseCardGlow 1.5s infinite alternate;
+  border-color: #8b5cf6;
+}
+
+@keyframes pulseCardGlow {
+  0% { box-shadow: 0 0 4px rgba(139, 92, 246, 0.2); }
+  100% { box-shadow: 0 0 12px rgba(139, 92, 246, 0.4); }
+}
+
+
 

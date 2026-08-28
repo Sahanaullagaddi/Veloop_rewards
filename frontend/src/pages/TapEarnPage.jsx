@@ -686,270 +686,136 @@ export default function TapEarnPage() {
       {/* Toast notifier */}
       {toastMessage && <div className={styles.toast}>{toastMessage}</div>}
 
-      {/* 2-Column Responsive Dashboard Layout */}
-      <div className={styles.dashboardLayout}>
+      {/* Mobile-First Stacked Layout */}
+      <div className={styles.mobileContainer}>
         
-        {/* LEFT COLUMN: Branding & Info */}
-        <div className={styles.infoColumn}>
-          
-          <div className={styles.badgePill}>
-            <Sparkles size={12} className={styles.iconGold} /> TAP & EARN
+        {/* 1. Energy Section */}
+        <div className={styles.mobileEnergySection}>
+          <div className={styles.rowBetween}>
+            <span className={styles.energyLabel}>ENERGY</span>
+            <span className={styles.energyVal}>
+              {liveState.currentEnergy} / {liveState.energyCapacity || 500}
+            </span>
           </div>
-
-          <h1 className={styles.gradientTitle}>
-            Tap to earn.
-          </h1>
-
-          <p className={styles.descriptionText}>
-            Use your energy to tap. Your reward is calculated securely by VELoop.
-          </p>
-
-          {/* Action Grid Deck */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '12px',
-            margin: '20px 0'
-          }}>
+          <div className={styles.progressContainer}>
             <div 
-              onClick={() => setShowUpgrades(true)} 
-              style={{
-                background: '#1a1a2e',
-                border: '1px solid #2a2a4e',
-                borderRadius: '10px',
-                padding: '12px 15px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={16} style={{ color: '#ffd700' }} />
-                <span style={{ fontWeight: '700', fontSize: '14px' }}>Upgrades</span>
-              </div>
-              <span style={{ fontSize: '11px', color: '#666' }}>Boost stats & rates</span>
-            </div>
-
-            <div 
-              onClick={openMissionsModal} 
-              style={{
-                background: '#1a1a2e',
-                border: '1px solid #2a2a4e',
-                borderRadius: '10px',
-                padding: '12px 15px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Award size={16} style={{ color: '#00c2ff' }} />
-                <span style={{ fontWeight: '700', fontSize: '14px' }}>Missions</span>
-              </div>
-              <span style={{ fontSize: '11px', color: '#666' }}>Complete achievements</span>
-            </div>
-
-            <div 
-              onClick={() => setShowStaking(true)} 
-              style={{
-                background: '#1a1a2e',
-                border: '1px solid #2a2a4e',
-                borderRadius: '10px',
-                padding: '12px 15px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Layers size={16} style={{ color: '#9135ff' }} />
-                <span style={{ fontWeight: '700', fontSize: '14px' }}>Staking</span>
-              </div>
-              <span style={{ fontSize: '11px', color: '#666' }}>Lock assets for APY</span>
-            </div>
-
-            <div 
-              onClick={() => setShowCheckin(true)} 
-              style={{
-                background: '#1a1a2e',
-                border: '1px solid #2a2a4e',
-                borderRadius: '10px',
-                padding: '12px 15px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ffd700'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = '#2a2a4e'}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Calendar size={16} style={{ color: '#ffd700' }} />
-                <span style={{ fontWeight: '700', fontSize: '14px', color: '#ffd700' }}>Daily Check-in</span>
-              </div>
-              <span style={{ fontSize: '11px', color: '#666' }}>Claim daily login reward</span>
-            </div>
+              className={styles.progressFillBlue} 
+              style={{ width: `${((liveState.currentEnergy || 0) / (liveState.energyCapacity || 500)) * 100}%` }} 
+            />
           </div>
-
-          {/* User Progress Stats Card */}
-          <div className={styles.infoCard}>
-            <div className={styles.cardHeader}>
-              <Activity size={16} className={styles.iconBlue} />
-              <span className={styles.cardTitle}>YOUR LEVEL</span>
-            </div>
-            <div className={styles.statsRow}>
-              <span>Node Level: <strong>Lvl {liveState.level || 1}</strong></span>
-              <span>XP: {liveState.xp || 0} / {xpNeeded}</span>
-            </div>
-            <div className={styles.progressContainer}>
-              <div className={styles.progressFill} style={{ width: `${xpPct}%` }} />
-            </div>
-          </div>
-
-          {/* Fragments Conversion Widget */}
-          <div className={`${styles.infoCard} ${styles.fragmentsCard}`}>
-            <div className={styles.cardHeader}>
-              <Layers size={16} className={styles.iconGold} />
-              <span className={styles.cardTitle}>FRAGMENTS</span>
-            </div>
-            <div className={styles.statsRow}>
-              <span>Balance: <strong>{parseVal(liveState.fragmentBalance)}</strong></span>
-              <span>Rate: 10 Frag = 1 VE</span>
-            </div>
-            <button 
-              onClick={handleConvertFragments}
-              disabled={getFloatValue(liveState.fragmentBalance) < 10}
-              className={getFloatValue(liveState.fragmentBalance) < 10 ? styles.btnCardActionDisabled : styles.btnCardAction}
-            >
-              Convert to VE
-            </button>
-          </div>
-
-          {/* Active Boost card */}
-          <div className={styles.infoCard}>
-            <div className={styles.rowBetween}>
-              <div>
-                <span className={styles.cardTitle}>BOOST WINDOW (2X)</span>
-                <div className={styles.cardDesc}>
-                  {boostTimeLeft > 0 
-                    ? `Active: ${boostTimeLeft}s left` 
-                    : 'Increases effective taps for 30s'
-                  }
-                </div>
-              </div>
-              <button 
-                onClick={handleActivateBoost} 
-                disabled={boostTimeLeft > 0}
-                className={boostTimeLeft > 0 ? styles.btnCardActionDisabled : styles.btnCardAction}
-              >
-                {boostTimeLeft > 0 ? 'Active' : 'Trigger'}
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        {/* RIGHT COLUMN: The Interactive Pedestal Core */}
-        <div className={styles.coreColumn}>
-          <div className={styles.pedestalCard}>
-            <div className={styles.pedestalHalo}>
-              {/* Pedestal platform */}
-              <div className={styles.pedestalBase} />
-              {/* Core Circle */}
-              <TapCircle />
-            </div>
-
-            {/* Core Energy indicators directly below circle */}
-            <div className={styles.energyIndicator}>
-              <div className={styles.rowBetween}>
-                <span className={styles.label}>ENERGY</span>
-                <span className={styles.energyVal}>
-                  {liveState.currentEnergy} / {liveState.energyCapacity || 500}
-                </span>
-              </div>
-              <div className={styles.progressContainer}>
-                <div 
-                  className={styles.progressFillBlue} 
-                  style={{ width: `${((liveState.currentEnergy || 0) / (liveState.energyCapacity || 500)) * 100}%` }} 
-                />
-              </div>
-              <div className={styles.energyMeta}>
-                <span>Recharges in {rechargeTime}</span>
-                <span>Reward confirmed by server</span>
-              </div>
-            </div>
+          <div className={styles.energyMeta}>
+            <span>+{liveState.rechargeSpeedLevel || 1} / 20m</span>
+            <span>{liveState.currentEnergy === (liveState.energyCapacity || 500) ? 'Full' : 'Charging'}</span>
           </div>
         </div>
 
-      </div>
-
-      {/* BOTTOM SECTION: Four Glowing Metric Cards */}
-      <div className={styles.bottomMetricsGrid}>
-        
-        {/* Metric 1: Energy Shield */}
-        <div className={styles.metricCard} onClick={() => setShowShieldModal(true)}>
-          <div className={styles.metricIconCircleBlue}>
-            <Shield size={20} />
+        {/* 2. Stats Grid (Multitap & Efficiency) */}
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <span className={styles.statLabel}>MULTITAP</span>
+            <span className={styles.statValue}>x{liveState.tapEfficiencyLevel || 1}</span>
           </div>
-          <div>
-            <h4>Energy Shield</h4>
-            <p>
-              {shieldTimeLeft > 0 ? `Active (${shieldTimeLeft}s)` : '90% energy protection.'}
-            </p>
+          <div className={styles.statCard}>
+            <span className={styles.statLabel}>EFFICIENCY</span>
+            <span className={styles.statValue}>x{(liveState.tapEfficiencyLevel || 1).toFixed(1)}</span>
           </div>
         </div>
 
-        {/* Metric 2: Energy Bank */}
-        <div className={styles.metricCard} onClick={() => setShowBankModal(true)}>
-          <div className={styles.metricIconCirclePurple}>
-            <Layers size={20} />
-          </div>
-          <div>
-            <h4>Energy Bank</h4>
-            <p>Refills: {liveState.energyBankBalance} / {liveState.energyBankCapacity || 500}</p>
-          </div>
-        </div>
-
-        {/* Metric 3: Daily Challenge */}
-        <div className={`${styles.metricCard} ${liveState.dailyChallengeProgress >= 1000 && !liveState.dailyChallengeClaimed ? styles.pulseMetric : ''}`} onClick={handleClaimDailyChallenge}>
-          <div className={styles.metricIconCircleBlue}>
-            <Check size={20} />
-          </div>
-          <div>
-              <h4>Today</h4>
-            <p>
-              {liveState.dailyChallengeClaimed 
-                ? 'Claimed!' 
-                : `${liveState.dailyChallengeProgress || 0} / 1000 taps`
+        {/* 3. Boost Banner */}
+        <div className={styles.boostBanner}>
+          <div className={styles.boostTextSection}>
+            <span className={styles.boostTitle}>Boost</span>
+            <span className={styles.boostDesc}>
+              {boostTimeLeft > 0 
+                ? `Active: ${boostTimeLeft}s left` 
+                : 'Activate a 30s reward multiplier'
               }
-            </p>
+            </span>
+          </div>
+          <button 
+            onClick={handleActivateBoost} 
+            disabled={boostTimeLeft > 0}
+            className={styles.boostBtn}
+          >
+            {boostTimeLeft > 0 ? 'Active' : 'Activate'}
+          </button>
+        </div>
+
+        {/* 4. Tapping Circle (Centered) */}
+        <div className={styles.circlePedestal}>
+          <div className={styles.pedestalHalo}>
+            <div className={styles.pedestalBase} />
+            <TapCircle />
           </div>
         </div>
 
-        {/* Metric 4: Lucky Spin */}
-        <div className={styles.metricCard} onClick={() => setShowLuckyModal(true)}>
-          <div className={styles.metricIconCircleGold}>
-            <Gift size={20} />
+        {/* 5. Quick Actions Deck */}
+        <div className={styles.quickActionsGrid}>
+          {/* Action 1: Daily Checkin (Calendar Streak) */}
+          <div className={styles.actionCard} onClick={() => setShowCheckin(true)}>
+            <div className={styles.actionIconWrapperYellow}>
+              <Calendar size={18} />
+            </div>
+            <span className={styles.actionText}>Daily Check-in</span>
           </div>
-          <div>
-            <h4>Lucky Spin</h4>
-            <p>{luckyEligible ? 'Ready to Spin!' : '10 Tap Target'}</p>
+
+          {/* Action 2: Missions */}
+          <div className={styles.actionCard} onClick={openMissionsModal}>
+            <div className={styles.actionIconWrapperBlue}>
+              <Award size={18} />
+            </div>
+            <span className={styles.actionText}>Missions</span>
+          </div>
+
+          {/* Action 3: Lucky Spin */}
+          <div className={styles.actionCard} onClick={() => setShowLuckyModal(true)}>
+            <div className={styles.actionIconWrapperGold}>
+              <Gift size={18} />
+            </div>
+            <span className={styles.actionText}>Lucky Spin</span>
+          </div>
+
+          {/* Action 4: Upgrades / Energy Bank */}
+          <div className={styles.actionCard} onClick={() => setShowUpgrades(true)}>
+            <div className={styles.actionIconWrapperGreen}>
+              <Zap size={18} />
+            </div>
+            <span className={styles.actionText}>Upgrades</span>
+          </div>
+
+          {/* Action 5: Energy Shield */}
+          <div className={styles.actionCard} onClick={() => setShowShieldModal(true)}>
+            <div className={styles.actionIconWrapperBlue}>
+              <Shield size={18} />
+            </div>
+            <span className={styles.actionText}>
+              {shieldTimeLeft > 0 ? `Shield (${shieldTimeLeft}s)` : 'Energy Shield'}
+            </span>
+          </div>
+
+          {/* Action 6: Daily Taps Challenge */}
+          <div 
+            className={`${styles.actionCard} ${liveState.dailyChallengeProgress >= 1000 && !liveState.dailyChallengeClaimed ? styles.pulseActionCard : ''}`} 
+            onClick={handleClaimDailyChallenge}
+          >
+            <div className={styles.actionIconWrapperPurple}>
+              <Check size={18} />
+            </div>
+            <span className={styles.actionText}>
+              {liveState.dailyChallengeClaimed 
+                ? 'Challenge Claimed' 
+                : `Challenge (${liveState.dailyChallengeProgress || 0}/1000)`
+              }
+            </span>
           </div>
         </div>
 
+        {/* Yield Staking & Extra widgets link */}
+        <div style={{ textAlign: 'center', margin: '15px 0 25px 0' }}>
+          <button onClick={() => setShowStaking(true)} className={styles.stakingLinkBtn}>
+            Open Yield Staking Options ➜
+          </button>
+        </div>
       </div>
 
       {/* Premium Membership Plans Dashboard Section */}

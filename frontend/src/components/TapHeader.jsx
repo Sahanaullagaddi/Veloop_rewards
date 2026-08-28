@@ -26,55 +26,52 @@ export default function TapHeader() {
     return isNaN(num) ? '0.0' : num.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   };
 
+  // Format integer token balances safely
+  const formatInt = (val) => {
+    if (val === null || val === undefined) return '0';
+    let raw = val;
+    if (typeof val === 'object' && val.$numberDecimal) {
+      raw = val.$numberDecimal;
+    }
+    const num = Math.floor(parseFloat(raw));
+    return isNaN(num) ? '0' : num.toLocaleString();
+  };
+
   return (
     <header className={styles.header}>
-      {/* Identity Logo */}
-      <div className={styles.logoSection} onClick={() => navigate('/')}>
-        <span className={styles.wordmark}>VELoop</span>
-        <span className={styles.tag}>Tap & Earn</span>
+      {/* Profile Section (Left) */}
+      <div className={styles.profileSection} onClick={() => navigate('/profile')}>
+        <div className={styles.avatar}>
+          {user.username.substring(0, 1).toUpperCase()}
+        </div>
+        <div className={styles.profileMeta}>
+          <span className={styles.username}>{user.username}</span>
+          <span className={styles.level}>Lvl {liveState.level || 1}</span>
+        </div>
       </div>
 
-      {/* Nav Elements */}
-      <div className={styles.navRow}>
-        {/* Streak Flame */}
-        <div 
-          className={`${styles.navItem} ${styles.streakFlame} ${liveState.currentStreak > 0 ? styles.glowingFlame : ''} ${isCurrent('/streak') ? styles.active : ''}`}
-          onClick={() => navigate('/streak')}
-          title="Tap Streak"
-        >
-          <Flame size={16} className={styles.iconOrange} />
-          <span className={styles.streakText}>{liveState.currentStreak || 0}</span>
-        </div>
+      {/* Main VE Balance (Center) */}
+      <div className={styles.mainBalance} onClick={() => navigate('/wallet')}>
+        <span className={styles.balanceText}>{formatBalance(liveState.veBalance)} VE</span>
+      </div>
 
-        {/* VE Balance Chip */}
-        <div 
-          className={`${styles.navItem} ${styles.balanceChip} ${isCurrent('/wallet') ? styles.active : ''}`}
-          onClick={() => navigate('/wallet')}
-          title="Wallet"
-        >
-          <Wallet size={16} className={styles.iconGold} />
-          <span className={styles.balanceText}>{formatBalance(liveState.veBalance)} VE</span>
+      {/* Secondary Dot Balances (Right) */}
+      <div className={styles.secondaryBalances}>
+        <div className={styles.statItem} title="SVE Balance">
+          <span className={styles.dotYellow} />
+          <span>{formatInt(liveState.sveBalance)}</span>
         </div>
-
-        {/* Notification Bell */}
-        <div 
-          className={`${styles.navItem} ${styles.bellBtn} ${isCurrent('/notifications') ? styles.active : ''}`}
-          onClick={() => navigate('/notifications')}
-          title="Notifications"
-        >
-          <Bell size={16} />
-          {liveState.notificationsCount > 0 && (
-            <span className={styles.badge}>{liveState.notificationsCount}</span>
-          )}
+        <div className={styles.statItem} title="Token Balance">
+          <span className={styles.dotGreen} />
+          <span>{formatInt(liveState.tokenBalance)}</span>
         </div>
-
-        {/* Settings Icon */}
-        <div 
-          className={`${styles.navItem} ${styles.settingsBtn} ${isCurrent('/settings') ? styles.active : ''}`}
-          onClick={() => navigate('/settings')}
-          title="Settings"
-        >
-          <Settings size={16} />
+        <div className={styles.statItem} title="Gem Balance">
+          <span className={styles.dotPurple} />
+          <span>{formatInt(liveState.gemBalance)}</span>
+        </div>
+        <div className={styles.statItem} title="Spins Balance">
+          <span className={styles.dotBlue} />
+          <span>{liveState.spinBalance || 0}</span>
         </div>
       </div>
     </header>
