@@ -269,8 +269,12 @@ button {
   }
 }
 
-/* Hide Netlify collaboration drawer badge */
-netlify-drawer {
+/* Hide Netlify collaboration drawer badge & iframe */
+netlify-drawer,
+iframe[id*="netlify"],
+iframe[class*="netlify"],
+iframe[src*="netlify"],
+#netlify-drawer-iframe {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
