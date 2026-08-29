@@ -99,7 +99,7 @@ async function runSeed() {
 
   // Seed mock players
   const mockPlayers = [
-    { username: 'neo', level: 5, xp: 120, ve: 1540.5, sve: 32.0, tokens: 420.0, gems: 8.5, spins: 3, fragments: 45.0, score: 1250 },
+    { username: 'neo', level: 1, xp: 0, ve: 0.0, sve: 0.0, tokens: 0.0, gems: 0.0, spins: 0, fragments: 0.0, score: 0 },
     { username: 'trinity', level: 6, xp: 450, ve: 2310.0, sve: 45.0, tokens: 680.0, gems: 12.0, spins: 5, fragments: 80.0, score: 2150 },
     { username: 'morpheus', level: 7, xp: 90, ve: 4120.2, sve: 80.0, tokens: 1250.0, gems: 24.8, spins: 8, fragments: 110.0, score: 3450 },
     { username: 'smith', level: 4, xp: 300, ve: 820.0, sve: 12.0, tokens: 190.0, gems: 3.2, spins: 1, fragments: 10.0, score: 850 },
