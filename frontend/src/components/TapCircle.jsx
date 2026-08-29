@@ -6,6 +6,15 @@ import { useAd } from '../context/AdContext';
 import { API_URL } from '../config';
 import styles from './TapCircle.module.css';
 
+// Persistent global variables for chiptune synthesizer and coin click sound effect
+let globalAudioCtx = null;
+let musicInterval = null;
+let musicStopTimeout = null;
+let noteIndex = 0;
+
+// Looping pentatonic retro game melody frequencies (Hz) for background sequence
+const melodyNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 392.00, 329.63, 293.66];
+
 export default function TapCircle() {
   const { token } = useAuth();
   const { liveState, setLiveState } = useSocket();
@@ -22,6 +31,20 @@ export default function TapCircle() {
 
   const handleTap = async (e) => {
     e.preventDefault();
+
+    // Initialize or resume AudioContext early in user touch event handler to bypass autoplay policy
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass && !globalAudioCtx) {
+        globalAudioCtx = new AudioContextClass();
+      }
+      if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+        globalAudioCtx.resume().catch(() => {});
+      }
+    } catch (err) {
+      // Fail silently
+    }
+
     const now = Date.now();
 
     // 1. Client-side Rate Limit (200ms)
@@ -69,13 +92,25 @@ export default function TapCircle() {
     // Let the AdProvider record a tap (may trigger ad opportunity)
     recordClientTap();
 
-    // Optimistically deduct energy on client-side
+    // Optimistically deduct energy and increment coins on client-side
     setLiveState(prev => {
       if (!prev) return null;
+      let currentBal = parseFloat(prev.veBalance || 0);
+      if (isNaN(currentBal)) currentBal = 0;
+      const nextBal = currentBal + effectiveTaps;
+
       if (prev.currentEnergy >= energyCost) {
-        return { ...prev, currentEnergy: prev.currentEnergy - energyCost };
+        return { 
+          ...prev, 
+          currentEnergy: prev.currentEnergy - energyCost,
+          veBalance: nextBal
+        };
       } else if (prev.energyBankBalance >= energyCost) {
-        return { ...prev, energyBankBalance: prev.energyBankBalance - energyCost };
+        return { 
+          ...prev, 
+          energyBankBalance: prev.energyBankBalance - energyCost,
+          veBalance: nextBal
+        };
       }
       return prev;
     });
@@ -129,29 +164,95 @@ export default function TapCircle() {
 
   const playTapSound = () => {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
       
+      if (!globalAudioCtx) {
+        globalAudioCtx = new AudioContextClass();
+      }
+      
+      const ctx = globalAudioCtx;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+      
+      // 1. Play coin pickup clink sound effect
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
       osc.connect(gain);
       gain.connect(ctx.destination);
       
-      // Coin clink sound sweep
       osc.type = 'sine';
       osc.frequency.setValueAtTime(587.33, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
       
-      // Fade out volume sweep
       gain.gain.setValueAtTime(0.12, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
       
       osc.start();
       osc.stop(ctx.currentTime + 0.1);
+      
+      // 2. Play or resume chiptune background melody loop
+      triggerBackgroundMusic();
     } catch (err) {
-      console.warn('Audio blocked or failed:', err);
+      console.warn('Audio play failed:', err);
+    }
+  };
+
+  const triggerBackgroundMusic = () => {
+    try {
+      const ctx = globalAudioCtx;
+      if (!ctx) return;
+      
+      if (musicInterval) {
+        if (musicStopTimeout) clearTimeout(musicStopTimeout);
+        musicStopTimeout = setTimeout(() => {
+          stopBackgroundMusic();
+        }, 3500); // stop loop if user stops tapping for 3.5s
+        return;
+      }
+      
+      // Sequencer loop
+      musicInterval = setInterval(() => {
+        if (!globalAudioCtx) return;
+        if (globalAudioCtx.state === 'suspended') {
+          globalAudioCtx.resume().catch(() => {});
+        }
+        
+        const now = globalAudioCtx.currentTime;
+        const osc = globalAudioCtx.createOscillator();
+        const gain = globalAudioCtx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(globalAudioCtx.destination);
+        
+        osc.type = 'triangle';
+        const freq = melodyNotes[noteIndex];
+        osc.frequency.setValueAtTime(freq, now);
+        
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        
+        osc.start(now);
+        osc.stop(now + 0.25);
+        
+        noteIndex = (noteIndex + 1) % melodyNotes.length;
+      }, 250); // note loop speed (120 BPM)
+      
+      if (musicStopTimeout) clearTimeout(musicStopTimeout);
+      musicStopTimeout = setTimeout(() => {
+        stopBackgroundMusic();
+      }, 3500);
+    } catch (err) {
+      console.warn('Music trigger failed:', err);
+    }
+  };
+
+  const stopBackgroundMusic = () => {
+    if (musicInterval) {
+      clearInterval(musicInterval);
+      musicInterval = null;
     }
   };
 
@@ -176,7 +277,16 @@ export default function TapCircle() {
       const expiry = Date.now() - 1000;
       setFloats(prev => prev.filter(f => parseFloat(f.id.split('-')[0]) > expiry));
     }, 500);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (musicInterval) {
+        clearInterval(musicInterval);
+        musicInterval = null;
+      }
+      if (musicStopTimeout) {
+        clearTimeout(musicStopTimeout);
+      }
+    };
   }, []);
 
   const isBoostActive = liveState.activeBoostExpiry && new Date(liveState.activeBoostExpiry) > Date.now();
