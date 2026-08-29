@@ -17,7 +17,7 @@ export default function BottomNavigation() {
     <nav className={styles.bottomNav}>
       <button 
         onClick={() => navigate('/')} 
-        className={`${styles.navItem} ${isActive('/') ? styles.active : ''}`}
+        className={`${styles.navItem} ${styles.tapTab} ${isActive('/') ? styles.active : ''}`}
       >
         <Zap size={20} />
         <span>Tap</span>
@@ -25,7 +25,7 @@ export default function BottomNavigation() {
 
       <button 
         onClick={() => navigate('/wallet')} 
-        className={`${styles.navItem} ${isActive('/wallet') ? styles.active : ''}`}
+        className={`${styles.navItem} ${styles.walletTab} ${isActive('/wallet') ? styles.active : ''}`}
       >
         <Wallet size={20} />
         <span>Wallet</span>
@@ -33,7 +33,7 @@ export default function BottomNavigation() {
 
       <button 
         onClick={() => navigate('/league')} 
-        className={`${styles.navItem} ${isActive('/league') ? styles.active : ''}`}
+        className={`${styles.navItem} ${styles.leaguesTab} ${isActive('/league') ? styles.active : ''}`}
       >
         <Trophy size={20} />
         <span>Leagues</span>
@@ -41,7 +41,7 @@ export default function BottomNavigation() {
 
       <button 
         onClick={() => navigate('/invites')} 
-        className={`${styles.navItem} ${isActive('/invites') ? styles.active : ''}`}
+        className={`${styles.navItem} ${styles.invitesTab} ${isActive('/invites') ? styles.active : ''}`}
       >
         <Users size={20} />
         <span>Invites</span>
@@ -49,7 +49,7 @@ export default function BottomNavigation() {
 
       <button 
         onClick={() => navigate('/profile')} 
-        className={`${styles.navItem} ${isActive('/profile') ? styles.active : ''}`}
+        className={`${styles.navItem} ${styles.profileTab} ${isActive('/profile') ? styles.active : ''}`}
       >
         <User size={20} />
         <span>Profile</span>

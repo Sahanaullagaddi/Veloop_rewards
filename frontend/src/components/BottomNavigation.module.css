@@ -45,8 +45,39 @@
   color: #ffd700;
 }
 
-.active svg {
-  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.3));
+.tapTab.active {
+  color: #ffd700;
+}
+.tapTab.active svg {
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.5));
+}
+
+.walletTab.active {
+  color: #10b981;
+}
+.walletTab.active svg {
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.5));
+}
+
+.leaguesTab.active {
+  color: #3b82f6;
+}
+.leaguesTab.active svg {
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.5));
+}
+
+.invitesTab.active {
+  color: #ec4899;
+}
+.invitesTab.active svg {
+  filter: drop-shadow(0 0 6px rgba(236, 72, 153, 0.5));
+}
+
+.profileTab.active {
+  color: #a855f7;
+}
+.profileTab.active svg {
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.5));
 }
 
 .adminIcon {

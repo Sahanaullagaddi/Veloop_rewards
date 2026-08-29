@@ -6,14 +6,8 @@ import { useAd } from '../context/AdContext';
 import { API_URL } from '../config';
 import styles from './TapCircle.module.css';
 
-// Persistent global variables for chiptune synthesizer and coin click sound effect
+// Persistent global variables for coin click sound effect
 let globalAudioCtx = null;
-let musicInterval = null;
-let musicStopTimeout = null;
-let noteIndex = 0;
-
-// Looping pentatonic retro game melody frequencies (Hz) for background sequence
-const melodyNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 392.00, 329.63, 293.66];
 
 export default function TapCircle() {
   const { token } = useAuth();
@@ -95,21 +89,30 @@ export default function TapCircle() {
     // Optimistically deduct energy and increment coins on client-side
     setLiveState(prev => {
       if (!prev) return null;
-      let currentBal = parseFloat(prev.veBalance || 0);
+      
+      let raw = prev.veBalance;
+      if (typeof raw === 'object' && raw.$numberDecimal) {
+        raw = raw.$numberDecimal;
+      }
+      let currentBal = parseFloat(raw || 0);
       if (isNaN(currentBal)) currentBal = 0;
       const nextBal = currentBal + effectiveTaps;
+
+      const formattedBal = typeof prev.veBalance === 'object' && prev.veBalance.$numberDecimal 
+        ? { $numberDecimal: nextBal.toString() } 
+        : nextBal;
 
       if (prev.currentEnergy >= energyCost) {
         return { 
           ...prev, 
           currentEnergy: prev.currentEnergy - energyCost,
-          veBalance: nextBal
+          veBalance: formattedBal
         };
       } else if (prev.energyBankBalance >= energyCost) {
         return { 
           ...prev, 
           energyBankBalance: prev.energyBankBalance - energyCost,
-          veBalance: nextBal
+          veBalance: formattedBal
         };
       }
       return prev;
@@ -176,7 +179,7 @@ export default function TapCircle() {
         ctx.resume();
       }
       
-      // 1. Play coin pickup clink sound effect
+      // Play coin pickup clink sound effect
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
@@ -192,67 +195,8 @@ export default function TapCircle() {
       
       osc.start();
       osc.stop(ctx.currentTime + 0.1);
-      
-      // 2. Play or resume chiptune background melody loop
-      triggerBackgroundMusic();
     } catch (err) {
       console.warn('Audio play failed:', err);
-    }
-  };
-
-  const triggerBackgroundMusic = () => {
-    try {
-      const ctx = globalAudioCtx;
-      if (!ctx) return;
-      
-      if (musicInterval) {
-        if (musicStopTimeout) clearTimeout(musicStopTimeout);
-        musicStopTimeout = setTimeout(() => {
-          stopBackgroundMusic();
-        }, 3500); // stop loop if user stops tapping for 3.5s
-        return;
-      }
-      
-      // Sequencer loop
-      musicInterval = setInterval(() => {
-        if (!globalAudioCtx) return;
-        if (globalAudioCtx.state === 'suspended') {
-          globalAudioCtx.resume().catch(() => {});
-        }
-        
-        const now = globalAudioCtx.currentTime;
-        const osc = globalAudioCtx.createOscillator();
-        const gain = globalAudioCtx.createGain();
-        
-        osc.connect(gain);
-        gain.connect(globalAudioCtx.destination);
-        
-        osc.type = 'triangle';
-        const freq = melodyNotes[noteIndex];
-        osc.frequency.setValueAtTime(freq, now);
-        
-        gain.gain.setValueAtTime(0.04, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-        
-        osc.start(now);
-        osc.stop(now + 0.25);
-        
-        noteIndex = (noteIndex + 1) % melodyNotes.length;
-      }, 250); // note loop speed (120 BPM)
-      
-      if (musicStopTimeout) clearTimeout(musicStopTimeout);
-      musicStopTimeout = setTimeout(() => {
-        stopBackgroundMusic();
-      }, 3500);
-    } catch (err) {
-      console.warn('Music trigger failed:', err);
-    }
-  };
-
-  const stopBackgroundMusic = () => {
-    if (musicInterval) {
-      clearInterval(musicInterval);
-      musicInterval = null;
     }
   };
 
@@ -277,16 +221,7 @@ export default function TapCircle() {
       const expiry = Date.now() - 1000;
       setFloats(prev => prev.filter(f => parseFloat(f.id.split('-')[0]) > expiry));
     }, 500);
-    return () => {
-      clearInterval(interval);
-      if (musicInterval) {
-        clearInterval(musicInterval);
-        musicInterval = null;
-      }
-      if (musicStopTimeout) {
-        clearTimeout(musicStopTimeout);
-      }
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const isBoostActive = liveState.activeBoostExpiry && new Date(liveState.activeBoostExpiry) > Date.now();
