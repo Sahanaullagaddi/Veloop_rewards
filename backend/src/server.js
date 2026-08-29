@@ -14,11 +14,12 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/veloop
 async function bootstrap() {
   // Connect to MongoDB (with MemoryServer fallback if local is not running)
   try {
-    console.log('Attempting to connect to local MongoDB database...');
+    console.log('Attempting to connect to MongoDB database...');
     await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });
-    console.log('Connected to local MongoDB database successfully.');
+    console.log('Connected to MongoDB database successfully.');
   } catch (err) {
-    console.log('Local MongoDB connection refused. Starting MongoMemoryServer fallback...');
+    console.warn('MongoDB connection failed:', err.message);
+    console.log('Attempting MongoMemoryServer fallback...');
     try {
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const mongoServer = await MongoMemoryServer.create();
@@ -31,7 +32,12 @@ async function bootstrap() {
       // Auto-seed in-memory instance
       await runSeed();
     } catch (memErr) {
-      console.error('Fatal: Failed to connect to local MongoDB and failed memory server creation:', memErr);
+      console.error('\n=========================================');
+      console.error('DATABASE CONNECTION ERROR:');
+      console.error('Could not connect to MongoDB database.');
+      console.error('Please verify that the MONGODB_URI environment variable is configured in Railway.');
+      console.error('Details:', memErr.message);
+      console.error('=========================================\n');
       process.exit(1);
     }
   }
