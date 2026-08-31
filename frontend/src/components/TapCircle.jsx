@@ -41,8 +41,8 @@ export default function TapCircle() {
 
     const now = Date.now();
 
-    // 1. Client-side Rate Limit (200ms)
-    if (now - lastTapRef.current < 200) {
+    // 1. Client-side Rate Limit (50ms)
+    if (now - lastTapRef.current < 50) {
       triggerFeedback('Too Fast!');
       triggerHaptic(50); // double short buzz
       return;

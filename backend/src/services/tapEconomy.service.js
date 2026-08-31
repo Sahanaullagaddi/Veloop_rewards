@@ -86,6 +86,27 @@ function calculateRegen(tapState, now, isPremium = false) {
 
 // Process physical tap
 async function processTap({ userId, requestId }) {
+  let attempts = 0;
+  const maxAttempts = 5;
+  while (true) {
+    try {
+      return await processTapAttempt({ userId, requestId });
+    } catch (err) {
+      if (err.message === 'Concurrency Error') {
+        attempts++;
+        if (attempts >= maxAttempts) {
+          throw err;
+        }
+        // Small random backoff (e.g. 10ms - 40ms) to allow other updates to complete
+        await new Promise(resolve => setTimeout(resolve, 10 + Math.random() * 30));
+      } else {
+        throw err;
+      }
+    }
+  }
+}
+
+async function processTapAttempt({ userId, requestId }) {
   const now = new Date();
 
   // 1. Idempotency Check
@@ -124,9 +145,9 @@ async function processTap({ userId, requestId }) {
   // Perform dynamic regen
   calculateRegen(tapState, now, isPremium);
 
-  // 2. Anti-Abuse: Rate limiting (min 200ms)
+  // 2. Anti-Abuse: Rate limiting (min 50ms)
   const msSinceLastTap = now - new Date(tapState.lastTapTime);
-  if (msSinceLastTap < 200) {
+  if (msSinceLastTap < 50) {
     throw new Error('Too Fast');
   }
 
@@ -196,31 +217,6 @@ async function processTap({ userId, requestId }) {
     tapState.mysteryTapProgress -= ConfigService.get('mystery_tap_interval');
     if (Math.random() < ConfigService.get('mystery_tap_chance')) {
       isMystery = true;
-      const mysterySveAmt = ConfigService.get('mystery_tap_sve_reward');
-      
-      // Award SVE dynamically
-      await User.updateOne(
-        { _id: userId },
-        { $inc: { sveBalance: toDecimal128(mysterySveAmt) } }
-      );
-
-      await RewardLedger.create({
-        userId,
-        requestId: `${requestId}-mystery`,
-        type: 'mystery_tap',
-        amount: toDecimal128(mysterySveAmt),
-        currency: 'SVE',
-        timestamp: now,
-        details: { effectiveTaps }
-      });
-
-      await Notification.create({
-        userId,
-        category: 'reward',
-        title: 'Mystery Tap Unlocked!',
-        message: `Incredible luck! You hit the 0.5% roll on your 250th tap and won ${mysterySveAmt} SVE!`,
-        timestamp: now
-      });
     }
   }
 
@@ -252,6 +248,35 @@ async function processTap({ userId, requestId }) {
 
   if (!lockedState) {
     throw new Error('Concurrency Error');
+  }
+
+  // Defer Mystery Tap database side effects until after successful TapState save
+  if (isMystery) {
+    const mysterySveAmt = ConfigService.get('mystery_tap_sve_reward');
+    
+    // Award SVE dynamically
+    await User.updateOne(
+      { _id: userId },
+      { $inc: { sveBalance: toDecimal128(mysterySveAmt) } }
+    );
+
+    await RewardLedger.create({
+      userId,
+      requestId: `${requestId}-mystery`,
+      type: 'mystery_tap',
+      amount: toDecimal128(mysterySveAmt),
+      currency: 'SVE',
+      timestamp: now,
+      details: { effectiveTaps }
+    });
+
+    await Notification.create({
+      userId,
+      category: 'reward',
+      title: 'Mystery Tap Unlocked!',
+      message: `Incredible luck! You hit the 0.5% roll on your 250th tap and won ${mysterySveAmt} SVE!`,
+      timestamp: now
+    });
   }
 
   // Atomic Update to user balance and XP

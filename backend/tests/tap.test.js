@@ -110,7 +110,7 @@ describe('Auth & Tap Module Integration Tests', () => {
     expect(res.body.rewardAmount).toBeDefined();
   });
 
-  test('POST /api/tap - consecutive tap under 200ms should trigger rate limit (429 Too Fast)', async () => {
+  test('POST /api/tap - consecutive tap under 50ms should trigger rate limit (429 Too Fast)', async () => {
     const requestId = `test-tap-2-${Date.now()}`;
     await TapState.updateOne(
       { userId },
@@ -141,8 +141,8 @@ describe('Auth & Tap Module Integration Tests', () => {
       .send({ requestId });
     expect(res1.statusCode).toEqual(200);
 
-    // Wait 250ms to bypass rate limiting
-    await new Promise(r => setTimeout(r, 250));
+    // Wait 100ms to bypass rate limiting
+    await new Promise(r => setTimeout(r, 100));
 
     // Replay call
     const res2 = await request(app)
