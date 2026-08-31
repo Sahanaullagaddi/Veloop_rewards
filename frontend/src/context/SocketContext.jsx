@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
 import { SOCKET_URL } from '../config';
@@ -11,6 +11,89 @@ export function SocketProvider({ children }) {
   const [liveState, setLiveState] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
+
+  const pendingTapsRef = useRef([]);
+
+  const registerTap = (requestId, amount, energyCost) => {
+    let mainEnergyConsumed = 0;
+    let bankEnergyConsumed = 0;
+    
+    setLiveState(prev => {
+      if (!prev) return null;
+      
+      if (prev.currentEnergy >= energyCost) {
+        mainEnergyConsumed = energyCost;
+      } else {
+        mainEnergyConsumed = prev.currentEnergy;
+        bankEnergyConsumed = energyCost - mainEnergyConsumed;
+      }
+
+      pendingTapsRef.current.push({
+        requestId,
+        amount,
+        mainEnergyConsumed,
+        bankEnergyConsumed
+      });
+
+      let raw = prev.veBalance;
+      if (typeof raw === 'object' && raw.$numberDecimal) {
+        raw = raw.$numberDecimal;
+      }
+      let currentBal = parseFloat(raw || 0);
+      const nextBal = currentBal + amount;
+      
+      const formattedBal = typeof prev.veBalance === 'object' && prev.veBalance.$numberDecimal 
+        ? { $numberDecimal: nextBal.toString() } 
+        : nextBal;
+
+      return {
+        ...prev,
+        currentEnergy: Math.max(0, prev.currentEnergy - mainEnergyConsumed),
+        energyBankBalance: Math.max(0, prev.energyBankBalance - bankEnergyConsumed),
+        veBalance: formattedBal
+      };
+    });
+  };
+
+  const reconcileState = (serverState, finishedRequestId = null) => {
+    if (finishedRequestId) {
+      pendingTapsRef.current = pendingTapsRef.current.filter(t => t.requestId !== finishedRequestId);
+    }
+
+    setLiveState(prev => {
+      if (!prev) return null;
+
+      const mergedBaseState = { ...prev, ...serverState };
+
+      let extraVe = 0;
+      let deductedEnergy = 0;
+      let deductedEnergyBank = 0;
+
+      pendingTapsRef.current.forEach(tap => {
+        extraVe += tap.amount;
+        deductedEnergy += tap.mainEnergyConsumed;
+        deductedEnergyBank += tap.bankEnergyConsumed;
+      });
+
+      let raw = mergedBaseState.veBalance;
+      if (typeof raw === 'object' && raw.$numberDecimal) {
+        raw = raw.$numberDecimal;
+      }
+      let serverBal = parseFloat(raw || 0);
+      const nextBal = serverBal + extraVe;
+
+      const formattedBal = typeof prev.veBalance === 'object' && prev.veBalance.$numberDecimal 
+        ? { $numberDecimal: nextBal.toString() } 
+        : nextBal;
+
+      return {
+        ...mergedBaseState,
+        veBalance: formattedBal,
+        currentEnergy: Math.max(0, mergedBaseState.currentEnergy - deductedEnergy),
+        energyBankBalance: Math.max(0, mergedBaseState.energyBankBalance - deductedEnergyBank)
+      };
+    });
+  };
 
   useEffect(() => {
     if (!token || !user) {
@@ -38,10 +121,7 @@ export function SocketProvider({ children }) {
     });
 
     newSocket.on('stateUpdate', (updatedState) => {
-      setLiveState(prev => {
-        if (!prev) return updatedState;
-        return { ...prev, ...updatedState };
-      });
+      reconcileState(updatedState);
     });
 
     newSocket.on('notification', (notif) => {
@@ -159,7 +239,9 @@ export function SocketProvider({ children }) {
       isConnected,
       notifications,
       refreshTapState,
-      fetchInitialState
+      fetchInitialState,
+      registerTap,
+      reconcileState
     }}>
       {children}
     </SocketContext.Provider>

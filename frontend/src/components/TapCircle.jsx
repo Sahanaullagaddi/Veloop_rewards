@@ -11,7 +11,7 @@ let globalAudioCtx = null;
 
 export default function TapCircle() {
   const { token } = useAuth();
-  const { liveState, setLiveState } = useSocket();
+  const { liveState, registerTap, reconcileState } = useSocket();
   const { hapticsEnabled } = useTheme();
   const { recordClientTap } = useAd();
 
@@ -86,40 +86,11 @@ export default function TapCircle() {
     // Let the AdProvider record a tap (may trigger ad opportunity)
     recordClientTap();
 
-    // Optimistically deduct energy and increment coins on client-side
-    setLiveState(prev => {
-      if (!prev) return null;
-      
-      let raw = prev.veBalance;
-      if (typeof raw === 'object' && raw.$numberDecimal) {
-        raw = raw.$numberDecimal;
-      }
-      let currentBal = parseFloat(raw || 0);
-      if (isNaN(currentBal)) currentBal = 0;
-      const nextBal = currentBal + effectiveTaps;
-
-      const formattedBal = typeof prev.veBalance === 'object' && prev.veBalance.$numberDecimal 
-        ? { $numberDecimal: nextBal.toString() } 
-        : nextBal;
-
-      if (prev.currentEnergy >= energyCost) {
-        return { 
-          ...prev, 
-          currentEnergy: prev.currentEnergy - energyCost,
-          veBalance: formattedBal
-        };
-      } else if (prev.energyBankBalance >= energyCost) {
-        return { 
-          ...prev, 
-          energyBankBalance: prev.energyBankBalance - energyCost,
-          veBalance: formattedBal
-        };
-      }
-      return prev;
-    });
+    // Centralized optimistic state update
+    const requestId = `tap-${now}-${Math.random().toString(36).substr(2, 9)}`;
+    registerTap(requestId, effectiveTaps, energyCost);
 
     // Reconcile with Server
-    const requestId = `tap-${now}-${Math.random().toString(36).substr(2, 9)}`;
     try {
       const res = await fetch(`${API_URL}/api/tap`, {
         method: 'POST',
@@ -139,29 +110,17 @@ export default function TapCircle() {
         
         // Instant balance & energy reconciliation
         if (data.userBalances) {
-          setLiveState(prev => {
-            if (!prev) return null;
-            return {
-              ...prev,
-              veBalance: data.userBalances.veBalance,
-              sveBalance: data.userBalances.sveBalance,
-              tokenBalance: data.userBalances.tokenBalance,
-              gemBalance: data.userBalances.gemBalance,
-              spinBalance: data.userBalances.spinBalance,
-              fragmentBalance: data.userBalances.fragmentBalance,
-              level: data.userBalances.level,
-              xp: data.userBalances.xp,
-              currentEnergy: data.userBalances.currentEnergy !== undefined ? data.userBalances.currentEnergy : prev.currentEnergy,
-              energyBankBalance: data.userBalances.energyBankBalance !== undefined ? data.userBalances.energyBankBalance : prev.energyBankBalance
-            };
-          });
+          reconcileState(data.userBalances, requestId);
         }
       } else {
         // Rollback state if server rejected
+        reconcileState({}, requestId);
         triggerFeedback(data.message || 'Verification Failed');
       }
     } catch (err) {
       console.error('Failed to process tap on server:', err);
+      // Rollback state on network/communication failure
+      reconcileState({}, requestId);
     }
   };
 
