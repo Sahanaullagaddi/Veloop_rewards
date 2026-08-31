@@ -145,9 +145,9 @@ async function processTapAttempt({ userId, requestId }) {
   // Perform dynamic regen
   calculateRegen(tapState, now, isPremium);
 
-  // 2. Anti-Abuse: Rate limiting (min 50ms)
+  // 2. Anti-Abuse: Rate limiting (min 25ms to allow client-side jitter buffer)
   const msSinceLastTap = now - new Date(tapState.lastTapTime);
-  if (msSinceLastTap < 50) {
+  if (msSinceLastTap < 25) {
     throw new Error('Too Fast');
   }
 

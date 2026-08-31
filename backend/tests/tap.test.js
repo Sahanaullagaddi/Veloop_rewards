@@ -110,7 +110,7 @@ describe('Auth & Tap Module Integration Tests', () => {
     expect(res.body.rewardAmount).toBeDefined();
   });
 
-  test('POST /api/tap - consecutive tap under 50ms should trigger rate limit (429 Too Fast)', async () => {
+  test('POST /api/tap - consecutive tap under 25ms should trigger rate limit (429 Too Fast)', async () => {
     const requestId = `test-tap-2-${Date.now()}`;
     await TapState.updateOne(
       { userId },
