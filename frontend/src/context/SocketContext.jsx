@@ -17,23 +17,27 @@ export function SocketProvider({ children }) {
   const registerTap = (requestId, amount, energyCost) => {
     let mainEnergyConsumed = 0;
     let bankEnergyConsumed = 0;
+
+    if (liveState) {
+      if (liveState.currentEnergy >= energyCost) {
+        mainEnergyConsumed = energyCost;
+      } else {
+        mainEnergyConsumed = liveState.currentEnergy;
+        bankEnergyConsumed = energyCost - mainEnergyConsumed;
+      }
+    } else {
+      mainEnergyConsumed = energyCost;
+    }
+
+    pendingTapsRef.current.push({
+      requestId,
+      amount,
+      mainEnergyConsumed,
+      bankEnergyConsumed
+    });
     
     setLiveState(prev => {
       if (!prev) return null;
-      
-      if (prev.currentEnergy >= energyCost) {
-        mainEnergyConsumed = energyCost;
-      } else {
-        mainEnergyConsumed = prev.currentEnergy;
-        bankEnergyConsumed = energyCost - mainEnergyConsumed;
-      }
-
-      pendingTapsRef.current.push({
-        requestId,
-        amount,
-        mainEnergyConsumed,
-        bankEnergyConsumed
-      });
 
       let raw = prev.veBalance;
       if (typeof raw === 'object' && raw.$numberDecimal) {
