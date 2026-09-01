@@ -737,66 +737,7 @@ export default function TapEarnPage() {
           </div>
         </div>
 
-        {/* 5. Quick Actions Deck */}
-        <div className={styles.quickActionsGrid}>
-          {/* Action 1: Daily Checkin (Calendar Streak) */}
-          <div className={styles.actionCard} onClick={() => setShowCheckin(true)}>
-            <div className={styles.actionIconWrapperYellow}>
-              <Calendar size={18} />
-            </div>
-            <span className={styles.actionText}>Daily Check-in</span>
-          </div>
 
-          {/* Action 2: Missions */}
-          <div className={styles.actionCard} onClick={openMissionsModal}>
-            <div className={styles.actionIconWrapperBlue}>
-              <Award size={18} />
-            </div>
-            <span className={styles.actionText}>Missions</span>
-          </div>
-
-          {/* Action 3: Lucky Spin */}
-          <div className={styles.actionCard} onClick={() => setShowLuckyModal(true)}>
-            <div className={styles.actionIconWrapperGold}>
-              <Gift size={18} />
-            </div>
-            <span className={styles.actionText}>Lucky Spin</span>
-          </div>
-
-          {/* Action 4: Upgrades / Energy Bank */}
-          <div className={styles.actionCard} onClick={() => setShowUpgrades(true)}>
-            <div className={styles.actionIconWrapperGreen}>
-              <Zap size={18} />
-            </div>
-            <span className={styles.actionText}>Upgrades</span>
-          </div>
-
-          {/* Action 5: Energy Shield */}
-          <div className={styles.actionCard} onClick={() => setShowShieldModal(true)}>
-            <div className={styles.actionIconWrapperBlue}>
-              <Shield size={18} />
-            </div>
-            <span className={styles.actionText}>
-              {shieldTimeLeft > 0 ? `Shield (${shieldTimeLeft}s)` : 'Energy Shield'}
-            </span>
-          </div>
-
-          {/* Action 6: Daily Taps Challenge */}
-          <div 
-            className={`${styles.actionCard} ${liveState.dailyChallengeProgress >= 1000 && !liveState.dailyChallengeClaimed ? styles.pulseActionCard : ''}`} 
-            onClick={handleClaimDailyChallenge}
-          >
-            <div className={styles.actionIconWrapperPurple}>
-              <Check size={18} />
-            </div>
-            <span className={styles.actionText}>
-              {liveState.dailyChallengeClaimed 
-                ? 'Challenge Claimed' 
-                : `Challenge (${liveState.dailyChallengeProgress || 0}/1000)`
-              }
-            </span>
-          </div>
-        </div>
 
         {/* Yield Staking & Extra widgets link */}
         <div style={{ textAlign: 'center', margin: '15px 0 25px 0' }}>
