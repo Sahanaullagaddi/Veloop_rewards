@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import TapCircle from '../components/TapCircle';
+import BoostsRewardsRow from '../components/BoostsRewardsRow';
 import DailyCheckinModal from '../components/DailyCheckinModal';
 import { 
   Zap, Trophy, Award, Gift, ArrowRight, Shield, Layers, X, ChevronRight, Check, Activity, Sparkles, Calendar
@@ -714,6 +715,17 @@ export default function TapEarnPage() {
             {Number(liveState.veBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
           </span>
         </div>
+
+        {/* Boosts & Rewards Horizontal Scrolling Video Cards */}
+        <BoostsRewardsRow 
+          onOpenShield={() => setShowShieldModal(true)}
+          onOpenUpgrades={() => setShowUpgrades(true)}
+          onOpenLucky={() => setShowLuckyModal(true)}
+          onOpenBank={() => setShowBankModal(true)}
+          onOpenMissions={openMissionsModal}
+          onOpenGoal={() => setShowCheckin(true)}
+          onOpenLeaders={() => navigate('/league')}
+        />
 
         {/* 2. Tapping Circle (Centered) */}
         <div className={styles.circlePedestal}>
