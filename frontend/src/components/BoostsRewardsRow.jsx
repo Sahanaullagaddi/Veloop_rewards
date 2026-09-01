@@ -1,62 +1,76 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import styles from './BoostsRewardsRow.module.css';
 
 const CARDS_CONFIG = [
   {
     id: 'protect',
-    label: 'Protect',
+    title: 'Protect',
+    description: 'Shield energy, tap with 90% defense.',
     videoSrc: '/videos/11.mp4',
     posterSrc: '/posters/11.png',
     glowClass: styles.glowBlue,
+    arrowClass: styles.arrowBlue,
     actionKey: 'shield'
   },
   {
     id: 'levelup',
-    label: 'Level Up',
+    title: 'Level Up',
+    description: 'Upgrade stats, boost coins & power.',
     videoSrc: '/videos/22.mp4',
     posterSrc: '/posters/22.png',
     glowClass: styles.glowOrange,
+    arrowClass: styles.arrowOrange,
     actionKey: 'upgrade'
   },
   {
     id: 'spin',
-    label: 'Spin',
+    title: 'Lucky Spin',
+    description: 'Spin the wheel, win exciting prizes.',
     videoSrc: '/videos/33.mp4',
     posterSrc: '/posters/33.png',
     glowClass: styles.glowPurple,
+    arrowClass: styles.arrowPurple,
     actionKey: 'spin'
   },
   {
     id: 'refill',
-    label: 'Refill',
+    title: 'Refill',
+    description: 'Instant refill, recharge to 100% full.',
     videoSrc: '/videos/44.mp4',
     posterSrc: '/posters/44.png',
     glowClass: styles.glowGreen,
+    arrowClass: styles.arrowGreen,
     actionKey: 'refill'
   },
   {
     id: 'tasks',
-    label: 'Tasks',
+    title: 'Tasks',
+    description: 'Complete quests, earn bonus coins.',
     videoSrc: '/videos/55.mp4',
     posterSrc: '/posters/55.png',
     glowClass: styles.glowGold,
+    arrowClass: styles.arrowGold,
     actionKey: 'tasks'
   },
   {
     id: 'dailygoal',
-    label: 'Daily Goal',
+    title: 'Daily Goal',
+    description: 'Tap 1,000 times, claim daily crates.',
     videoSrc: '/videos/77.mp4',
     posterSrc: '/posters/77.png',
     glowClass: styles.glowIndigo,
+    arrowClass: styles.arrowIndigo,
     actionKey: 'goal'
   },
   {
     id: 'leaders',
-    label: 'Leaders',
+    title: 'Leaders',
+    description: 'Climb the ranks, compete with leaders.',
     videoSrc: '/videos/88.mp4',
     posterSrc: '/posters/88.png',
     glowClass: styles.glowAmber,
+    arrowClass: styles.arrowAmber,
     actionKey: 'leaders'
   }
 ];
@@ -111,7 +125,7 @@ function BoostCard({ card, onAction, isDragRef }) {
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
-      aria-label={card.label}
+      aria-label={card.title}
       onKeyDown={(e) => {
         if (e.key === ' ' || e.key === 'Enter') {
           handleCardClick();
@@ -131,8 +145,12 @@ function BoostCard({ card, onAction, isDragRef }) {
           className={styles.videoElement}
         />
       </div>
-      <div className={styles.labelContainer}>
-        <span className={styles.labelText}>{card.label}</span>
+      <div className={styles.infoContainer}>
+        <span className={styles.cardTitle}>{card.title}</span>
+        <span className={styles.cardDesc}>{card.description}</span>
+        <div className={`${styles.arrowBtn} ${card.arrowClass}`}>
+          <ArrowRight size={14} strokeWidth={2.5} />
+        </div>
       </div>
     </div>
   );
