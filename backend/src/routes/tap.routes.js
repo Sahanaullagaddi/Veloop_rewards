@@ -631,18 +631,19 @@ router.get('/lucky', auth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'TapState not found' });
     }
 
-    const interval = ConfigService.get('lucky_tap_interval') || 30;
-    const tapsCount = tapState.totalAcceptedTaps;
+    const interval = ConfigService.get('lucky_tap_interval') || 10;
+    const tapsCount = tapState.totalAcceptedTaps || 0;
     const lastLucky = tapState.lastLuckyTapCount || 0;
     const diff = tapsCount - lastLucky;
-    const eligible = diff >= interval;
+    const isFree = diff >= interval;
 
     res.json({
       success: true,
-      eligible,
+      eligible: true,
+      isFree,
       totalAcceptedTaps: tapsCount,
       lastLuckyTapCount: lastLucky,
-      nextIn: eligible ? 0 : interval - diff
+      nextIn: isFree ? 0 : Math.max(0, interval - diff)
     });
   } catch (err) {
     console.error(err);
@@ -674,14 +675,19 @@ router.post('/lucky/spin', auth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'TapState not found' });
     }
 
-    const interval = ConfigService.get('lucky_tap_interval') || 30;
-    const tapsCount = tapState.totalAcceptedTaps;
+    const interval = ConfigService.get('lucky_tap_interval') || 10;
+    const tapsCount = tapState.totalAcceptedTaps || 0;
     const lastLucky = tapState.lastLuckyTapCount || 0;
     const diff = tapsCount - lastLucky;
 
-    if (diff < interval) {
-      return res.status(400).json({ success: false, message: 'Not eligible for Lucky Spin yet' });
+    // Reset lucky tap threshold or advance it
+    if (diff >= interval) {
+      tapState.lastLuckyTapCount = tapsCount;
+    } else {
+      // Advance counter so user gets continuous access
+      tapState.lastLuckyTapCount = Math.max(0, tapsCount - interval);
     }
+    await tapState.save();
 
     // Roll lucky reward:
     // 50% chance: 10 VE

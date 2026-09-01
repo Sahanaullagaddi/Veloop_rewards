@@ -1260,18 +1260,19 @@ export default function TapEarnPage() {
               )}
 
               <div className={styles.eligibilityText}>
-                {luckyEligible 
-                  ? 'Eligible for Lucky Spin!' 
-                  : `Next Spin in ${luckyDetails ? luckyDetails.nextIn : 10} taps.`
+                {luckyDetails && luckyDetails.isFree === false && luckyDetails.nextIn > 0 
+                  ? `Free Spin in ${luckyDetails.nextIn} taps (or Spin now!)` 
+                  : '🎉 Lucky Spin Ready!'
                 }
               </div>
 
               <button 
                 onClick={handleLuckySpin} 
-                disabled={!luckyEligible || spinning} 
-                className={!luckyEligible || spinning ? "btn-disabled" : "btn-primary"}
+                disabled={spinning} 
+                className={spinning ? "btn-disabled" : "btn-primary"}
+                style={{ width: '100%', marginTop: '10px' }}
               >
-                {spinning ? 'Spinning...' : 'Spin Wheel'}
+                {spinning ? '🎡 Spinning Wheel...' : '🎡 Spin Wheel'}
               </button>
 
               <div style={{
