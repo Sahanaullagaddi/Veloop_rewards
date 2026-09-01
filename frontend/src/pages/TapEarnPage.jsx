@@ -834,15 +834,6 @@ export default function TapEarnPage() {
           onOpenGoal={() => setShowGoalModal(true)}
           onOpenLeaders={openLeaderboardModal}
         />
-
-
-
-        {/* Yield Staking & Extra widgets link */}
-        <div style={{ textAlign: 'center', margin: '15px 0 25px 0' }}>
-          <button onClick={() => setShowStaking(true)} className={styles.stakingLinkBtn}>
-            Open Yield Staking Options ➜
-          </button>
-        </div>
       </div>
 
       {/* Premium Membership Plans Dashboard Section */}
