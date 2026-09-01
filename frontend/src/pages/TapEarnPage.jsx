@@ -716,17 +716,6 @@ export default function TapEarnPage() {
           </span>
         </div>
 
-        {/* Boosts & Rewards Horizontal Scrolling Video Cards */}
-        <BoostsRewardsRow 
-          onOpenShield={() => setShowShieldModal(true)}
-          onOpenUpgrades={() => setShowUpgrades(true)}
-          onOpenLucky={() => setShowLuckyModal(true)}
-          onOpenBank={() => setShowBankModal(true)}
-          onOpenMissions={openMissionsModal}
-          onOpenGoal={() => setShowCheckin(true)}
-          onOpenLeaders={() => navigate('/league')}
-        />
-
         {/* 2. Tapping Circle (Centered) */}
         <div className={styles.circlePedestal}>
           <div className={styles.pedestalHalo}>
@@ -748,6 +737,17 @@ export default function TapEarnPage() {
             <span className={styles.boostText}>Boost</span>
           </div>
         </div>
+
+        {/* Boosts & Rewards Horizontal Scrolling Video Cards */}
+        <BoostsRewardsRow 
+          onOpenShield={() => setShowShieldModal(true)}
+          onOpenUpgrades={() => setShowUpgrades(true)}
+          onOpenLucky={() => setShowLuckyModal(true)}
+          onOpenBank={() => setShowBankModal(true)}
+          onOpenMissions={openMissionsModal}
+          onOpenGoal={() => setShowCheckin(true)}
+          onOpenLeaders={() => navigate('/league')}
+        />
 
 
 
