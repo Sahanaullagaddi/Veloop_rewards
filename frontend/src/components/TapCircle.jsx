@@ -224,7 +224,7 @@ export default function TapCircle() {
         {floats.map(f => (
           <span 
             key={f.id} 
-            className={`${styles.floatingCoin} ${f.currency === 'SVE' ? styles.blueCoin : styles.goldCoin}`}
+            className={`${styles.floatingCoin} ${f.currency === 'SVE' ? styles.goldCoin : styles.whiteCoin}`}
             style={{ left: `${f.x}px`, top: `${f.y}px` }}
           >
             {f.text}
