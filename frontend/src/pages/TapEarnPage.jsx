@@ -28,6 +28,11 @@ export default function TapEarnPage() {
   const [showStaking, setShowStaking] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
 
+  // Tasks Tab state
+  const [taskTab, setTaskTab] = useState('milestones');
+  const [socialFollowed, setSocialFollowed] = useState(false);
+  const [telegramJoined, setTelegramJoined] = useState(false);
+
   // Leaderboard modal states
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [myLeaderRank, setMyLeaderRank] = useState(null);
@@ -520,6 +525,42 @@ export default function TapEarnPage() {
       console.error(e);
     } finally {
       setLoadingLeaderboard(false);
+    }
+  };
+
+  const handleFollowTwitter = () => {
+    window.open('https://twitter.com', '_blank');
+    if (!socialFollowed) {
+      setSocialFollowed(true);
+      setLiveState(prev => {
+        if (!prev) return null;
+        let raw = prev.veBalance;
+        if (typeof raw === 'object' && raw.$numberDecimal) raw = raw.$numberDecimal;
+        let bal = parseFloat(raw || 0) + 50;
+        return {
+          ...prev,
+          veBalance: typeof prev.veBalance === 'object' && prev.veBalance.$numberDecimal ? { $numberDecimal: bal.toString() } : bal
+        };
+      });
+      showToast('🎁 Claimed +50 VE for following on X!');
+    }
+  };
+
+  const handleJoinTelegram = () => {
+    window.open('https://t.me', '_blank');
+    if (!telegramJoined) {
+      setTelegramJoined(true);
+      setLiveState(prev => {
+        if (!prev) return null;
+        let raw = prev.veBalance;
+        if (typeof raw === 'object' && raw.$numberDecimal) raw = raw.$numberDecimal;
+        let bal = parseFloat(raw || 0) + 50;
+        return {
+          ...prev,
+          veBalance: typeof prev.veBalance === 'object' && prev.veBalance.$numberDecimal ? { $numberDecimal: bal.toString() } : bal
+        };
+      });
+      showToast('🎁 Claimed +50 VE for joining Telegram!');
     }
   };
 
@@ -1305,36 +1346,265 @@ export default function TapEarnPage() {
       {/* E. Missions Panel */}
       {showMissions && (
         <div className={styles.modalOverlay} onClick={() => setShowMissions(false)}>
-          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()} style={{ maxWidth: '440px' }}>
             <div className={styles.modalHeader}>
-              <h3>Daily Tasks & Missions</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '20px' }}>📋</span>
+                <h3 style={{ margin: 0 }}>Daily Tasks & Missions</h3>
+              </div>
               <button onClick={() => setShowMissions(false)}><X size={20} /></button>
             </div>
-            <div className={styles.modalBodyList}>
-              {missionsList.length === 0 ? (
-                <div className={styles.emptyState}>No active missions available.</div>
-              ) : (
-                missionsList.map(m => (
-                  <div key={m.id} className={styles.missionItem}>
-                    <div className={styles.missionInfo}>
-                      <h4>{m.title}</h4>
-                      <p>{m.description}</p>
-                      <div className={styles.missionReward}>
-                        Reward: <strong>{m.rewardAmount} {m.rewardType}</strong>
+
+            {/* Task Category Tabs */}
+            <div style={{ display: 'flex', gap: '8px', padding: '12px 16px 6px 16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <button 
+                onClick={() => setTaskTab('milestones')}
+                style={{
+                  flex: 1,
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: taskTab === 'milestones' ? '#ffd700' : 'rgba(255, 255, 255, 0.06)',
+                  color: taskTab === 'milestones' ? '#000' : '#cbd5e1',
+                  fontWeight: 700,
+                  fontSize: '12.5px',
+                  cursor: 'pointer'
+                }}
+              >
+                🎯 Milestones ({missionsList.length})
+              </button>
+              <button 
+                onClick={() => setTaskTab('social')}
+                style={{
+                  flex: 1,
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: taskTab === 'social' ? '#ffd700' : 'rgba(255, 255, 255, 0.06)',
+                  color: taskTab === 'social' ? '#000' : '#cbd5e1',
+                  fontWeight: 700,
+                  fontSize: '12.5px',
+                  cursor: 'pointer'
+                }}
+              >
+                📱 Social & Community
+              </button>
+            </div>
+
+            <div className={styles.modalBodyList} style={{ maxHeight: '380px', overflowY: 'auto', padding: '14px 16px' }}>
+              {taskTab === 'milestones' && (
+                missionsList.length === 0 ? (
+                  <div className={styles.emptyState}>No active milestone tasks available.</div>
+                ) : (
+                  missionsList.map(m => {
+                    const pct = Math.min(100, Math.floor(((m.progress || 0) / (m.requirementValue || 1)) * 100));
+                    return (
+                      <div 
+                        key={m.id} 
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.04)',
+                          border: m.completed && !m.claimed ? '1px solid rgba(245, 158, 11, 0.5)' : '1px solid rgba(255, 255, 255, 0.08)',
+                          borderRadius: '12px',
+                          padding: '12px 14px',
+                          marginBottom: '10px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px'
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <h4 style={{ margin: '0 0 2px 0', fontSize: '14px', color: '#f1f5f9' }}>{m.title}</h4>
+                            <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8' }}>{m.description}</p>
+                          </div>
+                          <span style={{ 
+                            background: 'rgba(244, 196, 48, 0.15)', 
+                            color: '#ffd700', 
+                            border: '1px solid rgba(244, 196, 48, 0.3)', 
+                            borderRadius: '6px', 
+                            padding: '2px 8px', 
+                            fontWeight: 700,
+                            fontSize: '11.5px',
+                            whiteSpace: 'nowrap'
+                          }}>
+                            +{m.rewardAmount} {m.rewardType}
+                          </span>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div>
+                          <div style={{ 
+                            width: '100%', 
+                            height: '6px', 
+                            background: 'rgba(255, 255, 255, 0.1)', 
+                            borderRadius: '3px', 
+                            overflow: 'hidden' 
+                          }}>
+                            <div style={{ 
+                              height: '100%', 
+                              width: `${pct}%`,
+                              background: pct >= 100 ? '#22c55e' : 'linear-gradient(90deg, #f59e0b, #ffd700)',
+                              borderRadius: '3px',
+                              transition: 'width 0.3s ease'
+                            }} />
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+                            <span>Progress: {m.progress || 0} / {m.requirementValue}</span>
+                            <span>{pct}%</span>
+                          </div>
+                        </div>
+
+                        {/* Action Button */}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px' }}>
+                          {m.claimed ? (
+                            <span style={{ color: '#22c55e', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <Check size={14} /> Completed
+                            </span>
+                          ) : m.completed ? (
+                            <button 
+                              onClick={() => handleClaimMission(m.id, m.title)} 
+                              className="btn-primary"
+                              style={{ background: '#ffd700', color: '#000', fontWeight: 800, padding: '6px 14px', fontSize: '12px' }}
+                            >
+                              🎁 Claim {m.rewardAmount} {m.rewardType}
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={() => setShowMissions(false)} 
+                              className="btn-secondary"
+                              style={{ padding: '5px 12px', fontSize: '11.5px', borderRadius: '6px' }}
+                            >
+                              Tap to Earn ➜
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div className={styles.missionProgress}>
-                        Progress: {m.progress} / {m.requirementValue}
-                      </div>
+                    );
+                  })
+                )
+              )}
+
+              {taskTab === 'social' && (
+                <div>
+                  {/* Task 1: Check in */}
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px'
+                  }}>
+                    <div>
+                      <h4 style={{ margin: '0 0 2px 0', fontSize: '14px', color: '#f1f5f9' }}>📅 Daily Login Streak</h4>
+                      <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#94a3b8' }}>Claim daily login streak crates</p>
+                      <span style={{ color: '#ffd700', fontWeight: 700, fontSize: '11.5px' }}>+20 VE Coins</span>
                     </div>
-                    {m.claimed ? (
-                      <span className={styles.claimedTag}><Check size={16} /> Claimed</span>
-                    ) : m.completed ? (
-                      <button onClick={() => handleClaimMission(m.id, m.title)} className={styles.btnClaimMini}>Claim</button>
+                    <button 
+                      onClick={() => { setShowMissions(false); setShowCheckin(true); }}
+                      className="btn-primary"
+                      style={{ padding: '6px 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                    >
+                      Open Calendar ➜
+                    </button>
+                  </div>
+
+                  {/* Task 2: Follow on Twitter */}
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px'
+                  }}>
+                    <div>
+                      <h4 style={{ margin: '0 0 2px 0', fontSize: '14px', color: '#f1f5f9' }}>🐦 Follow @Veloop on X</h4>
+                      <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#94a3b8' }}>Follow our official page for updates</p>
+                      <span style={{ color: '#ffd700', fontWeight: 700, fontSize: '11.5px' }}>+50 VE Coins</span>
+                    </div>
+                    {socialFollowed ? (
+                      <span style={{ color: '#22c55e', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Check size={14} /> Completed
+                      </span>
                     ) : (
-                      <span className={styles.lockedTag}>Locked</span>
+                      <button 
+                        onClick={handleFollowTwitter}
+                        className="btn-primary"
+                        style={{ padding: '6px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                      >
+                        Follow ➜
+                      </button>
                     )}
                   </div>
-                ))
+
+                  {/* Task 3: Join Telegram */}
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px'
+                  }}>
+                    <div>
+                      <h4 style={{ margin: '0 0 2px 0', fontSize: '14px', color: '#f1f5f9' }}>💬 Join Telegram Channel</h4>
+                      <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#94a3b8' }}>Get community secret drop codes</p>
+                      <span style={{ color: '#ffd700', fontWeight: 700, fontSize: '11.5px' }}>+50 VE Coins</span>
+                    </div>
+                    {telegramJoined ? (
+                      <span style={{ color: '#22c55e', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Check size={14} /> Completed
+                      </span>
+                    ) : (
+                      <button 
+                        onClick={handleJoinTelegram}
+                        className="btn-primary"
+                        style={{ padding: '6px 14px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                      >
+                        Join ➜
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Task 4: Invite Friends */}
+                  <div style={{
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '10px'
+                  }}>
+                    <div>
+                      <h4 style={{ margin: '0 0 2px 0', fontSize: '14px', color: '#f1f5f9' }}>👥 Invite a Friend</h4>
+                      <p style={{ margin: '0 0 4px 0', fontSize: '12px', color: '#94a3b8' }}>Share your code to earn 100 VE per friend</p>
+                      <span style={{ color: '#ffd700', fontWeight: 700, fontSize: '11.5px' }}>+100 VE Coins</span>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        setShowMissions(false);
+                        navigate('/invite');
+                      }}
+                      className="btn-secondary"
+                      style={{ padding: '6px 12px', fontSize: '12px', whiteSpace: 'nowrap' }}
+                    >
+                      Invite ➜
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
