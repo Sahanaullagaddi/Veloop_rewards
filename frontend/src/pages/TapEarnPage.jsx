@@ -19,11 +19,19 @@ export default function TapEarnPage() {
   // Modal / Drawer visibility states
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
+  const [showRefillModal, setShowRefillModal] = useState(false);
   const [showShieldModal, setShowShieldModal] = useState(false);
   const [showLuckyModal, setShowLuckyModal] = useState(false);
   const [showMissions, setShowMissions] = useState(false);
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showLeadersModal, setShowLeadersModal] = useState(false);
   const [showStaking, setShowStaking] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
+
+  // Leaderboard modal states
+  const [leaderboardData, setLeaderboardData] = useState([]);
+  const [myLeaderRank, setMyLeaderRank] = useState(null);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
   // Staking states
   const [stakingList, setStakingList] = useState([]);
@@ -478,6 +486,43 @@ export default function TapEarnPage() {
     }
   };
 
+  const handleRefillEnergy = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/tap/energy/refill`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLiveState(prev => ({ ...prev, currentEnergy: data.currentEnergy }));
+        showToast('Energy fully refilled to 100%!');
+      } else {
+        showToast(data.message || 'Error refilling energy');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const openLeaderboardModal = async () => {
+    setShowLeadersModal(true);
+    setLoadingLeaderboard(true);
+    try {
+      const res = await fetch(`${API_URL}/api/tap/league`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLeaderboardData(data.leaderboard || []);
+        setMyLeaderRank(data.myRank);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingLeaderboard(false);
+    }
+  };
+
   const handleBuyUpgrade = async (type) => {
     try {
       const res = await fetch(`${API_URL}/api/tap/upgrade`, {
@@ -743,10 +788,10 @@ export default function TapEarnPage() {
           onOpenShield={() => setShowShieldModal(true)}
           onOpenUpgrades={() => setShowUpgrades(true)}
           onOpenLucky={() => setShowLuckyModal(true)}
-          onOpenBank={() => setShowBankModal(true)}
+          onOpenBank={() => setShowRefillModal(true)}
           onOpenMissions={openMissionsModal}
-          onOpenGoal={() => setShowCheckin(true)}
-          onOpenLeaders={() => navigate('/league')}
+          onOpenGoal={() => setShowGoalModal(true)}
+          onOpenLeaders={openLeaderboardModal}
         />
 
 
@@ -840,8 +885,27 @@ export default function TapEarnPage() {
         <div className={styles.drawerOverlay} onClick={() => setShowUpgrades(false)}>
           <div className={styles.drawer} onClick={e => e.stopPropagation()}>
             <div className={styles.drawerHeader}>
-              <h3>Fintech Upgrade Core</h3>
+              <h3>Level Up & Power Upgrades</h3>
               <button onClick={() => setShowUpgrades(false)}><X size={20} /></button>
+            </div>
+
+            <div className={styles.levelUpBanner}>
+              <div className={styles.levelBadge}>
+                <span>LVL</span>
+                <strong>{liveState.level || 1}</strong>
+              </div>
+              <div className={styles.levelInfo}>
+                <div className={styles.levelInfoRow}>
+                  <span>Player Level Progress</span>
+                  <span>{liveState.xp || 0} / {(liveState.level || 1) * 200} XP</span>
+                </div>
+                <div className={styles.levelProgressBar}>
+                  <div 
+                    className={styles.levelProgressFill} 
+                    style={{ width: `${Math.min(100, ((liveState.xp || 0) / ((liveState.level || 1) * 200)) * 100)}%` }} 
+                  />
+                </div>
+              </div>
             </div>
 
             <div className={styles.drawerList}>
@@ -1048,6 +1112,67 @@ export default function TapEarnPage() {
       )}
 
       {/* B. Energy Bank Modal */}
+      {/* Energy Refill Modal */}
+      {showRefillModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowRefillModal(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Energy Refill & Battery Bank</h3>
+              <button onClick={() => setShowRefillModal(false)}><X size={20} /></button>
+            </div>
+            <div className={styles.modalBody}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                <Zap size={48} className={styles.iconGreen} />
+              </div>
+              <h4>Current Energy: {liveState.currentEnergy} / {liveState.energyCapacity || 500}</h4>
+              <div className={styles.goalProgressBar} style={{ margin: '8px 0 16px 0' }}>
+                <div 
+                  className={styles.goalProgressFill} 
+                  style={{ 
+                    width: `${Math.min(100, ((liveState.currentEnergy || 0) / (liveState.energyCapacity || 500)) * 100)}%`,
+                    backgroundColor: '#22c55e'
+                  }} 
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+                <button 
+                  onClick={handleRefillEnergy}
+                  className="btn-primary"
+                  style={{ backgroundColor: '#22c55e', borderColor: '#16a34a' }}
+                >
+                  ⚡ Instant Full Energy Refill (Free)
+                </button>
+
+                <div style={{
+                  padding: '12px',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <strong style={{ color: '#0070f3' }}>🔋 Energy Bank Reserve</strong>
+                    <span>{liveState.energyBankBalance} / {liveState.energyBankCapacity || 500}</span>
+                  </div>
+                  <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>
+                    When core energy reaches zero, taps automatically consume reserve energy from your bank.
+                  </p>
+                </div>
+
+                <button 
+                  onClick={() => { setShowRefillModal(false); handleActivateBoost(); }}
+                  className="btn-secondary"
+                >
+                  🚀 Activate 2x Turbo Boost (30s)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* B. Energy Bank Modal */}
       {showBankModal && (
         <div className={styles.modalOverlay} onClick={() => setShowBankModal(false)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -1082,7 +1207,7 @@ export default function TapEarnPage() {
         <div className={styles.modalOverlay} onClick={() => setShowShieldModal(false)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3>Energy Shield Guard</h3>
+              <h3>Protect - Energy Shield Guard</h3>
               <button onClick={() => setShowShieldModal(false)}><X size={20} /></button>
             </div>
             <div className={styles.modalBody}>
@@ -1181,7 +1306,7 @@ export default function TapEarnPage() {
         <div className={styles.modalOverlay} onClick={() => setShowMissions(false)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3>Tap Achievements Ledger</h3>
+              <h3>Daily Tasks & Missions</h3>
               <button onClick={() => setShowMissions(false)}><X size={20} /></button>
             </div>
             <div className={styles.modalBodyList}>
@@ -1209,6 +1334,165 @@ export default function TapEarnPage() {
                     )}
                   </div>
                 ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* F. Daily Goal & Streak Modal */}
+      {showGoalModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowGoalModal(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Daily Goal & Streak Target</h3>
+              <button onClick={() => setShowGoalModal(false)}><X size={20} /></button>
+            </div>
+            <div className={styles.modalBody}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                <Trophy size={48} className={styles.iconGold} />
+              </div>
+              
+              <div style={{
+                padding: '14px',
+                background: 'rgba(99, 102, 241, 0.1)',
+                borderRadius: '12px',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                width: '100%',
+                boxSizing: 'border-box',
+                marginBottom: '14px'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <h4 style={{ margin: 0, color: '#f1f5f9' }}>🎯 Daily 1,000 Taps Target</h4>
+                  <span style={{ color: '#ffd700', fontWeight: 700 }}>+50 Tokens</span>
+                </div>
+                <p style={{ fontSize: '12.5px', color: '#94a3b8', margin: '4px 0 10px 0', textAlign: 'left' }}>
+                  Tap 1,000 times today to unlock your daily goal reward token crate.
+                </p>
+                <div className={styles.goalProgressBar}>
+                  <div 
+                    className={styles.goalProgressFill} 
+                    style={{ 
+                      width: `${Math.min(100, (((liveState.dailyChallengeProgress || 0) / 1000) * 100))}%`,
+                      backgroundColor: '#6366f1'
+                    }} 
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '6px', color: '#94a3b8' }}>
+                  <span>Progress: {liveState.dailyChallengeProgress || 0} / 1000</span>
+                  <span>{Math.floor(Math.min(100, (((liveState.dailyChallengeProgress || 0) / 1000) * 100)))}%</span>
+                </div>
+                <button 
+                  onClick={handleClaimDailyChallenge}
+                  disabled={liveState.dailyChallengeClaimed || (liveState.dailyChallengeProgress || 0) < 1000}
+                  className={liveState.dailyChallengeClaimed || (liveState.dailyChallengeProgress || 0) < 1000 ? "btn-disabled" : "btn-primary"}
+                  style={{ width: '100%', marginTop: '10px' }}
+                >
+                  {liveState.dailyChallengeClaimed 
+                    ? '✓ Daily Goal Reward Claimed' 
+                    : (liveState.dailyChallengeProgress || 0) >= 1000 
+                      ? 'Claim 50 Tokens Reward' 
+                      : `${1000 - (liveState.dailyChallengeProgress || 0)} Taps Remaining`
+                  }
+                </button>
+              </div>
+
+              <div style={{
+                padding: '12px',
+                background: 'rgba(255, 255, 255, 0.04)',
+                borderRadius: '10px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                width: '100%',
+                boxSizing: 'border-box'
+              }}>
+                <h4 style={{ margin: '0 0 6px 0', color: '#f1f5f9', textAlign: 'left' }}>📅 7-Day Login Streak</h4>
+                <p style={{ fontSize: '12px', color: '#94a3b8', margin: '0 0 10px 0', textAlign: 'left' }}>
+                  Claim cumulative daily rewards by checking in every consecutive day.
+                </p>
+                <button 
+                  onClick={() => { setShowGoalModal(false); setShowCheckin(true); }}
+                  className="btn-secondary"
+                  style={{ width: '100%' }}
+                >
+                  Open 7-Day Streak Calendar ➜
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* G. Leaders Modal */}
+      {showLeadersModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowLeadersModal(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Season Leaderboard Top Players</h3>
+              <button onClick={() => setShowLeadersModal(false)}><X size={20} /></button>
+            </div>
+            <div className={styles.modalBody}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 14px',
+                background: 'rgba(245, 158, 11, 0.12)',
+                borderRadius: '10px',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                marginBottom: '12px',
+                width: '100%',
+                boxSizing: 'border-box'
+              }}>
+                <div>
+                  <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>Your Current Rank</span>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#f59e0b' }}>
+                    {myLeaderRank ? `#${myLeaderRank}` : 'Unranked'}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => { setShowLeadersModal(false); navigate('/league'); }}
+                  className="btn-mini"
+                  style={{ background: '#f59e0b', color: '#000', fontWeight: 700 }}
+                >
+                  Full League ➜
+                </button>
+              </div>
+
+              {loadingLeaderboard ? (
+                <div style={{ padding: '20px', color: '#94a3b8' }}>Loading top leaders...</div>
+              ) : leaderboardData.length === 0 ? (
+                <div style={{ padding: '20px', color: '#94a3b8' }}>No leaderboard data yet. Start tapping to rank!</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxHeight: '260px', overflowY: 'auto' }}>
+                  {leaderboardData.slice(0, 10).map((player, idx) => (
+                    <div 
+                      key={player.userId || idx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '8px 12px',
+                        borderRadius: '8px',
+                        background: idx === 0 ? 'rgba(234, 179, 8, 0.15)' : idx === 1 ? 'rgba(148, 163, 184, 0.15)' : idx === 2 ? 'rgba(180, 83, 9, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.06)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ 
+                          width: '24px', 
+                          fontWeight: 800, 
+                          color: idx === 0 ? '#ffd700' : idx === 1 ? '#cbd5e1' : idx === 2 ? '#f59e0b' : '#94a3b8' 
+                        }}>
+                          #{idx + 1}
+                        </span>
+                        <span style={{ fontWeight: 600, color: '#f1f5f9' }}>{player.username || `Player ${idx + 1}`}</span>
+                      </div>
+                      <span style={{ fontWeight: 700, color: '#f59e0b' }}>
+                        {Number(player.score || player.veBalance || 0).toLocaleString()} VE
+                      </span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>

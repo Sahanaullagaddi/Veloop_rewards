@@ -167,6 +167,42 @@ router.post('/boost/activate', auth, async (req, res) => {
   }
 });
 
+// POST /api/tap/energy/refill
+router.post('/energy/refill', auth, async (req, res) => {
+  try {
+    let tapState = await TapState.findOne({ userId: req.user.id });
+    if (!tapState) {
+      return res.status(404).json({ success: false, message: 'Tap state not found' });
+    }
+
+    const energyCapacity = ConfigService.get('energy_capacity_base') +
+      (tapState.energyCapacityLevel - 1) * ConfigService.get('energy_capacity_step');
+
+    // Instant Full Energy Refill
+    tapState.currentEnergy = energyCapacity;
+    tapState.lastEnergyRegen = new Date();
+    await tapState.save();
+
+    const io = getIO();
+    if (io) {
+      io.to(req.user.id.toString()).emit('stateUpdate', {
+        currentEnergy: tapState.currentEnergy,
+        energyCapacity
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Energy fully refilled to 100%!',
+      currentEnergy: tapState.currentEnergy,
+      energyCapacity
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error refilling energy' });
+  }
+});
+
 // Helper for upgrade purchase logic
 async function processUpgradePurchase(userId, upgradeType) {
   const now = new Date();
