@@ -142,3 +142,26 @@
   user-select: none;
   -webkit-user-drag: none;
 }
+
+@media (max-width: 767px) {
+  .tapArea {
+    height: 230px;
+  }
+
+  .circle {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tapArea {
+    height: 205px;
+  }
+
+  .circle {
+    width: 175px;
+    height: 175px;
+  }
+}
+

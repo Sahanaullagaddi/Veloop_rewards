@@ -635,7 +635,60 @@
 
 @media (max-width: 767px) {
   .content-container {
-    padding: 16px 14px 84px;
+    padding: 10px 12px 60px;
+  }
+
+  .mobileContainer {
+    gap: 6px;
+  }
+
+  .statsGrid {
+    gap: 8px;
+  }
+
+  .statCard {
+    padding: 8px 12px;
+    border-radius: 10px;
+    gap: 2px;
+  }
+
+  .statLabel {
+    font-size: 8.5px;
+  }
+
+  .statValue {
+    font-size: 14px;
+  }
+
+  .largeBalanceRow {
+    margin: 8px 0 4px 0 !important;
+    gap: 8px;
+  }
+
+  .largeCoinIcon {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .largeBalanceText {
+    font-size: 28px !important;
+  }
+
+  .circlePedestal {
+    padding: 4px 0 !important;
+  }
+
+  .hamsterStatusBar {
+    margin: 4px auto 8px auto !important;
+    padding: 0 6px;
+  }
+
+  .energyValueText {
+    font-size: 13.5px !important;
+  }
+
+  .boostText {
+    font-size: 13.5px !important;
   }
 
   .gradientTitle {
@@ -660,7 +713,7 @@
   }
 
   .pedestalCard {
-    padding: 18px;
+    padding: 14px;
     max-width: 360px;
   }
 
@@ -673,6 +726,21 @@
     flex: 1 1 140px;
     justify-content: center;
     padding-inline: 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .largeBalanceText {
+    font-size: 24px !important;
+  }
+
+  .largeCoinIcon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .circlePedestal {
+    padding: 0 !important;
   }
 }
 
