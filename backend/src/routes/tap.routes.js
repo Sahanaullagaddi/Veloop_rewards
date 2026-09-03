@@ -104,7 +104,17 @@ router.get('/state', auth, async (req, res) => {
     const energyBankCapacity = ConfigService.get('energy_bank_base_capacity') +
       (tapState.energyBankLevel - 1) * ConfigService.get('energy_bank_capacity_step');
 
-    const userLevel = Math.min(10, Math.max(1, user.level || 1));
+    const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
+    const userLevel = TapEconomyService.calculateLevelFromTaps
+      ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
+      : (effectiveTaps < 2000 ? 1 : Math.min(10, Math.floor(effectiveTaps / 1000)));
+
+    if (user.level !== userLevel || (user.total_taps || 0) < effectiveTaps) {
+      user.level = userLevel;
+      user.total_taps = effectiveTaps;
+      await User.updateOne({ _id: user._id }, { $set: { level: userLevel, total_taps: effectiveTaps } });
+    }
+
     const character_image_url = TapEconomyService.getCharacterImageUrl 
       ? TapEconomyService.getCharacterImageUrl(user.gender, userLevel)
       : (user.gender === 'female' ? `/assets/characters/female/character_f_lvl${userLevel}.png` : `/assets/characters/male/character_lvl${userLevel}.png`);
@@ -113,6 +123,8 @@ router.get('/state', auth, async (req, res) => {
       success: true,
       user: {
         ...user.toObject(),
+        level: userLevel,
+        total_taps: effectiveTaps,
         character_image_url
       },
       tapState: {
@@ -131,9 +143,16 @@ router.get('/state', auth, async (req, res) => {
 // GET /api/tap/user/character
 router.get('/user/character', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('level total_taps gender');
-    const level = Math.min(10, Math.max(1, user?.level || 1));
-    const total_taps = user?.total_taps || 0;
+    const user = await User.findById(req.user.id).select('level total_taps gender veBalance');
+    const total_taps = Math.max(user?.total_taps || 0, Math.floor(parseFloat(user?.veBalance?.toString() || 0)));
+    const level = TapEconomyService.calculateLevelFromTaps
+      ? TapEconomyService.calculateLevelFromTaps(total_taps)
+      : (total_taps < 2000 ? 1 : Math.min(10, Math.floor(total_taps / 1000)));
+
+    if (user && (user.level !== level || (user.total_taps || 0) < total_taps)) {
+      await User.updateOne({ _id: user._id }, { $set: { level, total_taps } });
+    }
+
     const gender = user?.gender || 'male';
     const character_image_url = TapEconomyService.getCharacterImageUrl 
       ? TapEconomyService.getCharacterImageUrl(gender, level)

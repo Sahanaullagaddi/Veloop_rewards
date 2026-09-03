@@ -167,21 +167,28 @@ export function SocketProvider({ children }) {
         });
         const challengeData = await challengeRes.json();
 
-        // Combine into liveState
-        setLiveState({
-          veBalance: data.user.veBalance ? data.user.veBalance.$numberDecimal || data.user.veBalance : '0.0',
-          sveBalance: data.user.sveBalance ? data.user.sveBalance.$numberDecimal || data.user.sveBalance : '0.0',
-          tokenBalance: data.user.tokenBalance ? data.user.tokenBalance.$numberDecimal || data.user.tokenBalance : '0.0',
-          gemBalance: data.user.gemBalance ? data.user.gemBalance.$numberDecimal || data.user.gemBalance : '0.0',
-          spinBalance: data.user.spinBalance || 0,
-          fragmentBalance: data.user.fragmentBalance ? data.user.fragmentBalance.$numberDecimal || data.user.fragmentBalance : '0.0',
-          level: data.user.level || 1,
-          total_taps: data.user.total_taps || 0,
-          gender: data.user.gender || 'male',
-          character_image_url: data.user.character_image_url || ((data.user.gender === 'female')
-            ? `/assets/characters/female/character_f_lvl${data.user.level || 1}.png`
-            : `/assets/characters/male/character_lvl${data.user.level || 1}.png`),
-          xp: data.user.xp,
+          const userCoins = Math.floor(parseFloat(data.user.veBalance?.$numberDecimal || data.user.veBalance || 0));
+          const effectiveTaps = Math.max(data.user.total_taps || 0, userCoins);
+          const effectiveLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
+          const userGender = data.user.gender || 'male';
+          const resolvedImageUrl = (data.user.character_image_url && data.user.level === effectiveLevel)
+            ? data.user.character_image_url
+            : (userGender === 'female'
+              ? `/assets/characters/female/character_f_lvl${effectiveLevel}.png`
+              : `/assets/characters/male/character_lvl${effectiveLevel}.png`);
+
+          setLiveState({
+            veBalance: data.user.veBalance ? data.user.veBalance.$numberDecimal || data.user.veBalance : '0.0',
+            sveBalance: data.user.sveBalance ? data.user.sveBalance.$numberDecimal || data.user.sveBalance : '0.0',
+            tokenBalance: data.user.tokenBalance ? data.user.tokenBalance.$numberDecimal || data.user.tokenBalance : '0.0',
+            gemBalance: data.user.gemBalance ? data.user.gemBalance.$numberDecimal || data.user.gemBalance : '0.0',
+            spinBalance: data.user.spinBalance || 0,
+            fragmentBalance: data.user.fragmentBalance ? data.user.fragmentBalance.$numberDecimal || data.user.fragmentBalance : '0.0',
+            level: effectiveLevel,
+            total_taps: effectiveTaps,
+            gender: userGender,
+            character_image_url: resolvedImageUrl,
+            xp: data.user.xp,
           currentEnergy: 500, // will be refreshed by tap state fetches
           energyCapacity: 500,
           energyBankBalance: 500,

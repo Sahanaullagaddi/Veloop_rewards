@@ -43,21 +43,22 @@ function getEfficiencyMultiplier(level) {
 }
 
 const LEVEL_THRESHOLDS = [
-  0,     // Level 1: 0 - 999 taps
-  1000,  // Level 2: 1,000 taps
-  2000,  // Level 3: 2,000 taps
-  3000,  // Level 4: 3,000 taps
-  4000,  // Level 5: 4,000 taps
-  5000,  // Level 6: 5,000 taps
-  6000,  // Level 7: 6,000 taps
-  7000,  // Level 8: 7,000 taps
-  8000,  // Level 9: 8,000 taps
-  9000   // Level 10: 9,000 taps
+  0,     // Level 1: Starts at Level 1 (0 to 1,999 taps; at 1,000 taps still Level 1)
+  2000,  // Level 2: 2,000 taps
+  3000,  // Level 3: 3,000 taps
+  4000,  // Level 4: 4,000 taps
+  5000,  // Level 5: 5,000 taps
+  6000,  // Level 6: 6,000 taps
+  7000,  // Level 7: 7,000 taps
+  8000,  // Level 8: 8,000 taps
+  9000,  // Level 9: 9,000 taps
+  10000  // Level 10: 10,000 taps
 ];
 
 function calculateLevelFromTaps(totalTaps) {
-  // Starts at level 1; every 1000 taps increases level by 1 up to level 10
-  const lvl = Math.floor(Math.max(0, totalTaps) / 1000) + 1;
+  const taps = Math.max(0, totalTaps || 0);
+  if (taps < 2000) return 1;
+  const lvl = Math.floor(taps / 1000); // 2000 -> 2, 3000 -> 3 ... 10000 -> 10
   return Math.min(10, Math.max(1, lvl));
 }
 
@@ -333,38 +334,31 @@ async function processTapAttempt({ userId, requestId }) {
     { new: true }
   );
 
-  // Handle Level Progression: check total_taps against thresholds
-  // LEVEL NEVER DECREASES: enforce backend guard new_level = max(current_level, calculated_level)
+  // Handle Level Progression: check effective taps against thresholds
   let leveledUp = false;
-  const calculatedLevel = calculateLevelFromTaps(updatedUser.total_taps || 0);
+  const effectiveTapsCount = Math.max(updatedUser.total_taps || 0, Math.floor(parseFloat(updatedUser.veBalance.toString())));
+  const calculatedLevel = calculateLevelFromTaps(effectiveTapsCount);
   const currentLevel = updatedUser.level || 1;
-  const targetLevel = Math.min(10, Math.max(currentLevel, calculatedLevel));
+  const targetLevel = calculatedLevel;
 
   if (targetLevel > currentLevel) {
     leveledUp = true;
-    await User.updateOne(
-      { _id: userId },
-      { $set: { level: targetLevel } }
-    );
-    updatedUser.level = targetLevel;
-
-    // Check level achievements/badges
-    const badges = [...(updatedUser.badges || [])];
-    const newBadgeId = `level-${updatedUser.level}`;
-    if (!badges.some(b => b.id === newBadgeId)) {
-      await User.updateOne(
-        { _id: userId },
-        { $push: { badges: { id: newBadgeId, name: `Level ${updatedUser.level} Pioneer` } } }
-      );
-    }
-
     await Notification.create({
       userId,
       category: 'system',
       title: 'Level Up!',
-      message: `Congratulations! You leveled up to Level ${updatedUser.level}!`,
+      message: `Congratulations! You leveled up to Level ${targetLevel}!`,
       timestamp: now
     });
+  }
+
+  if (currentLevel !== targetLevel || (updatedUser.total_taps || 0) < effectiveTapsCount) {
+    await User.updateOne(
+      { _id: userId },
+      { $set: { level: targetLevel, total_taps: effectiveTapsCount } }
+    );
+    updatedUser.level = targetLevel;
+    updatedUser.total_taps = effectiveTapsCount;
   }
 
   // Update League score (effective taps)
@@ -532,5 +526,7 @@ module.exports = {
   getRechargeIntervalMs,
   getEnergyBankCapacity,
   getEfficiencyMultiplier,
-  getCharacterImageUrl
+  getCharacterImageUrl,
+  calculateLevelFromTaps,
+  LEVEL_THRESHOLDS
 };

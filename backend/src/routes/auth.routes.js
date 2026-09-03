@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const TapState = require('../models/tapState.model');
 const auth = require('../middleware/auth');
+const TapEconomyService = require('../services/tapEconomy.service');
 
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex');
@@ -128,6 +129,18 @@ router.post('/login', async (req, res) => {
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
+    if (user) {
+      const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
+      const correctLevel = TapEconomyService.calculateLevelFromTaps
+        ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
+        : (effectiveTaps < 2000 ? 1 : Math.min(10, Math.floor(effectiveTaps / 1000)));
+
+      if (user.level !== correctLevel || (user.total_taps || 0) < effectiveTaps) {
+        user.level = correctLevel;
+        user.total_taps = effectiveTaps;
+        await User.updateOne({ _id: user._id }, { $set: { level: correctLevel, total_taps: effectiveTaps } });
+      }
+    }
     res.json({ success: true, user });
   } catch (err) {
     console.error(err);

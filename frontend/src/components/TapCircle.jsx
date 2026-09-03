@@ -23,12 +23,17 @@ export default function TapCircle() {
   const lastTapRef = useRef(0);
   const prevLevelRef = useRef(liveState?.level || 1);
 
-  const currentLevel = Math.min(10, Math.max(1, liveState?.level || 1));
+  const userCoins = Math.floor(parseFloat(liveState?.veBalance || 0));
+  const effectiveTaps = Math.max(liveState?.total_taps || 0, userCoins);
+  const calculatedLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
+  const currentLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, liveState?.level || calculatedLevel));
   const userGender = liveState?.gender || 'male';
   const fallbackUrl = userGender === 'female'
     ? `/assets/characters/female/character_f_lvl${currentLevel}.png`
     : `/assets/characters/male/character_lvl${currentLevel}.png`;
-  const characterImageUrl = liveState?.character_image_url || fallbackUrl;
+  const characterImageUrl = (liveState?.character_image_url && liveState?.level === currentLevel)
+    ? liveState.character_image_url
+    : fallbackUrl;
 
   const triggerLevelUpCelebration = (lvl) => {
     setIsLevelingUp(true);
