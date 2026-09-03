@@ -27,6 +27,7 @@ export default function TapEarnPage() {
   const [showLeadersModal, setShowLeadersModal] = useState(false);
   const [showStaking, setShowStaking] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
 
   // Tasks Tab state
   const [taskTab, setTaskTab] = useState('milestones');
@@ -769,7 +770,6 @@ export default function TapEarnPage() {
   const xpNeeded = (liveState.level || 1) * 200;
   const xpPct = Math.min(100, ((liveState.xp || 0) / xpNeeded) * 100);
 
-  const [isDemoLoading, setIsDemoLoading] = useState(false);
   const userCoins = Math.floor(parseFloat(liveState?.veBalance || 0));
   const effectiveTaps = Math.max(liveState?.total_taps || 0, userCoins);
   const calculatedLevel = Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000) + 1));
