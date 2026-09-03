@@ -228,6 +228,49 @@ router.post('/user/gender', auth, async (req, res) => {
   }
 });
 
+// POST /api/tap/test/level-up - Demo testing endpoint to cycle/increase level
+router.post('/test/level-up', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    let currentLvl = user.level || 1;
+    let nextLvl = currentLvl >= 10 ? 1 : currentLvl + 1; // Cycle 1 -> 10 -> 1 for testing all outfits!
+    const requiredTaps = (nextLvl - 1) * 1000;
+
+    user.level = nextLvl;
+    user.total_taps = requiredTaps;
+    await User.updateOne({ _id: user._id }, { $set: { level: nextLvl, total_taps: requiredTaps } });
+
+    const character_image_url = TapEconomyService.getCharacterImageUrl 
+      ? TapEconomyService.getCharacterImageUrl(user.gender || 'male', nextLvl)
+      : (user.gender === 'female' ? `/assets/characters/female/character_f_lvl${nextLvl}.png` : `/assets/characters/male/character_lvl${nextLvl}.png`);
+
+    // Emit WebSocket update if connected
+    const io = getIO();
+    if (io) {
+      io.to(user._id.toString()).emit('stateUpdate', {
+        level: nextLvl,
+        total_taps: requiredTaps,
+        character_image_url,
+        gender: user.gender || 'male'
+      });
+    }
+
+    res.json({
+      success: true,
+      level: nextLvl,
+      total_taps: requiredTaps,
+      character_image_url,
+      gender: user.gender || 'male',
+      message: `Demo: Level upgraded to ${nextLvl}!`
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error during demo level up' });
+  }
+});
+
 // 3. POST /api/tap/boost/activate
 router.post('/boost/activate', auth, async (req, res) => {
   const now = new Date();
