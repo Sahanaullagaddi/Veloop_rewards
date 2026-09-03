@@ -226,6 +226,12 @@ export default function TapCircle() {
 
   return (
     <div className={styles.tapArea}>
+      {/* Top Left Level Badge */}
+      <div className={styles.topLeftLevelBadge}>
+        <span className={styles.levelStar}>★</span>
+        <span className={styles.levelText}>Lvl {currentLevel}</span>
+      </div>
+
       {/* Inline Feedback Messages */}
       {inlineFeedback && (
         <div className={`${styles.feedback} ${inlineFeedback.includes('Fast') ? styles.warning : styles.error}`}>
@@ -256,9 +262,6 @@ export default function TapCircle() {
             className={`${styles.bunnyCharacter} ${isLevelingUp ? styles.levelPulse : ''}`}
             draggable="false"
           />
-          <div className={styles.levelBadge}>
-            <span className={styles.levelStar}>★</span> Lvl {currentLevel}
-          </div>
         </div>
 
         {/* Floating Coin Payout Animations (Absolute overlay container) */}

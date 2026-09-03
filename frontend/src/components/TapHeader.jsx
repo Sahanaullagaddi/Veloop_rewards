@@ -46,7 +46,9 @@ export default function TapHeader() {
         </div>
         <div className={styles.profileMeta}>
           <span className={styles.username}>{user.username}</span>
-          <span className={styles.level}>Lvl {liveState.level || 1}</span>
+          <span className={styles.levelBadgeTopLeft}>
+            <span className={styles.levelStar}>★</span> Lvl {liveState.level || 1}
+          </span>
         </div>
       </div>
 

@@ -49,6 +49,26 @@
   color: #888888;
 }
 
+.levelBadgeTopLeft {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.14);
+  border: 1px solid rgba(250, 204, 21, 0.45);
+  border-radius: 10px;
+  padding: 1px 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.2);
+  margin-top: 2px;
+}
+
+.levelStar {
+  font-size: 8.5px;
+  color: #facc15;
+}
+
 /* Center main balance chip */
 .mainBalance {
   background: rgba(255, 215, 0, 0.08);
