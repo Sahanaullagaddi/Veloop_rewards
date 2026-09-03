@@ -22,6 +22,16 @@ app.use('/api/checkin', checkinRoutes);
 app.use('/api/admin/withdrawals', adminWithdrawalRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 
+// Direct character route mapping
+app.get('/user/character', (req, res, next) => {
+  req.url = '/user/character';
+  tapRoutes(req, res, next);
+});
+app.get('/api/user/character', (req, res, next) => {
+  req.url = '/user/character';
+  tapRoutes(req, res, next);
+});
+
 // Base route
 app.get('/', (req, res) => {
   res.json({ message: 'VELoop Tap & Earn API' });

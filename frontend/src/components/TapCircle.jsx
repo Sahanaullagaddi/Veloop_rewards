@@ -18,8 +18,28 @@ export default function TapCircle() {
   const [floats, setFloats] = useState([]);
   const [isPressing, setIsPressing] = useState(false);
   const [inlineFeedback, setInlineFeedback] = useState(null); // 'Too Fast' or 'Energy Empty'
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
   const circleRef = useRef(null);
   const lastTapRef = useRef(0);
+  const prevLevelRef = useRef(liveState?.level || 1);
+
+  const currentLevel = Math.min(10, Math.max(1, liveState?.level || 1));
+  const characterImageUrl = liveState?.character_image_url || `/assets/characters/male/character_lvl${currentLevel}.png`;
+
+  const triggerLevelUpCelebration = (lvl) => {
+    setIsLevelingUp(true);
+    triggerHaptic([100, 50, 100, 50, 200]);
+    setTimeout(() => setIsLevelingUp(false), 2000);
+  };
+
+  useEffect(() => {
+    if (liveState?.level && liveState.level > prevLevelRef.current) {
+      triggerLevelUpCelebration(liveState.level);
+    }
+    if (liveState?.level) {
+      prevLevelRef.current = liveState.level;
+    }
+  }, [liveState?.level]);
 
   if (!liveState) return null;
 
@@ -108,6 +128,11 @@ export default function TapCircle() {
         const rewardDisplay = `+${data.rewardAmount} ${data.rewardType}`;
         setFloats(prev => prev.map(f => f.id === floatId ? { ...f, text: rewardDisplay, currency: data.rewardType } : f));
         
+        // Trigger celebratory transition if leveled up
+        if (data.leveledUp) {
+          triggerLevelUpCelebration(data.level);
+        }
+
         // Instant balance & energy reconciliation
         if (data.userBalances) {
           reconcileState(data.userBalances, requestId);
@@ -195,10 +220,10 @@ export default function TapCircle() {
         </div>
       )}
 
-      {/* Tappable Core Circle */}
+      {/* Tappable Core Circle with Character Podium */}
       <div 
         ref={circleRef}
-        className={`${styles.circle} ${isPressing ? styles.pressed : ''} ${isBoostActive ? styles.boosted : ''} ${isShieldActive ? styles.shielded : ''}`}
+        className={`${styles.circle} ${isPressing ? styles.pressed : ''} ${isBoostActive ? styles.boosted : ''} ${isShieldActive ? styles.shielded : ''} ${isLevelingUp ? styles.levelUpFlash : ''}`}
         onPointerDown={handleTap}
         onPointerUp={() => setIsPressing(false)}
         onPointerLeave={() => setIsPressing(false)}
@@ -213,11 +238,14 @@ export default function TapCircle() {
       >
         <div className={styles.innerCore}>
           <img 
-            src="/hamster_avatar.jpg" 
-            alt="Hamster Character" 
-            className={styles.hamsterImage}
+            src={characterImageUrl} 
+            alt={`Bunny Character Level ${currentLevel}`} 
+            className={`${styles.bunnyCharacter} ${isLevelingUp ? styles.levelPulse : ''}`}
             draggable="false"
           />
+          <div className={styles.levelBadge}>
+            <span className={styles.levelStar}>★</span> Lvl {currentLevel}
+          </div>
         </div>
 
         {/* Floating Coin Payout Animations */}

@@ -42,6 +42,30 @@ function getEfficiencyMultiplier(level) {
   return mults[level] || 1.0;
 }
 
+const LEVEL_THRESHOLDS = [
+  0,     // Level 1
+  25,    // Level 2
+  75,    // Level 3
+  150,   // Level 4
+  300,   // Level 5
+  500,   // Level 6
+  800,   // Level 7
+  1200,  // Level 8
+  1800,  // Level 9
+  2500   // Level 10
+];
+
+function calculateLevelFromTaps(totalTaps) {
+  let lvl = 1;
+  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (totalTaps >= LEVEL_THRESHOLDS[i]) {
+      lvl = i + 1;
+      break;
+    }
+  }
+  return Math.min(10, Math.max(1, lvl));
+}
+
 // Dynamic Regen Calculator
 function calculateRegen(tapState, now, isPremium = false) {
   let capacity = getEnergyCapacity(tapState.energyCapacityLevel);
@@ -290,7 +314,10 @@ async function processTapAttempt({ userId, requestId }) {
     case 'Spin': balanceField = 'spinBalance'; break;
   }
 
-  let balanceIncQuery = { xp: xpReward };
+  let balanceIncQuery = { 
+    xp: xpReward,
+    total_taps: physicalTaps
+  };
   if (rewardType === 'Spin') {
     balanceIncQuery.spinBalance = finalRewardAmount;
   } else {
@@ -303,19 +330,23 @@ async function processTapAttempt({ userId, requestId }) {
     { new: true }
   );
 
-  // Handle Level Up: e.g. level requires level * 200 XP
+  // Handle Level Progression: check total_taps against thresholds
+  // LEVEL NEVER DECREASES: enforce backend guard new_level = max(current_level, calculated_level)
   let leveledUp = false;
-  let targetXp = updatedUser.level * 200;
-  if (updatedUser.xp >= targetXp) {
+  const calculatedLevel = calculateLevelFromTaps(updatedUser.total_taps || 0);
+  const currentLevel = updatedUser.level || 1;
+  const targetLevel = Math.min(10, Math.max(currentLevel, calculatedLevel));
+
+  if (targetLevel > currentLevel) {
     leveledUp = true;
     await User.updateOne(
       { _id: userId },
-      { $inc: { level: 1 } }
+      { $set: { level: targetLevel } }
     );
-    updatedUser.level += 1;
+    updatedUser.level = targetLevel;
 
     // Check level achievements/badges
-    const badges = [...updatedUser.badges];
+    const badges = [...(updatedUser.badges || [])];
     const newBadgeId = `level-${updatedUser.level}`;
     if (!badges.some(b => b.id === newBadgeId)) {
       await User.updateOne(
@@ -389,8 +420,14 @@ async function processTapAttempt({ userId, requestId }) {
     });
   }
 
+  const characterImageUrl = `/assets/characters/male/character_lvl${updatedUser.level}.png`;
+
   return {
     success: true,
+    level: updatedUser.level,
+    total_taps: updatedUser.total_taps || 0,
+    coins: parseFloat(updatedUser.veBalance.toString()),
+    character_image_url: characterImageUrl,
     rewardType,
     rewardAmount: finalRewardAmount,
     isMystery,
@@ -405,6 +442,8 @@ async function processTapAttempt({ userId, requestId }) {
       spinBalance: updatedUser.spinBalance,
       fragmentBalance: updatedUser.fragmentBalance.toString(),
       level: updatedUser.level,
+      total_taps: updatedUser.total_taps || 0,
+      character_image_url: characterImageUrl,
       xp: updatedUser.xp,
       currentEnergy: lockedState.currentEnergy,
       energyBankBalance: lockedState.energyBankBalance

@@ -18,7 +18,14 @@ const UserSchema = new mongoose.Schema({
   },
   level: {
     type: Number,
-    default: 1
+    default: 1,
+    min: 1,
+    max: 10
+  },
+  total_taps: {
+    type: Number,
+    default: 0,
+    min: 0
   },
   xp: {
     type: Number,

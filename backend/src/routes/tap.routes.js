@@ -104,9 +104,13 @@ router.get('/state', auth, async (req, res) => {
     const energyBankCapacity = ConfigService.get('energy_bank_base_capacity') +
       (tapState.energyBankLevel - 1) * ConfigService.get('energy_bank_capacity_step');
 
+    const userLevel = Math.min(10, Math.max(1, user.level || 1));
     res.json({
       success: true,
-      user,
+      user: {
+        ...user.toObject(),
+        character_image_url: `/assets/characters/male/character_lvl${userLevel}.png`
+      },
       tapState: {
         ...tapState.toObject(),
         energyCapacity,
@@ -117,6 +121,24 @@ router.get('/state', auth, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error fetching tap state' });
+  }
+});
+
+// GET /api/tap/user/character
+router.get('/user/character', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('level total_taps');
+    const level = Math.min(10, Math.max(1, user?.level || 1));
+    const total_taps = user?.total_taps || 0;
+    res.json({
+      success: true,
+      level,
+      total_taps,
+      character_image_url: `/assets/characters/male/character_lvl${level}.png`
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error fetching character' });
   }
 });
 

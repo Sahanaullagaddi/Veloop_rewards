@@ -175,7 +175,9 @@ export function SocketProvider({ children }) {
           gemBalance: data.user.gemBalance ? data.user.gemBalance.$numberDecimal || data.user.gemBalance : '0.0',
           spinBalance: data.user.spinBalance || 0,
           fragmentBalance: data.user.fragmentBalance ? data.user.fragmentBalance.$numberDecimal || data.user.fragmentBalance : '0.0',
-          level: data.user.level,
+          level: data.user.level || 1,
+          total_taps: data.user.total_taps || 0,
+          character_image_url: data.user.character_image_url || `/assets/characters/male/character_lvl${data.user.level || 1}.png`,
           xp: data.user.xp,
           currentEnergy: 500, // will be refreshed by tap state fetches
           energyCapacity: 500,
