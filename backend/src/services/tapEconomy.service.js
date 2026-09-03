@@ -10,6 +10,7 @@ const TapLeagueScore = require('../models/tapLeagueScore.model');
 const Notification = require('../models/notification.model');
 const ConfigService = require('./config.service');
 const { getIO } = require('../config/socket');
+const { inferGenderFromName } = require('../utils/genderDetector');
 
 // Helper to cast double value safely to Decimal128
 function toDecimal128(val) {
@@ -333,6 +334,11 @@ async function processTapAttempt({ userId, requestId }) {
     { $inc: balanceIncQuery },
     { new: true }
   );
+
+  if ((!updatedUser.gender || updatedUser.gender === 'male') && inferGenderFromName(updatedUser.username) === 'female') {
+    updatedUser.gender = 'female';
+    await User.updateOne({ _id: userId }, { $set: { gender: 'female' } });
+  }
 
   // Handle Level Progression: check effective taps against thresholds
   let leveledUp = false;

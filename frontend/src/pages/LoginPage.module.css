@@ -131,6 +131,44 @@
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
 }
 
+.genderSelectRow {
+  display: flex;
+  gap: 10px;
+}
+
+.genderOptionBtn {
+  flex: 1;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.genderOptionBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.genderOptionBtn.genderActive {
+  background: linear-gradient(135deg, rgba(0, 198, 255, 0.2) 0%, rgba(127, 0, 255, 0.3) 100%);
+  border-color: #00c6ff;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(0, 198, 255, 0.3);
+}
+
+.genderIcon {
+  font-size: 16px;
+}
+
 .toggle {
   display: flex;
   flex-direction: column;

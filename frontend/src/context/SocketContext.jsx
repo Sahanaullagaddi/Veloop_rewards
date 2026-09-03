@@ -170,14 +170,17 @@ export function SocketProvider({ children }) {
           const userCoins = Math.floor(parseFloat(data.user.veBalance?.$numberDecimal || data.user.veBalance || 0));
           const effectiveTaps = Math.max(data.user.total_taps || 0, userCoins);
           const effectiveLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
-          const userGender = data.user.gender || 'male';
-          const resolvedImageUrl = (data.user.character_image_url && data.user.level === effectiveLevel)
+          const username = (data.user.username || '').toLowerCase();
+          const isFemaleName = username.includes('reena') || username.includes('rina') || username.includes('sahana') || username.includes('sarah') || username.includes('priya') || username.includes('pooja') || username.includes('girl') || username.includes('woman') || username.includes('trinity');
+          const userGender = data.user.gender === 'female' || isFemaleName ? 'female' : (data.user.gender || 'male');
+          const resolvedImageUrl = (data.user.character_image_url && data.user.level === effectiveLevel && (data.user.gender === userGender || !isFemaleName))
             ? data.user.character_image_url
             : (userGender === 'female'
               ? `/assets/characters/female/character_f_lvl${effectiveLevel}.png`
               : `/assets/characters/male/character_lvl${effectiveLevel}.png`);
 
           setLiveState({
+            username: data.user.username,
             veBalance: data.user.veBalance ? data.user.veBalance.$numberDecimal || data.user.veBalance : '0.0',
             sveBalance: data.user.sveBalance ? data.user.sveBalance.$numberDecimal || data.user.sveBalance : '0.0',
             tokenBalance: data.user.tokenBalance ? data.user.tokenBalance.$numberDecimal || data.user.tokenBalance : '0.0',

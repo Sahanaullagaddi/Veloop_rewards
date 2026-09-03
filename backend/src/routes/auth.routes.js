@@ -6,6 +6,7 @@ const User = require('../models/user.model');
 const TapState = require('../models/tapState.model');
 const auth = require('../middleware/auth');
 const TapEconomyService = require('../services/tapEconomy.service');
+const { inferGenderFromName } = require('../utils/genderDetector');
 
 function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('hex');
@@ -13,7 +14,7 @@ function hashPassword(password) {
 
 // @route   POST /api/auth/register
 router.post('/register', async (req, res) => {
-  const { username, password, refCode } = req.body;
+  const { username, password, refCode, gender } = req.body;
   if (!username || !password) {
     return res.status(400).json({ success: false, message: 'Please provide username and password' });
   }
@@ -31,10 +32,16 @@ router.post('/register', async (req, res) => {
     const randomSuffix = Math.floor(100 + Math.random() * 900);
     const referralCode = `${cleanUsername}${randomSuffix}`;
 
+    let resolvedGender = gender;
+    if (!resolvedGender || !['male', 'female', 'other'].includes(resolvedGender)) {
+      resolvedGender = inferGenderFromName(username);
+    }
+
     const user = new User({
       username,
       password: hashedPassword,
-      referralCode
+      referralCode,
+      gender: resolvedGender
     });
 
     // Check if referred by someone
@@ -130,6 +137,11 @@ router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (user) {
+      if ((!user.gender || user.gender === 'male') && inferGenderFromName(user.username) === 'female') {
+        user.gender = 'female';
+        await User.updateOne({ _id: user._id }, { $set: { gender: 'female' } });
+      }
+
       const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
       const correctLevel = TapEconomyService.calculateLevelFromTaps
         ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
@@ -140,6 +152,18 @@ router.get('/me', auth, async (req, res) => {
         user.total_taps = effectiveTaps;
         await User.updateOne({ _id: user._id }, { $set: { level: correctLevel, total_taps: effectiveTaps } });
       }
+
+      const character_image_url = TapEconomyService.getCharacterImageUrl
+        ? TapEconomyService.getCharacterImageUrl(user.gender, user.level)
+        : (user.gender === 'female' ? `/assets/characters/female/character_f_lvl${user.level}.png` : `/assets/characters/male/character_lvl${user.level}.png`);
+
+      return res.json({
+        success: true,
+        user: {
+          ...user.toObject(),
+          character_image_url
+        }
+      });
     }
     res.json({ success: true, user });
   } catch (err) {

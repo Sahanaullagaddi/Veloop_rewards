@@ -19,6 +19,7 @@ const auth = require('../middleware/auth');
 const TapEconomyService = require('../services/tapEconomy.service');
 const ConfigService = require('../services/config.service');
 const { getIO } = require('../config/socket');
+const { inferGenderFromName } = require('../utils/genderDetector');
 
 function toDecimal128(val) {
   return mongoose.Types.Decimal128.fromString(val.toFixed(6));
@@ -104,6 +105,11 @@ router.get('/state', auth, async (req, res) => {
     const energyBankCapacity = ConfigService.get('energy_bank_base_capacity') +
       (tapState.energyBankLevel - 1) * ConfigService.get('energy_bank_capacity_step');
 
+    if ((!user.gender || user.gender === 'male') && inferGenderFromName(user.username) === 'female') {
+      user.gender = 'female';
+      await User.updateOne({ _id: user._id }, { $set: { gender: 'female' } });
+    }
+
     const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
     const userLevel = TapEconomyService.calculateLevelFromTaps
       ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
@@ -123,6 +129,7 @@ router.get('/state', auth, async (req, res) => {
       success: true,
       user: {
         ...user.toObject(),
+        gender: user.gender,
         level: userLevel,
         total_taps: effectiveTaps,
         character_image_url
@@ -143,7 +150,13 @@ router.get('/state', auth, async (req, res) => {
 // GET /api/tap/user/character
 router.get('/user/character', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('level total_taps gender veBalance');
+    const user = await User.findById(req.user.id).select('username level total_taps gender veBalance');
+    let gender = user?.gender || 'male';
+    if (gender === 'male' && inferGenderFromName(user?.username) === 'female') {
+      gender = 'female';
+      await User.updateOne({ _id: user._id }, { $set: { gender: 'female' } });
+    }
+
     const total_taps = Math.max(user?.total_taps || 0, Math.floor(parseFloat(user?.veBalance?.toString() || 0)));
     const level = TapEconomyService.calculateLevelFromTaps
       ? TapEconomyService.calculateLevelFromTaps(total_taps)
@@ -153,7 +166,6 @@ router.get('/user/character', auth, async (req, res) => {
       await User.updateOne({ _id: user._id }, { $set: { level, total_taps } });
     }
 
-    const gender = user?.gender || 'male';
     const character_image_url = TapEconomyService.getCharacterImageUrl 
       ? TapEconomyService.getCharacterImageUrl(gender, level)
       : (gender === 'female' ? `/assets/characters/female/character_f_lvl${level}.png` : `/assets/characters/male/character_lvl${level}.png`);

@@ -64,13 +64,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const register = async (username, password) => {
+  const register = async (username, password, gender = null) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, gender })
       });
       const data = await res.json();
       if (data.success) {

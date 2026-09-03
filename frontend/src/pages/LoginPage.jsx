@@ -10,8 +10,19 @@ export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [gender, setGender] = useState('male');
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const handleUsernameChange = (val) => {
+    const lower = val.toLowerCase();
+    setUsername(lower);
+    if (isRegistering) {
+      if (lower.includes('reena') || lower.includes('rina') || lower.includes('sahana') || lower.includes('sarah') || lower.includes('priya') || lower.includes('pooja') || lower.includes('girl') || lower.includes('woman') || lower.includes('trinity')) {
+        setGender('female');
+      }
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +35,7 @@ export default function LoginPage() {
     setLoading(true);
     let result;
     if (isRegistering) {
-      result = await register(username, password);
+      result = await register(username, password, gender);
     } else {
       result = await login(username, password);
     }
@@ -95,8 +106,8 @@ export default function LoginPage() {
               type="text" 
               id="username" 
               value={username}
-              onChange={(e) => setUsername(e.target.value.toLowerCase())}
-              placeholder="e.g. neo"
+              onChange={(e) => handleUsernameChange(e.target.value)}
+              placeholder="e.g. reena"
               disabled={loading}
             />
           </div>
@@ -112,6 +123,28 @@ export default function LoginPage() {
               disabled={loading}
             />
           </div>
+
+          {isRegistering && (
+            <div className={styles.inputGroup}>
+              <label>Podium Character</label>
+              <div className={styles.genderSelectRow}>
+                <button
+                  type="button"
+                  className={`${styles.genderOptionBtn} ${gender === 'male' ? styles.genderActive : ''}`}
+                  onClick={() => setGender('male')}
+                >
+                  <span className={styles.genderIcon}>♂</span> Boy Bunny
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.genderOptionBtn} ${gender === 'female' ? styles.genderActive : ''}`}
+                  onClick={() => setGender('female')}
+                >
+                  <span className={styles.genderIcon}>♀</span> Girl Bunny
+                </button>
+              </div>
+            </div>
+          )}
 
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Please wait...' : isRegistering ? 'Create account' : 'Sign in'}

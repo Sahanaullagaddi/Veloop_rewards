@@ -10,7 +10,7 @@ import styles from './TapCircle.module.css';
 let globalAudioCtx = null;
 
 export default function TapCircle() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { liveState, registerTap, reconcileState } = useSocket();
   const { hapticsEnabled } = useTheme();
   const { recordClientTap } = useAd();
@@ -27,11 +27,15 @@ export default function TapCircle() {
   const effectiveTaps = Math.max(liveState?.total_taps || 0, userCoins);
   const calculatedLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
   const currentLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, liveState?.level || calculatedLevel));
-  const userGender = liveState?.gender || 'male';
+  
+  const username = (user?.username || liveState?.username || '').toLowerCase();
+  const isFemaleName = username.includes('reena') || username.includes('rina') || username.includes('sahana') || username.includes('sarah') || username.includes('priya') || username.includes('pooja') || username.includes('girl') || username.includes('woman') || username.includes('trinity');
+  const userGender = liveState?.gender === 'female' || isFemaleName ? 'female' : (liveState?.gender || 'male');
+
   const fallbackUrl = userGender === 'female'
     ? `/assets/characters/female/character_f_lvl${currentLevel}.png`
     : `/assets/characters/male/character_lvl${currentLevel}.png`;
-  const characterImageUrl = (liveState?.character_image_url && liveState?.level === currentLevel)
+  const characterImageUrl = (liveState?.character_image_url && liveState?.level === currentLevel && (liveState?.gender === userGender || !isFemaleName))
     ? liveState.character_image_url
     : fallbackUrl;
 
