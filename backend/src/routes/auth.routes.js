@@ -143,14 +143,24 @@ router.get('/me', auth, async (req, res) => {
       }
 
       const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
-      const correctLevel = TapEconomyService.calculateLevelFromTaps
+      const calculatedLevel = TapEconomyService.calculateLevelFromTaps
         ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
         : (effectiveTaps < 2000 ? 1 : Math.min(10, Math.floor(effectiveTaps / 1000)));
 
-      if (user.level !== correctLevel || (user.total_taps || 0) < effectiveTaps) {
+      // STRICT RULE: Once a level increases, it NEVER falls back!
+      const correctLevel = Math.min(10, Math.max(user.level || 1, calculatedLevel));
+
+      const syncUpdateAuth = {};
+      if (correctLevel > (user.level || 1)) {
+        syncUpdateAuth.level = correctLevel;
         user.level = correctLevel;
+      }
+      if ((user.total_taps || 0) < effectiveTaps) {
+        syncUpdateAuth.total_taps = effectiveTaps;
         user.total_taps = effectiveTaps;
-        await User.updateOne({ _id: user._id }, { $set: { level: correctLevel, total_taps: effectiveTaps } });
+      }
+      if (Object.keys(syncUpdateAuth).length > 0) {
+        await User.updateOne({ _id: user._id }, { $set: syncUpdateAuth });
       }
 
       const character_image_url = TapEconomyService.getCharacterImageUrl

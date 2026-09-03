@@ -169,7 +169,8 @@ export function SocketProvider({ children }) {
 
           const userCoins = Math.floor(parseFloat(data.user.veBalance?.$numberDecimal || data.user.veBalance || 0));
           const effectiveTaps = Math.max(data.user.total_taps || 0, userCoins);
-          const effectiveLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
+          const computedLevel = effectiveTaps < 2000 ? 1 : Math.floor(effectiveTaps / 1000);
+          const effectiveLevel = Math.min(10, Math.max(data.user.level || 1, computedLevel));
           const username = (data.user.username || '').toLowerCase();
           const isFemaleName = username.includes('reena') || username.includes('rina') || username.includes('sahana') || username.includes('sarah') || username.includes('priya') || username.includes('pooja') || username.includes('girl') || username.includes('woman') || username.includes('trinity');
           const userGender = data.user.gender === 'female' || isFemaleName ? 'female' : (data.user.gender || 'male');

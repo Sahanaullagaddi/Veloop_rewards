@@ -111,14 +111,24 @@ router.get('/state', auth, async (req, res) => {
     }
 
     const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
-    const userLevel = TapEconomyService.calculateLevelFromTaps
+    const calculatedLevel = TapEconomyService.calculateLevelFromTaps
       ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
       : (effectiveTaps < 2000 ? 1 : Math.min(10, Math.floor(effectiveTaps / 1000)));
 
-    if (user.level !== userLevel || (user.total_taps || 0) < effectiveTaps) {
+    // STRICT RULE: Once a level increases, it NEVER falls back!
+    const userLevel = Math.min(10, Math.max(user.level || 1, calculatedLevel));
+
+    const syncUpdateState = {};
+    if (userLevel > (user.level || 1)) {
+      syncUpdateState.level = userLevel;
       user.level = userLevel;
+    }
+    if ((user.total_taps || 0) < effectiveTaps) {
+      syncUpdateState.total_taps = effectiveTaps;
       user.total_taps = effectiveTaps;
-      await User.updateOne({ _id: user._id }, { $set: { level: userLevel, total_taps: effectiveTaps } });
+    }
+    if (Object.keys(syncUpdateState).length > 0) {
+      await User.updateOne({ _id: user._id }, { $set: syncUpdateState });
     }
 
     const character_image_url = TapEconomyService.getCharacterImageUrl 
@@ -131,7 +141,7 @@ router.get('/state', auth, async (req, res) => {
         ...user.toObject(),
         gender: user.gender,
         level: userLevel,
-        total_taps: effectiveTaps,
+        total_taps: user.total_taps || effectiveTaps,
         character_image_url
       },
       tapState: {
@@ -158,12 +168,22 @@ router.get('/user/character', auth, async (req, res) => {
     }
 
     const total_taps = Math.max(user?.total_taps || 0, Math.floor(parseFloat(user?.veBalance?.toString() || 0)));
-    const level = TapEconomyService.calculateLevelFromTaps
+    const calculatedLevel = TapEconomyService.calculateLevelFromTaps
       ? TapEconomyService.calculateLevelFromTaps(total_taps)
       : (total_taps < 2000 ? 1 : Math.min(10, Math.floor(total_taps / 1000)));
 
-    if (user && (user.level !== level || (user.total_taps || 0) < total_taps)) {
-      await User.updateOne({ _id: user._id }, { $set: { level, total_taps } });
+    // STRICT RULE: Once a level increases, it NEVER falls back!
+    const level = Math.min(10, Math.max(user?.level || 1, calculatedLevel));
+
+    const syncUpdateChar = {};
+    if (level > (user?.level || 1)) {
+      syncUpdateChar.level = level;
+    }
+    if ((user?.total_taps || 0) < total_taps) {
+      syncUpdateChar.total_taps = total_taps;
+    }
+    if (user && Object.keys(syncUpdateChar).length > 0) {
+      await User.updateOne({ _id: user._id }, { $set: syncUpdateChar });
     }
 
     const character_image_url = TapEconomyService.getCharacterImageUrl 

@@ -341,11 +341,12 @@ async function processTapAttempt({ userId, requestId }) {
   }
 
   // Handle Level Progression: check effective taps against thresholds
+  // STRICT RULE: Once a level increases, it NEVER falls back!
   let leveledUp = false;
   const effectiveTapsCount = Math.max(updatedUser.total_taps || 0, Math.floor(parseFloat(updatedUser.veBalance.toString())));
   const calculatedLevel = calculateLevelFromTaps(effectiveTapsCount);
   const currentLevel = updatedUser.level || 1;
-  const targetLevel = calculatedLevel;
+  const targetLevel = Math.min(10, Math.max(currentLevel, calculatedLevel));
 
   if (targetLevel > currentLevel) {
     leveledUp = true;
@@ -358,13 +359,21 @@ async function processTapAttempt({ userId, requestId }) {
     });
   }
 
-  if (currentLevel !== targetLevel || (updatedUser.total_taps || 0) < effectiveTapsCount) {
+  // Update level only if increased (never falls back) & keep total_taps synced
+  const userUpdateSet = {};
+  if (targetLevel > currentLevel) {
+    userUpdateSet.level = targetLevel;
+    updatedUser.level = targetLevel;
+  }
+  if ((updatedUser.total_taps || 0) < effectiveTapsCount) {
+    userUpdateSet.total_taps = effectiveTapsCount;
+    updatedUser.total_taps = effectiveTapsCount;
+  }
+  if (Object.keys(userUpdateSet).length > 0) {
     await User.updateOne(
       { _id: userId },
-      { $set: { level: targetLevel, total_taps: effectiveTapsCount } }
+      { $set: userUpdateSet }
     );
-    updatedUser.level = targetLevel;
-    updatedUser.total_taps = effectiveTapsCount;
   }
 
   // Update League score (effective taps)
@@ -374,7 +383,7 @@ async function processTapAttempt({ userId, requestId }) {
     { upsert: true }
   );
 
-  // Write Event & Ledger details
+  // Write Event & Ledger details (tracks every tap)
   const tapEvent = await TapEvent.create({
     userId,
     seasonId: activeSeason._id,
@@ -402,7 +411,9 @@ async function processTapAttempt({ userId, requestId }) {
   // Evaluate missions progress (async)
   evaluateMissions(userId, updatedUser.level, lockedState.totalAcceptedTaps, lockedState.bestStreak, lockedState.currentCombo);
 
-  // Emit WebSocket update for real-time balance
+  const characterImageUrl = getCharacterImageUrl(updatedUser.gender, updatedUser.level);
+
+  // Emit WebSocket update for real-time balance & state tracking
   const io = getIO();
   if (io) {
     io.to(userId.toString()).emit('stateUpdate', {
@@ -412,6 +423,9 @@ async function processTapAttempt({ userId, requestId }) {
       gemBalance: updatedUser.gemBalance.toString(),
       spinBalance: updatedUser.spinBalance,
       level: updatedUser.level,
+      total_taps: updatedUser.total_taps || 0,
+      gender: updatedUser.gender || 'male',
+      character_image_url: characterImageUrl,
       xp: updatedUser.xp,
       currentEnergy: lockedState.currentEnergy,
       energyBankBalance: lockedState.energyBankBalance,

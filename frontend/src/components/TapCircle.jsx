@@ -26,7 +26,7 @@ export default function TapCircle() {
   const userCoins = Math.floor(parseFloat(liveState?.veBalance || 0));
   const effectiveTaps = Math.max(liveState?.total_taps || 0, userCoins);
   const calculatedLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
-  const currentLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, liveState?.level || calculatedLevel));
+  const currentLevel = Math.min(10, Math.max(liveState?.level || 1, calculatedLevel));
   
   const username = (user?.username || liveState?.username || '').toLowerCase();
   const isFemaleName = username.includes('reena') || username.includes('rina') || username.includes('sahana') || username.includes('sarah') || username.includes('priya') || username.includes('pooja') || username.includes('girl') || username.includes('woman') || username.includes('trinity');
