@@ -105,11 +105,15 @@ router.get('/state', auth, async (req, res) => {
       (tapState.energyBankLevel - 1) * ConfigService.get('energy_bank_capacity_step');
 
     const userLevel = Math.min(10, Math.max(1, user.level || 1));
+    const character_image_url = TapEconomyService.getCharacterImageUrl 
+      ? TapEconomyService.getCharacterImageUrl(user.gender, userLevel)
+      : (user.gender === 'female' ? `/assets/characters/female/character_f_lvl${userLevel}.png` : `/assets/characters/male/character_lvl${userLevel}.png`);
+
     res.json({
       success: true,
       user: {
         ...user.toObject(),
-        character_image_url: `/assets/characters/male/character_lvl${userLevel}.png`
+        character_image_url
       },
       tapState: {
         ...tapState.toObject(),
@@ -127,18 +131,49 @@ router.get('/state', auth, async (req, res) => {
 // GET /api/tap/user/character
 router.get('/user/character', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('level total_taps');
+    const user = await User.findById(req.user.id).select('level total_taps gender');
     const level = Math.min(10, Math.max(1, user?.level || 1));
     const total_taps = user?.total_taps || 0;
+    const gender = user?.gender || 'male';
+    const character_image_url = TapEconomyService.getCharacterImageUrl 
+      ? TapEconomyService.getCharacterImageUrl(gender, level)
+      : (gender === 'female' ? `/assets/characters/female/character_f_lvl${level}.png` : `/assets/characters/male/character_lvl${level}.png`);
+
     res.json({
       success: true,
       level,
       total_taps,
-      character_image_url: `/assets/characters/male/character_lvl${level}.png`
+      gender,
+      character_image_url
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error fetching character' });
+  }
+});
+
+// POST /api/tap/user/gender
+router.post('/user/gender', auth, async (req, res) => {
+  try {
+    const { gender } = req.body;
+    if (!['male', 'female', 'other'].includes(gender)) {
+      return res.status(400).json({ success: false, message: 'Invalid gender' });
+    }
+    const user = await User.findByIdAndUpdate(req.user.id, { gender }, { new: true });
+    const level = Math.min(10, Math.max(1, user.level || 1));
+    const character_image_url = TapEconomyService.getCharacterImageUrl 
+      ? TapEconomyService.getCharacterImageUrl(user.gender, level)
+      : (user.gender === 'female' ? `/assets/characters/female/character_f_lvl${level}.png` : `/assets/characters/male/character_lvl${level}.png`);
+
+    res.json({
+      success: true,
+      gender: user.gender,
+      level,
+      character_image_url
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error updating gender' });
   }
 });
 

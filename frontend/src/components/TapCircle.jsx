@@ -24,7 +24,11 @@ export default function TapCircle() {
   const prevLevelRef = useRef(liveState?.level || 1);
 
   const currentLevel = Math.min(10, Math.max(1, liveState?.level || 1));
-  const characterImageUrl = liveState?.character_image_url || `/assets/characters/male/character_lvl${currentLevel}.png`;
+  const userGender = liveState?.gender || 'male';
+  const fallbackUrl = userGender === 'female'
+    ? `/assets/characters/female/character_f_lvl${currentLevel}.png`
+    : `/assets/characters/male/character_lvl${currentLevel}.png`;
+  const characterImageUrl = liveState?.character_image_url || fallbackUrl;
 
   const triggerLevelUpCelebration = (lvl) => {
     setIsLevelingUp(true);

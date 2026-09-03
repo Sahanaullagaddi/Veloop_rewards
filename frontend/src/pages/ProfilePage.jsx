@@ -3,14 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import { Award, Calendar, ChevronLeft, User, ShieldCheck, LogOut, Settings, ChevronRight, BookOpen } from 'lucide-react';
+import { API_URL } from '../config';
 import styles from './ProfilePage.module.css';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const { liveState } = useSocket();
+  const { user, token, logout } = useAuth();
+  const { liveState, reconcileState } = useSocket();
 
   if (!user || !liveState) return <div className="loading-screen">Loading Profile...</div>;
+
+  const handleGenderChange = async (newGender) => {
+    try {
+      const res = await fetch(`${API_URL}/api/tap/user/gender`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ gender: newGender })
+      });
+      const data = await res.json();
+      if (data.success) {
+        reconcileState({
+          gender: data.gender,
+          character_image_url: data.character_image_url
+        });
+      }
+    } catch (err) {
+      console.error('Failed to change gender:', err);
+    }
+  };
 
   const xpNeeded = (liveState.level || 1) * 200;
   const xpPct = Math.min(100, ((liveState.xp || 0) / xpNeeded) * 100);
@@ -43,6 +66,27 @@ export default function ProfilePage() {
           <span className={styles.titleBadge}>
             {liveState.level >= 10 ? 'Veloop Tycoon' : liveState.level >= 5 ? 'Fintech Specialist' : 'Novice Trader'}
           </span>
+        </div>
+
+        {/* Character Gender Selector */}
+        <div className={styles.card}>
+          <div className={styles.row}>
+            <span className={styles.label}>Podium Character</span>
+            <div className={styles.genderToggleGroup}>
+              <button 
+                className={`${styles.genderBtn} ${(liveState.gender || 'male') === 'male' ? styles.genderActive : ''}`}
+                onClick={() => handleGenderChange('male')}
+              >
+                ♂ Male Bunny
+              </button>
+              <button 
+                className={`${styles.genderBtn} ${liveState.gender === 'female' ? styles.genderActive : ''}`}
+                onClick={() => handleGenderChange('female')}
+              >
+                ♀ Female Bunny
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Level & Progress Card */}

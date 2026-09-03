@@ -61,6 +61,14 @@ function calculateLevelFromTaps(totalTaps) {
   return Math.min(10, Math.max(1, lvl));
 }
 
+function getCharacterImageUrl(gender, level) {
+  const safeLevel = Math.min(10, Math.max(1, level || 1));
+  if (gender === 'female') {
+    return `/assets/characters/female/character_f_lvl${safeLevel}.png`;
+  }
+  return `/assets/characters/male/character_lvl${safeLevel}.png`;
+}
+
 // Dynamic Regen Calculator
 function calculateRegen(tapState, now, isPremium = false) {
   let capacity = getEnergyCapacity(tapState.energyCapacityLevel);
@@ -415,12 +423,13 @@ async function processTapAttempt({ userId, requestId }) {
     });
   }
 
-  const characterImageUrl = `/assets/characters/male/character_lvl${updatedUser.level}.png`;
+  const characterImageUrl = getCharacterImageUrl(updatedUser.gender, updatedUser.level);
 
   return {
     success: true,
     level: updatedUser.level,
     total_taps: updatedUser.total_taps || 0,
+    gender: updatedUser.gender || 'male',
     coins: parseFloat(updatedUser.veBalance.toString()),
     character_image_url: characterImageUrl,
     rewardType,
@@ -438,6 +447,7 @@ async function processTapAttempt({ userId, requestId }) {
       fragmentBalance: updatedUser.fragmentBalance.toString(),
       level: updatedUser.level,
       total_taps: updatedUser.total_taps || 0,
+      gender: updatedUser.gender || 'male',
       character_image_url: characterImageUrl,
       xp: updatedUser.xp,
       currentEnergy: lockedState.currentEnergy,
@@ -521,5 +531,6 @@ module.exports = {
   getEnergyCapacity,
   getRechargeIntervalMs,
   getEnergyBankCapacity,
-  getEfficiencyMultiplier
+  getEfficiencyMultiplier,
+  getCharacterImageUrl
 };

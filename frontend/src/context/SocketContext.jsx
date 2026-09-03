@@ -177,7 +177,10 @@ export function SocketProvider({ children }) {
           fragmentBalance: data.user.fragmentBalance ? data.user.fragmentBalance.$numberDecimal || data.user.fragmentBalance : '0.0',
           level: data.user.level || 1,
           total_taps: data.user.total_taps || 0,
-          character_image_url: data.user.character_image_url || `/assets/characters/male/character_lvl${data.user.level || 1}.png`,
+          gender: data.user.gender || 'male',
+          character_image_url: data.user.character_image_url || ((data.user.gender === 'female')
+            ? `/assets/characters/female/character_f_lvl${data.user.level || 1}.png`
+            : `/assets/characters/male/character_lvl${data.user.level || 1}.png`),
           xp: data.user.xp,
           currentEnergy: 500, // will be refreshed by tap state fetches
           energyCapacity: 500,

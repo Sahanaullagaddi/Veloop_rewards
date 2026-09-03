@@ -65,6 +65,35 @@
   margin-bottom: 16px;
 }
 
+.genderToggleGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.genderBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genderBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.genderBtn.genderActive {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, #0051b3 100%);
+  border-color: var(--accent-blue);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 112, 243, 0.4);
+}
+
 .row {
   display: flex;
   justify-content: space-between;
