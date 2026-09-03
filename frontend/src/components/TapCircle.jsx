@@ -25,7 +25,7 @@ export default function TapCircle() {
 
   const userCoins = Math.floor(parseFloat(liveState?.veBalance || 0));
   const effectiveTaps = Math.max(liveState?.total_taps || 0, userCoins);
-  const calculatedLevel = effectiveTaps < 2000 ? 1 : Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000)));
+  const calculatedLevel = Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000) + 1));
   const currentLevel = Math.min(10, Math.max(liveState?.level || 1, calculatedLevel));
   
   const username = (user?.username || liveState?.username || '').toLowerCase();

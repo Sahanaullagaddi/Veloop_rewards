@@ -113,7 +113,7 @@ router.get('/state', auth, async (req, res) => {
     const effectiveTaps = Math.max(user.total_taps || 0, Math.floor(parseFloat(user.veBalance?.toString() || 0)));
     const calculatedLevel = TapEconomyService.calculateLevelFromTaps
       ? TapEconomyService.calculateLevelFromTaps(effectiveTaps)
-      : (effectiveTaps < 2000 ? 1 : Math.min(10, Math.floor(effectiveTaps / 1000)));
+      : Math.min(10, Math.floor(effectiveTaps / 1000) + 1);
 
     // STRICT RULE: Once a level increases, it NEVER falls back!
     const userLevel = Math.min(10, Math.max(user.level || 1, calculatedLevel));
@@ -170,7 +170,7 @@ router.get('/user/character', auth, async (req, res) => {
     const total_taps = Math.max(user?.total_taps || 0, Math.floor(parseFloat(user?.veBalance?.toString() || 0)));
     const calculatedLevel = TapEconomyService.calculateLevelFromTaps
       ? TapEconomyService.calculateLevelFromTaps(total_taps)
-      : (total_taps < 2000 ? 1 : Math.min(10, Math.floor(total_taps / 1000)));
+      : Math.min(10, Math.floor(total_taps / 1000) + 1);
 
     // STRICT RULE: Once a level increases, it NEVER falls back!
     const level = Math.min(10, Math.max(user?.level || 1, calculatedLevel));
