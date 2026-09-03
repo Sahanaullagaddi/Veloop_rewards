@@ -71,19 +71,19 @@ export default function ProfilePage() {
         {/* Character Gender Selector */}
         <div className={styles.card}>
           <div className={styles.row}>
-            <span className={styles.label}>Podium Character</span>
+            <span className={styles.label}>Gender</span>
             <div className={styles.genderToggleGroup}>
               <button 
                 className={`${styles.genderBtn} ${(liveState.gender || 'male') === 'male' ? styles.genderActive : ''}`}
                 onClick={() => handleGenderChange('male')}
               >
-                ♂ Male Bunny
+                ♂ Male
               </button>
               <button 
                 className={`${styles.genderBtn} ${liveState.gender === 'female' ? styles.genderActive : ''}`}
                 onClick={() => handleGenderChange('female')}
               >
-                ♀ Female Bunny
+                ♀ Female
               </button>
             </div>
           </div>

@@ -126,21 +126,21 @@ export default function LoginPage() {
 
           {isRegistering && (
             <div className={styles.inputGroup}>
-              <label>Podium Character</label>
+              <label>Gender</label>
               <div className={styles.genderSelectRow}>
                 <button
                   type="button"
                   className={`${styles.genderOptionBtn} ${gender === 'male' ? styles.genderActive : ''}`}
                   onClick={() => setGender('male')}
                 >
-                  <span className={styles.genderIcon}>♂</span> Boy Bunny
+                  <span className={styles.genderIcon}>♂</span> Male
                 </button>
                 <button
                   type="button"
                   className={`${styles.genderOptionBtn} ${gender === 'female' ? styles.genderActive : ''}`}
                   onClick={() => setGender('female')}
                 >
-                  <span className={styles.genderIcon}>♀</span> Girl Bunny
+                  <span className={styles.genderIcon}>♀</span> Female
                 </button>
               </div>
             </div>
