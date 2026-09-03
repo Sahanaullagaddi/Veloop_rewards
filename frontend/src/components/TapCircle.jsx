@@ -248,16 +248,18 @@ export default function TapCircle() {
           </div>
         </div>
 
-        {/* Floating Coin Payout Animations */}
-        {floats.map(f => (
-          <span 
-            key={f.id} 
-            className={`${styles.floatingCoin} ${f.currency === 'SVE' ? styles.goldCoin : styles.whiteCoin}`}
-            style={{ left: `${f.x}px`, top: `${f.y}px` }}
-          >
-            {f.text}
-          </span>
-        ))}
+        {/* Floating Coin Payout Animations (Absolute overlay container) */}
+        <div className={styles.floatsContainer}>
+          {floats.map(f => (
+            <span 
+              key={f.id} 
+              className={`${styles.floatingCoin} ${f.currency === 'SVE' ? styles.goldCoin : styles.whiteCoin}`}
+              style={{ left: `${f.x}px`, top: `${f.y}px` }}
+            >
+              {f.text}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );

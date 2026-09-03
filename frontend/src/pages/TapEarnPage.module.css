@@ -253,8 +253,7 @@
 /* Pedestal Platform glow effect underneath core circle */
 .pedestalHalo {
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,7 +263,9 @@
 .pedestalBase {
   position: absolute;
   bottom: 0;
-  width: 180px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 230px;
   height: 28px;
   border-radius: 50%;
   background: radial-gradient(ellipse at center, rgba(0, 198, 255, 0.4) 0%, rgba(127, 0, 255, 0.1) 50%, rgba(0,0,0,0) 70%);

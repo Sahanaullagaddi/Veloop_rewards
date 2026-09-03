@@ -43,26 +43,21 @@ function getEfficiencyMultiplier(level) {
 }
 
 const LEVEL_THRESHOLDS = [
-  0,     // Level 1
-  25,    // Level 2
-  75,    // Level 3
-  150,   // Level 4
-  300,   // Level 5
-  500,   // Level 6
-  800,   // Level 7
-  1200,  // Level 8
-  1800,  // Level 9
-  2500   // Level 10
+  0,     // Level 1: 0 - 999 taps
+  1000,  // Level 2: 1,000 taps
+  2000,  // Level 3: 2,000 taps
+  3000,  // Level 4: 3,000 taps
+  4000,  // Level 5: 4,000 taps
+  5000,  // Level 6: 5,000 taps
+  6000,  // Level 7: 6,000 taps
+  7000,  // Level 8: 7,000 taps
+  8000,  // Level 9: 8,000 taps
+  9000   // Level 10: 9,000 taps
 ];
 
 function calculateLevelFromTaps(totalTaps) {
-  let lvl = 1;
-  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
-    if (totalTaps >= LEVEL_THRESHOLDS[i]) {
-      lvl = i + 1;
-      break;
-    }
-  }
+  // Starts at level 1; every 1000 taps increases level by 1 up to level 10
+  const lvl = Math.floor(Math.max(0, totalTaps) / 1000) + 1;
   return Math.min(10, Math.max(1, lvl));
 }
 
