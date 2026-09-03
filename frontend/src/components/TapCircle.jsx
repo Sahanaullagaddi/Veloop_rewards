@@ -19,7 +19,6 @@ export default function TapCircle() {
   const [isPressing, setIsPressing] = useState(false);
   const [inlineFeedback, setInlineFeedback] = useState(null); // 'Too Fast' or 'Energy Empty'
   const [isLevelingUp, setIsLevelingUp] = useState(false);
-  const [isDemoLoading, setIsDemoLoading] = useState(false);
   const circleRef = useRef(null);
   const lastTapRef = useRef(0);
   const prevLevelRef = useRef(liveState?.level || 1);
@@ -225,74 +224,8 @@ export default function TapCircle() {
   const isBoostActive = liveState.activeBoostExpiry && new Date(liveState.activeBoostExpiry) > Date.now();
   const isShieldActive = liveState.activeShieldExpiry && new Date(liveState.activeShieldExpiry) > Date.now();
 
-  const handleDemoLevelUp = async (e) => {
-    e.stopPropagation();
-    if (isDemoLoading) return;
-    setIsDemoLoading(true);
-    triggerHaptic([80, 40, 80]);
-
-    const nextLvl = currentLevel >= 10 ? 1 : currentLevel + 1;
-    triggerLevelUpCelebration(nextLvl);
-
-    // Optimistically update liveState immediately for instant visual gratification
-    const nextTaps = (nextLvl - 1) * 1000;
-    const optimisticCharUrl = userGender === 'female'
-      ? `/assets/characters/female/character_f_lvl${nextLvl}.png`
-      : `/assets/characters/male/character_lvl${nextLvl}.png`;
-
-    setLiveState(prev => prev ? ({
-      ...prev,
-      level: nextLvl,
-      total_taps: nextTaps,
-      character_image_url: optimisticCharUrl
-    }) : prev);
-
-    triggerFeedback(`⚡ Demo Lvl ${nextLvl}!`);
-
-    try {
-      const res = await fetch(`${API_URL}/api/tap/test/level-up`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      if (data.success) {
-        setLiveState(prev => prev ? ({
-          ...prev,
-          level: data.level,
-          total_taps: data.total_taps,
-          character_image_url: data.character_image_url
-        }) : prev);
-      }
-    } catch (err) {
-      console.error('Demo level up error:', err);
-    } finally {
-      setIsDemoLoading(false);
-    }
-  };
-
   return (
     <div className={styles.tapArea}>
-      {/* Top Left Level Badge */}
-      <div className={styles.topLeftLevelBadge}>
-        <span className={styles.levelStar}>★</span>
-        <span className={styles.levelText}>Lvl {currentLevel}</span>
-      </div>
-
-      {/* Top Right Demo Level Up Test Button */}
-      <button 
-        type="button"
-        className={styles.demoLevelBtn}
-        onClick={handleDemoLevelUp}
-        disabled={isDemoLoading}
-        title="Demo testing: Cycle to next level (1 to 10)"
-      >
-        <span className={styles.demoIcon}>⚡</span>
-        <span className={styles.demoText}>Demo Lvl +1</span>
-      </button>
-
       {/* Inline Feedback Messages */}
       {inlineFeedback && (
         <div className={`${styles.feedback} ${inlineFeedback.includes('Fast') ? styles.warning : styles.error}`}>

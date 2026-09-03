@@ -13,7 +13,7 @@ import styles from './TapEarnPage.module.css';
 
 export default function TapEarnPage() {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { liveState, setLiveState, refreshTapState } = useSocket();
 
   // Modal / Drawer visibility states
@@ -769,6 +769,59 @@ export default function TapEarnPage() {
   const xpNeeded = (liveState.level || 1) * 200;
   const xpPct = Math.min(100, ((liveState.xp || 0) / xpNeeded) * 100);
 
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+  const userCoins = Math.floor(parseFloat(liveState?.veBalance || 0));
+  const effectiveTaps = Math.max(liveState?.total_taps || 0, userCoins);
+  const calculatedLevel = Math.min(10, Math.max(1, Math.floor(effectiveTaps / 1000) + 1));
+  const currentLevel = Math.min(10, Math.max(liveState?.level || 1, calculatedLevel));
+  
+  const username = (user?.username || liveState?.username || '').toLowerCase();
+  const isFemaleName = username.includes('reena') || username.includes('rina') || username.includes('sahana') || username.includes('sarah') || username.includes('priya') || username.includes('pooja') || username.includes('girl') || username.includes('woman') || username.includes('trinity');
+  const userGender = liveState?.gender === 'female' || isFemaleName ? 'female' : (liveState?.gender || 'male');
+
+  const handleDemoLevelUp = async () => {
+    if (isDemoLoading) return;
+    setIsDemoLoading(true);
+
+    const nextLvl = currentLevel >= 10 ? 1 : currentLevel + 1;
+    const nextTaps = (nextLvl - 1) * 1000;
+    const optimisticCharUrl = userGender === 'female'
+      ? `/assets/characters/female/character_f_lvl${nextLvl}.png`
+      : `/assets/characters/male/character_lvl${nextLvl}.png`;
+
+    setLiveState(prev => prev ? ({
+      ...prev,
+      level: nextLvl,
+      total_taps: nextTaps,
+      character_image_url: optimisticCharUrl
+    }) : prev);
+
+    showToast(`⚡ Demo: Upgraded to Level ${nextLvl}!`);
+
+    try {
+      const res = await fetch(`${API_URL}/api/tap/test/level-up`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLiveState(prev => prev ? ({
+          ...prev,
+          level: data.level,
+          total_taps: data.total_taps,
+          character_image_url: data.character_image_url
+        }) : prev);
+      }
+    } catch (err) {
+      console.error('Demo level up error:', err);
+    } finally {
+      setIsDemoLoading(false);
+    }
+  };
+
   return (
     <div className="content-container">
       {/* Toast notifier */}
@@ -789,17 +842,35 @@ export default function TapEarnPage() {
           </div>
         </div>
 
-        {/* Large Balance Display (Hamster Kombat Style) */}
+        {/* Large Balance Display & Level Badge (Placed Next to Coin as Requested) */}
         <div className={styles.largeBalanceRow}>
-          <img 
-            src="/gold_coin.jpg" 
-            alt="Gold Coin" 
-            className={styles.largeCoinIcon} 
-            draggable="false"
-          />
-          <span className={styles.largeBalanceText}>
-            {Number(liveState.veBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
-          </span>
+          <div className={styles.balanceCoinGroup}>
+            <img 
+              src="/gold_coin.jpg" 
+              alt="Gold Coin" 
+              className={styles.largeCoinIcon} 
+              draggable="false"
+            />
+            <span className={styles.largeBalanceText}>
+              {Number(liveState.veBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+            </span>
+          </div>
+
+          <div className={styles.levelBadgeNextToCoin}>
+            <span className={styles.levelStar}>★</span>
+            <span className={styles.levelBadgeText}>Lvl {currentLevel}</span>
+          </div>
+
+          <button 
+            type="button" 
+            className={styles.demoLevelBtn}
+            onClick={handleDemoLevelUp}
+            disabled={isDemoLoading}
+            title="Demo Testing: Cycle to next level (1 to 10)"
+          >
+            <span className={styles.demoIcon}>⚡</span>
+            <span>Demo +1</span>
+          </button>
         </div>
 
         {/* 2. Tapping Circle (Centered) */}

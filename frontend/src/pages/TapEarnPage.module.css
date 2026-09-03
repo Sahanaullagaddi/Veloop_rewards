@@ -263,12 +263,12 @@
 .pedestalHalo::before {
   content: '';
   position: absolute;
-  width: 370px;
-  height: 370px;
-  max-width: 92vw;
-  max-height: 92vw;
+  width: 320px;
+  height: 320px;
+  max-width: 86vw;
+  max-height: 86vw;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 210, 255, 0.16) 0%, rgba(147, 51, 234, 0.1) 40%, rgba(245, 158, 11, 0.04) 65%, transparent 75%);
+  background: radial-gradient(circle, rgba(0, 223, 216, 0.28) 0%, rgba(168, 85, 247, 0.18) 40%, rgba(245, 158, 11, 0.08) 65%, transparent 75%);
   filter: blur(28px);
   z-index: -2;
   pointer-events: none;
@@ -277,11 +277,11 @@
 
 @keyframes haloBreathe {
   0% {
-    transform: scale(0.94);
-    opacity: 0.75;
+    transform: scale(0.95);
+    opacity: 0.8;
   }
   100% {
-    transform: scale(1.05);
+    transform: scale(1.04);
     opacity: 1;
   }
 }
@@ -291,13 +291,13 @@
   bottom: -4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 300px;
-  height: 36px;
-  max-width: 82vw;
+  width: 260px;
+  height: 32px;
+  max-width: 74vw;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.55) 0%, rgba(147, 51, 234, 0.25) 50%, rgba(0, 0, 0, 0) 75%);
-  border: 2px solid rgba(0, 240, 255, 0.45);
-  box-shadow: 0 0 25px rgba(0, 240, 255, 0.4), 0 0 50px rgba(147, 51, 234, 0.25);
+  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.7) 0%, rgba(168, 85, 247, 0.35) 45%, rgba(0, 0, 0, 0) 75%);
+  border: 2px solid rgba(0, 223, 216, 0.6);
+  box-shadow: 0 0 25px rgba(0, 223, 216, 0.5), 0 0 50px rgba(168, 85, 247, 0.3);
   z-index: -1;
   pointer-events: none;
 }
@@ -1405,23 +1405,25 @@
 }
 
 .statCard {
-  background: linear-gradient(135deg, rgba(37, 40, 65, 0.6) 0%, rgba(22, 24, 39, 0.7) 100%);
+  background: linear-gradient(135deg, rgba(26, 32, 70, 0.72) 0%, rgba(14, 18, 44, 0.82) 100%);
   border-radius: 12px;
   padding: 10px 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .statCard:nth-child(1) {
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  box-shadow: 0 4px 18px rgba(59, 130, 246, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .statCard:nth-child(2) {
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.5);
+  box-shadow: 0 4px 18px rgba(6, 182, 212, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
 
 .statCard:active {
@@ -1496,7 +1498,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  padding: 8px 0;
+  width: 100%;
 }
 
 /* Quick Actions Grid */
@@ -1748,33 +1751,123 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Centered Large Balance Display */
+/* Centered Large Balance Display & Level Badge Placed Next to Coin */
 .largeBalanceRow {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin: 18px 0 10px 0;
+  gap: 12px;
+  margin: 14px 0 8px 0;
   user-select: none;
   -webkit-user-select: none;
+  flex-wrap: wrap;
+}
+
+.balanceCoinGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .largeCoinIcon {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   object-fit: cover;
   border-radius: 50%;
-  filter: drop-shadow(0 4px 10px rgba(245, 158, 11, 0.5));
+  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.7));
   user-select: none;
   -webkit-user-drag: none;
+  animation: coinGlowPulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes coinGlowPulse {
+  0% {
+    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.9));
+  }
 }
 
 .largeBalanceText {
-  font-size: 38px;
+  font-size: 34px;
   font-weight: 900;
   color: #ffffff;
   letter-spacing: 0.5px;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+/* Level badge placed NEXT TO COIN */
+.levelBadgeNextToCoin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, rgba(20, 24, 52, 0.9) 0%, rgba(32, 28, 64, 0.95) 100%);
+  border: 1.5px solid rgba(250, 204, 21, 0.85);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 14px rgba(250, 204, 21, 0.4);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.levelStar {
+  color: #facc15;
+  font-size: 12px;
+  filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.9));
+}
+
+.levelBadgeText {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* Demo +1 test button next to level badge */
+.demoLevelBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.16) 0%, rgba(147, 51, 234, 0.22) 100%);
+  border: 1.5px solid rgba(0, 210, 255, 0.6);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), 0 0 10px rgba(0, 210, 255, 0.25);
+  color: #00e5ff;
+  padding: 4px 11px;
+  border-radius: 18px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  user-select: none;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  outline: none;
+}
+
+.demoLevelBtn:hover {
+  transform: translateY(-1px) scale(1.05);
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.3) 0%, rgba(147, 51, 234, 0.35) 100%);
+  border-color: #00e5ff;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 210, 255, 0.45);
+}
+
+.demoLevelBtn:active {
+  transform: scale(0.94);
+}
+
+.demoLevelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.demoIcon {
+  font-size: 11px;
+  filter: drop-shadow(0 0 3px #00e5ff);
 }
 
 /* Level Up & Goal Modal Additions */

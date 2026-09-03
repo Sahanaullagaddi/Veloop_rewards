@@ -46,13 +46,13 @@
 }
 
 body {
-  background-color: #080915;
+  background-color: #0c0d21;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(0, 210, 255, 0.16) 0%, transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(147, 51, 234, 0.18) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.09) 0%, transparent 55%),
-    radial-gradient(circle at 50% 88%, rgba(79, 70, 229, 0.15) 0%, transparent 50%),
-    linear-gradient(180deg, #090a18 0%, #0d0e24 45%, #070712 100%);
+    radial-gradient(ellipse at 18% 12%, rgba(0, 223, 216, 0.35) 0%, rgba(59, 130, 246, 0.2) 30%, transparent 58%),
+    radial-gradient(ellipse at 82% 14%, rgba(168, 85, 247, 0.38) 0%, rgba(236, 72, 153, 0.22) 32%, transparent 60%),
+    radial-gradient(circle at 50% 48%, rgba(245, 158, 11, 0.18) 0%, rgba(251, 191, 36, 0.08) 35%, transparent 65%),
+    radial-gradient(ellipse at 50% 92%, rgba(99, 102, 241, 0.3) 0%, rgba(30, 27, 75, 0.2) 40%, transparent 65%),
+    linear-gradient(180deg, #0e112b 0%, #161a3f 40%, #0d0f26 80%, #080916 100%);
   background-attachment: fixed;
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -82,12 +82,12 @@ body {
   height: 100vh;
   max-width: 1000px;
   margin: 0 auto;
-  background: linear-gradient(180deg, rgba(14, 16, 36, 0.85) 0%, rgba(9, 10, 22, 0.92) 100%);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 60px rgba(0, 0, 0, 0.85), 0 0 50px rgba(0, 198, 255, 0.08);
+  background: linear-gradient(180deg, rgba(17, 21, 52, 0.72) 0%, rgba(11, 13, 33, 0.82) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(0, 223, 216, 0.18);
+  border-right: 1px solid rgba(168, 85, 247, 0.18);
+  box-shadow: 0 10px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(0, 223, 216, 0.12);
   position: relative;
 }
 
