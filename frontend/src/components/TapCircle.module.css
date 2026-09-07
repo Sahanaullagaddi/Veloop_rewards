@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 300px;
+  height: 330px;
   width: 100%;
   user-select: none;
   -webkit-user-select: none;
@@ -39,18 +39,18 @@
 
 /* Core Tapping Circle - Perfectly Sized with Vivid Cyber Glow */
 .circle {
-  width: 280px;
-  height: 280px;
-  max-width: 80vw;
-  max-height: 80vw;
+  width: 310px;
+  height: 310px;
+  max-width: 86vw;
+  max-height: 86vw;
   border-radius: 50%;
   background: radial-gradient(circle at 50% 28%, #272d5c 0%, #151836 55%, #0c0e22 100%);
   border: 3.5px solid #00dfd8;
   box-shadow: 
-    0 0 35px rgba(0, 223, 216, 0.4),
-    0 0 70px rgba(168, 85, 247, 0.3),
-    inset 0 0 25px rgba(0, 223, 216, 0.22),
-    0 14px 40px rgba(0, 0, 0, 0.85);
+    0 0 40px rgba(0, 223, 216, 0.45),
+    0 0 80px rgba(168, 85, 247, 0.35),
+    inset 0 0 28px rgba(0, 223, 216, 0.26),
+    0 16px 45px rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,23 +227,28 @@
 
 @media (max-width: 767px) {
   .tapArea {
-    height: 230px;
+    height: 280px;
   }
 
   .circle {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
+    max-width: 84vw;
+    max-height: 84vw;
   }
 }
 
 @media (max-width: 380px) {
   .tapArea {
-    height: 205px;
+    height: 250px;
   }
 
   .circle {
-    width: 175px;
-    height: 175px;
+    width: 220px;
+    height: 220px;
+    max-width: 82vw;
+    max-height: 82vw;
   }
 }
+
 

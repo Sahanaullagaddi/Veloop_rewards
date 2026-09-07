@@ -263,13 +263,13 @@
 .pedestalHalo::before {
   content: '';
   position: absolute;
-  width: 400px;
-  height: 400px;
-  max-width: 92vw;
-  max-height: 92vw;
+  width: 480px;
+  height: 480px;
+  max-width: 98vw;
+  max-height: 98vw;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 223, 216, 0.32) 0%, rgba(168, 85, 247, 0.22) 40%, rgba(245, 158, 11, 0.08) 65%, transparent 76%);
-  filter: blur(32px);
+  background: radial-gradient(circle, rgba(0, 223, 216, 0.35) 0%, rgba(168, 85, 247, 0.25) 40%, rgba(245, 158, 11, 0.1) 65%, transparent 76%);
+  filter: blur(38px);
   z-index: -2;
   pointer-events: none;
   animation: haloBreathe 4s ease-in-out infinite alternate;
@@ -288,19 +288,19 @@
 
 .pedestalBase {
   position: absolute;
-  bottom: -16px;
+  bottom: -22px;
   left: 50%;
   transform: translateX(-50%);
-  width: 350px;
-  height: 52px;
-  max-width: 88vw;
+  width: 420px;
+  height: 64px;
+  max-width: 96vw;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.75) 0%, rgba(168, 85, 247, 0.45) 45%, rgba(10, 14, 39, 0.8) 72%, transparent 88%);
-  border: 2px solid rgba(0, 223, 216, 0.7);
+  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.8) 0%, rgba(168, 85, 247, 0.5) 45%, rgba(10, 14, 39, 0.85) 72%, transparent 88%);
+  border: 2.5px solid rgba(0, 223, 216, 0.75);
   box-shadow: 
-    0 0 35px rgba(0, 223, 216, 0.6), 
-    0 0 70px rgba(168, 85, 247, 0.4), 
-    inset 0 0 20px rgba(0, 223, 216, 0.35);
+    0 0 45px rgba(0, 223, 216, 0.65), 
+    0 0 85px rgba(168, 85, 247, 0.45), 
+    inset 0 0 25px rgba(0, 223, 216, 0.4);
   z-index: -1;
   pointer-events: none;
 }
@@ -309,13 +309,13 @@
 .pedestalBase::before {
   content: '';
   position: absolute;
-  top: -8px;
-  left: -20px;
-  right: -20px;
-  bottom: -8px;
+  top: -10px;
+  left: -24px;
+  right: -24px;
+  bottom: -10px;
   border-radius: 50%;
-  border: 1.5px solid rgba(168, 85, 247, 0.5);
-  box-shadow: 0 0 22px rgba(168, 85, 247, 0.35), inset 0 0 15px rgba(0, 223, 216, 0.2);
+  border: 1.5px solid rgba(168, 85, 247, 0.55);
+  box-shadow: 0 0 28px rgba(168, 85, 247, 0.4), inset 0 0 18px rgba(0, 223, 216, 0.25);
   pointer-events: none;
 }
 
@@ -323,13 +323,13 @@
 .pedestalBase::after {
   content: '';
   position: absolute;
-  top: 8px;
-  left: 28px;
-  right: 28px;
-  bottom: 8px;
+  top: 10px;
+  left: 36px;
+  right: 36px;
+  bottom: 10px;
   border-radius: 50%;
-  border: 1.5px solid rgba(0, 223, 216, 0.6);
-  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.45) 0%, rgba(168, 85, 247, 0.2) 55%, transparent 85%);
+  border: 1.5px solid rgba(0, 223, 216, 0.65);
+  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.5) 0%, rgba(168, 85, 247, 0.25) 55%, transparent 85%);
   pointer-events: none;
 }
 
