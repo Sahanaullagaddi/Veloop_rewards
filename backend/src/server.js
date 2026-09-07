@@ -16,11 +16,13 @@ async function bootstrap() {
   try {
     console.log('Attempting to connect to MongoDB database...');
     await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 3000 });
+    await mongoose.connection.db.admin().ping();
     console.log('Connected to MongoDB database successfully.');
   } catch (err) {
     console.warn('MongoDB connection failed:', err.message);
     console.log('Attempting MongoMemoryServer fallback...');
     try {
+      await mongoose.disconnect().catch(() => {});
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const mongoServer = await MongoMemoryServer.create();
       const memoryUri = mongoServer.getUri();

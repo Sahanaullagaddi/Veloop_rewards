@@ -18,8 +18,7 @@ backend/dist/
 .DS_Store
 Thumbs.db
 
-# Log files
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Scratch/test files in root
+*.png
+test_*.html
+

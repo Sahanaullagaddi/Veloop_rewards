@@ -7,28 +7,28 @@ const CARDS_CONFIG = [
     id: 'protect',
     title: 'Protect',
     description: 'Shield energy, tap with 90% defense.',
-    videoSrc: '/videos/11.mp4',
-    posterSrc: '/posters/11.png',
+    videoSrc: '/videos/a1.webm',
+    fallbackMp4: '/videos/a1.mp4',
     glowClass: styles.glowBlue,
     arrowClass: styles.arrowBlue,
     actionKey: 'shield'
   },
   {
     id: 'levelup',
-    title: 'Level Up',
-    description: 'Upgrade stats, boost coins & power.',
-    videoSrc: '/videos/22.mp4',
-    posterSrc: '/posters/22.png',
-    glowClass: styles.glowOrange,
-    arrowClass: styles.arrowOrange,
+    title: 'Upgrades',
+    description: 'Upgrade and multiply your earnings.',
+    videoSrc: '/videos/a2.webm',
+    fallbackMp4: '/videos/a2.mp4',
+    glowClass: styles.glowPurple,
+    arrowClass: styles.arrowPurple,
     actionKey: 'upgrade'
   },
   {
     id: 'spin',
     title: 'Lucky Spin',
     description: 'Spin the wheel, win exciting prizes.',
-    videoSrc: '/videos/33.mp4',
-    posterSrc: '/posters/33.png',
+    videoSrc: '/videos/a7.webm',
+    fallbackMp4: '/videos/a7.mp4',
     glowClass: styles.glowPurple,
     arrowClass: styles.arrowPurple,
     actionKey: 'spin'
@@ -37,8 +37,8 @@ const CARDS_CONFIG = [
     id: 'refill',
     title: 'Refill',
     description: 'Instant refill, recharge to 100% full.',
-    videoSrc: '/videos/44.mp4',
-    posterSrc: '/posters/44.png',
+    videoSrc: '/videos/a5.webm',
+    fallbackMp4: '/videos/a5.mp4',
     glowClass: styles.glowGreen,
     arrowClass: styles.arrowGreen,
     actionKey: 'refill'
@@ -47,8 +47,8 @@ const CARDS_CONFIG = [
     id: 'tasks',
     title: 'Tasks',
     description: 'Complete quests, earn bonus coins.',
-    videoSrc: '/videos/55.mp4',
-    posterSrc: '/posters/55.png',
+    videoSrc: '/videos/a3.webm',
+    fallbackMp4: '/videos/a3.mp4',
     glowClass: styles.glowGold,
     arrowClass: styles.arrowGold,
     actionKey: 'tasks'
@@ -57,18 +57,18 @@ const CARDS_CONFIG = [
     id: 'dailygoal',
     title: 'Daily Goal',
     description: 'Tap 1,000 times, claim daily crates.',
-    videoSrc: '/videos/77.mp4',
-    posterSrc: '/posters/77.png',
+    videoSrc: '/videos/a4.webm',
+    fallbackMp4: '/videos/a4.mp4',
     glowClass: styles.glowIndigo,
     arrowClass: styles.arrowIndigo,
     actionKey: 'goal'
   },
   {
     id: 'leaders',
-    title: 'Leaders',
-    description: 'Climb the ranks, compete with leaders.',
-    videoSrc: '/videos/88.mp4',
-    posterSrc: '/posters/88.png',
+    title: 'Tap League',
+    description: 'Compete, climb ranks & win big.',
+    videoSrc: '/videos/a6.webm',
+    fallbackMp4: '/videos/a6.mp4',
     glowClass: styles.glowAmber,
     arrowClass: styles.arrowAmber,
     actionKey: 'leaders'
@@ -135,15 +135,16 @@ function BoostCard({ card, onAction, isDragRef }) {
       <div className={styles.videoWrapper}>
         <video
           ref={videoRef}
-          src={card.videoSrc}
-          poster={card.posterSrc || undefined}
           muted
           loop
           autoPlay
           playsInline
           preload="auto"
           className={styles.videoElement}
-        />
+        >
+          <source src={card.videoSrc} type="video/webm" />
+          <source src={card.fallbackMp4} type="video/mp4" />
+        </video>
       </div>
       <div className={styles.infoContainer}>
         <span className={styles.cardTitle}>{card.title}</span>

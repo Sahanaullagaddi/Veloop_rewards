@@ -263,13 +263,13 @@
 .pedestalHalo::before {
   content: '';
   position: absolute;
-  width: 320px;
-  height: 320px;
-  max-width: 86vw;
-  max-height: 86vw;
+  width: 400px;
+  height: 400px;
+  max-width: 92vw;
+  max-height: 92vw;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 223, 216, 0.28) 0%, rgba(168, 85, 247, 0.18) 40%, rgba(245, 158, 11, 0.08) 65%, transparent 75%);
-  filter: blur(28px);
+  background: radial-gradient(circle, rgba(0, 223, 216, 0.32) 0%, rgba(168, 85, 247, 0.22) 40%, rgba(245, 158, 11, 0.08) 65%, transparent 76%);
+  filter: blur(32px);
   z-index: -2;
   pointer-events: none;
   animation: haloBreathe 4s ease-in-out infinite alternate;
@@ -288,17 +288,48 @@
 
 .pedestalBase {
   position: absolute;
-  bottom: -4px;
+  bottom: -16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 260px;
-  height: 32px;
-  max-width: 74vw;
+  width: 350px;
+  height: 52px;
+  max-width: 88vw;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.7) 0%, rgba(168, 85, 247, 0.35) 45%, rgba(0, 0, 0, 0) 75%);
-  border: 2px solid rgba(0, 223, 216, 0.6);
-  box-shadow: 0 0 25px rgba(0, 223, 216, 0.5), 0 0 50px rgba(168, 85, 247, 0.3);
+  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.75) 0%, rgba(168, 85, 247, 0.45) 45%, rgba(10, 14, 39, 0.8) 72%, transparent 88%);
+  border: 2px solid rgba(0, 223, 216, 0.7);
+  box-shadow: 
+    0 0 35px rgba(0, 223, 216, 0.6), 
+    0 0 70px rgba(168, 85, 247, 0.4), 
+    inset 0 0 20px rgba(0, 223, 216, 0.35);
   z-index: -1;
+  pointer-events: none;
+}
+
+/* Outer Concentric Podium Ring */
+.pedestalBase::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -20px;
+  right: -20px;
+  bottom: -8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.35), inset 0 0 15px rgba(0, 223, 216, 0.2);
+  pointer-events: none;
+}
+
+/* Inner Stepped Podium Ring */
+.pedestalBase::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 28px;
+  right: 28px;
+  bottom: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 223, 216, 0.6);
+  background: radial-gradient(ellipse at center, rgba(0, 223, 216, 0.45) 0%, rgba(168, 85, 247, 0.2) 55%, transparent 85%);
   pointer-events: none;
 }
 
@@ -1498,7 +1529,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 0;
+  padding: 8px 0 16px 0;
   width: 100%;
 }
 

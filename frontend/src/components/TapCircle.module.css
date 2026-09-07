@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 295px;
+  height: 300px;
   width: 100%;
   user-select: none;
   -webkit-user-select: none;
@@ -39,10 +39,10 @@
 
 /* Core Tapping Circle - Perfectly Sized with Vivid Cyber Glow */
 .circle {
-  width: 275px;
-  height: 275px;
-  max-width: 78vw;
-  max-height: 78vw;
+  width: 280px;
+  height: 280px;
+  max-width: 80vw;
+  max-height: 80vw;
   border-radius: 50%;
   background: radial-gradient(circle at 50% 28%, #272d5c 0%, #151836 55%, #0c0e22 100%);
   border: 3.5px solid #00dfd8;
