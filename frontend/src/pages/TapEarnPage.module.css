@@ -309,10 +309,10 @@
 .pedestalBase::before {
   content: '';
   position: absolute;
-  top: -10px;
-  left: -24px;
-  right: -24px;
-  bottom: -10px;
+  top: -8px;
+  left: -14px;
+  right: -14px;
+  bottom: -8px;
   border-radius: 50%;
   border: 1.5px solid rgba(168, 85, 247, 0.55);
   box-shadow: 0 0 28px rgba(168, 85, 247, 0.4), inset 0 0 18px rgba(0, 223, 216, 0.25);
@@ -694,11 +694,45 @@
 
 @media (max-width: 767px) {
   .content-container {
-    padding: 10px 12px 60px;
+    padding: 10px 10px 60px;
+    overflow-x: hidden !important;
   }
 
   .mobileContainer {
     gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 8px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .pedestalBase {
+    width: 320px !important;
+    max-width: 90vw !important;
+    height: 50px !important;
+    bottom: -16px !important;
+  }
+
+  .pedestalBase::before {
+    top: -6px !important;
+    left: -10px !important;
+    right: -10px !important;
+    bottom: -6px !important;
+  }
+
+  .pedestalBase::after {
+    top: 6px !important;
+    left: 20px !important;
+    right: 20px !important;
+    bottom: 6px !important;
+  }
+
+  .pedestalHalo::before {
+    width: 340px !important;
+    height: 340px !important;
+    max-width: 92vw !important;
+    max-height: 92vw !important;
   }
 
   .statsGrid {
@@ -800,6 +834,34 @@
 
   .circlePedestal {
     padding: 0 !important;
+  }
+
+  .pedestalBase {
+    width: 270px !important;
+    max-width: 88vw !important;
+    height: 44px !important;
+    bottom: -14px !important;
+  }
+
+  .pedestalBase::before {
+    top: -5px !important;
+    left: -8px !important;
+    right: -8px !important;
+    bottom: -5px !important;
+  }
+
+  .pedestalBase::after {
+    top: 5px !important;
+    left: 14px !important;
+    right: 14px !important;
+    bottom: 5px !important;
+  }
+
+  .pedestalHalo::before {
+    width: 290px !important;
+    height: 290px !important;
+    max-width: 88vw !important;
+    max-height: 88vw !important;
   }
 }
 
@@ -1395,6 +1457,8 @@
   max-width: 480px;
   margin: 0 auto;
   padding: 10px 14px;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .mobileEnergySection {
@@ -1667,6 +1731,10 @@
   .mobileContainer {
     padding: 6px;
     gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
   .mobileEnergySection {
     padding: 10px;

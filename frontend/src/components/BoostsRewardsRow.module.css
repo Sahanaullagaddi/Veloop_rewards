@@ -1,9 +1,11 @@
 .scrollWrapper {
   width: 100%;
+  max-width: 100%;
   position: relative;
   z-index: 15;
   margin: 10px 0 16px 0;
-  overflow: visible;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .scrollContainer {
@@ -18,6 +20,7 @@
   gap: 12px;
   padding: 8px 16px 16px 16px;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
