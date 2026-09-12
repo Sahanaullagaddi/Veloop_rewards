@@ -1,0 +1,360 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.oracleContainer {
+  background: #0d111a;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.15);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: zoomIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.botIconCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(192, 132, 252, 0.2));
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.botIcon {
+  color: #00f0ff;
+  filter: drop-shadow(0 0 6px #00f0ff);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+
+.aiBadge {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(192, 132, 252, 0.2));
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.subtitle {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin: 2px 0 0 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.closeBtn:hover {
+  color: #fff;
+}
+
+.body {
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.loadingBox {
+  text-align: center;
+  padding: 36px 0;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.sparklePulse {
+  color: #00f0ff;
+  animation: pulseGlow 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #00f0ff); }
+  50% { transform: scale(1.2); filter: drop-shadow(0 0 10px #00f0ff); }
+}
+
+.kpiRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.kpiCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpiLabel {
+  font-size: 0.62rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.kpiValueGold {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffb800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kpiValueCyan {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #00f0ff;
+}
+
+.humanBadgeRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.greenText { color: #10b981; }
+.goldText { color: #ffb800; }
+.iconGold { color: #ffb800; }
+.iconCyan { color: #00f0ff; }
+.iconOrange { color: #ff5500; }
+
+.challengeCard {
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.12), rgba(0, 240, 255, 0.08));
+  border: 1px solid rgba(255, 184, 0, 0.35);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.challengeHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.challengeTask {
+  font-size: 0.74rem;
+  color: #cbd5e1;
+  margin: 0 0 6px 0;
+  line-height: 1.35;
+}
+
+.challengeReward {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffb800;
+}
+
+.sectionTitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 8px 0;
+}
+
+.recList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.recIconWrap {
+  margin-top: 2px;
+}
+
+.recContent strong {
+  font-size: 0.78rem;
+  color: #f1f5f9;
+  display: block;
+}
+
+.recContent p {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin: 2px 0 0 0;
+  line-height: 1.35;
+}
+
+.chipsScroll {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.promptChip {
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #cbd5e1;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+}
+
+.promptChip:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.12);
+  color: #fff;
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+.conversationBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.userBubble {
+  align-self: flex-end;
+  background: rgba(255, 184, 0, 0.18);
+  border: 1px solid rgba(255, 184, 0, 0.35);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 12px 12px 2px 12px;
+  font-size: 0.75rem;
+  max-width: 85%;
+}
+
+.userBubble p { margin: 0; }
+
+.oracleBubble {
+  align-self: flex-start;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  color: #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 12px 12px 12px 2px;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  max-width: 90%;
+  display: flex;
+  gap: 6px;
+}
+
+.bubbleBotIcon {
+  color: #00f0ff;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.oracleBubble p { margin: 0; }
+
+.inputForm {
+  display: flex;
+  gap: 8px;
+}
+
+.chatInput {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: #fff;
+  font-size: 0.78rem;
+  outline: none;
+}
+
+.chatInput:focus {
+  border-color: #00f0ff;
+}
+
+.sendBtn {
+  background: linear-gradient(135deg, #00f0ff, #0088ff);
+  border: none;
+  border-radius: 10px;
+  color: #0b0e14;
+  padding: 0 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sendBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

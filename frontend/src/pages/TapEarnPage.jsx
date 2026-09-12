@@ -5,8 +5,9 @@ import { useAuth } from '../context/AuthContext';
 import TapCircle from '../components/TapCircle';
 import BoostsRewardsRow from '../components/BoostsRewardsRow';
 import DailyCheckinModal from '../components/DailyCheckinModal';
+import AiOracleModal from '../components/AiOracleModal';
 import { 
-  Zap, Trophy, Award, Gift, ArrowRight, Shield, Layers, X, ChevronRight, Check, Activity, Sparkles, Calendar
+  Zap, Trophy, Award, Gift, ArrowRight, Shield, Layers, X, ChevronRight, Check, Activity, Sparkles, Calendar, Bot, Flame
 } from 'lucide-react';
 import { API_URL } from '../config';
 import styles from './TapEarnPage.module.css';
@@ -17,6 +18,7 @@ export default function TapEarnPage() {
   const { liveState, setLiveState, refreshTapState } = useSocket();
 
   // Modal / Drawer visibility states
+  const [showAiOracle, setShowAiOracle] = useState(false);
   const [showUpgrades, setShowUpgrades] = useState(false);
   const [showBankModal, setShowBankModal] = useState(false);
   const [showRefillModal, setShowRefillModal] = useState(false);
@@ -851,9 +853,23 @@ export default function TapEarnPage() {
               className={styles.largeCoinIcon} 
               draggable="false"
             />
-            <span className={styles.largeBalanceText}>
-              {Number(liveState.veBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
-            </span>
+            <div className={styles.balanceTextStack}>
+              <span className={styles.largeBalanceText}>
+                {Number(liveState.veBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}
+              </span>
+              <div 
+                className={styles.rupeeSubRateRow} 
+                onClick={() => navigate('/wallet')}
+                title="Tap-to-Cash Estimator: 1 Tap = ₹1.00"
+              >
+                <span className={styles.rupeeEquivalent}>
+                  ≈ ₹ {Number(liveState.veBalance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} INR
+                </span>
+                <span className={styles.rateHelperPill}>
+                  1 Tap = ₹1.00
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className={styles.levelBadgeNextToCoin}>
@@ -871,7 +887,25 @@ export default function TapEarnPage() {
             <span className={styles.demoIcon}>⚡</span>
             <span>Demo +1</span>
           </button>
+
+          <button 
+            type="button" 
+            className={styles.oracleLaunchBtn}
+            onClick={() => setShowAiOracle(true)}
+            title="Consult VELoop AI Oracle"
+          >
+            <Bot size={13} className={styles.iconCyan} />
+            <span>AI Oracle</span>
+          </button>
         </div>
+
+        {/* Fever Mode Surge Banner */}
+        {((liveState.currentStreak || 0) >= 15 || (liveState.currentCombo || 0) >= 15) && (
+          <div className={styles.feverBanner}>
+            <Flame size={15} className={styles.feverFlame} />
+            <span>🔥 FEVER MODE 2X ACTIVE! ({liveState.currentStreak || liveState.currentCombo}x STREAK) 🔥</span>
+          </div>
+        )}
 
         {/* 2. Tapping Circle (Centered) */}
         <div className={styles.circlePedestal}>
@@ -2016,6 +2050,9 @@ export default function TapEarnPage() {
           </div>
         </div>
       )}
+
+      {/* VELoop AI Oracle Modal */}
+      <AiOracleModal isOpen={showAiOracle} onClose={() => setShowAiOracle(false)} />
 
     </div>
   );

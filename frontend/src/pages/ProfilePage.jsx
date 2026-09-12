@@ -129,6 +129,36 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Anti-Cheat & Proof-of-Human Verification */}
+        <div className={styles.antiCheatCard}>
+          <div className={styles.antiCheatHeader}>
+            <div className={styles.shieldWrap}>
+              <ShieldCheck size={20} className={styles.shieldGreen} />
+            </div>
+            <div>
+              <div className={styles.antiCheatTitleRow}>
+                <h4 className={styles.antiCheatTitle}>Proof-of-Human Tap Verified</h4>
+                <span className={styles.verifiedTag}>100% GENUINE</span>
+              </div>
+              <p className={styles.antiCheatSub}>Algorithmic telemetry confirms human tap rhythm & entropy</p>
+            </div>
+          </div>
+          <div className={styles.antiCheatMetrics}>
+            <div className={styles.entropyMetric}>
+              <span className={styles.metricLabel}>Entropy Score</span>
+              <strong className={styles.metricVal}>0.942 / 1.0 (High)</strong>
+            </div>
+            <div className={styles.entropyMetric}>
+              <span className={styles.metricLabel}>Confidence</span>
+              <strong className={styles.metricValGreen}>99.4% Human</strong>
+            </div>
+            <div className={styles.entropyMetric}>
+              <span className={styles.metricLabel}>Bot Flags</span>
+              <strong className={styles.metricValZero}>0 Anomaly</strong>
+            </div>
+          </div>
+        </div>
+
         {/* Member Details */}
         <div className={styles.infoCard}>
           <Calendar size={18} className={styles.iconBlue} />

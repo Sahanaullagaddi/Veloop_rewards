@@ -1894,6 +1894,47 @@
   color: #ffffff;
   letter-spacing: 0.5px;
   text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 20px rgba(245, 158, 11, 0.3);
+  line-height: 1;
+}
+
+.balanceTextStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.rupeeSubRateRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 2px 7px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.rupeeSubRateRow:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+}
+
+.rupeeEquivalent {
+  font-size: 11px;
+  font-weight: 800;
+  color: #10b981;
+  letter-spacing: 0.2px;
+}
+
+.rateHelperPill {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+  padding: 1px 5px;
+  border-radius: 6px;
 }
 
 /* Level badge placed NEXT TO COIN */
@@ -2044,5 +2085,65 @@
   height: 100%;
   border-radius: 5px;
   transition: width 0.3s ease;
+}
+
+/* Prize-Winning Enhancements: AI Oracle & Fever Surge */
+.oracleLaunchBtn {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(192, 132, 252, 0.15));
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #00f0ff;
+  border-radius: 20px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.oracleLaunchBtn:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(192, 132, 252, 0.25));
+  border-color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.feverBanner {
+  background: linear-gradient(90deg, #ff5500, #ff8c00, #ff5500);
+  background-size: 200% auto;
+  animation: feverGradient 2s linear infinite, feverGlow 0.8s alternate infinite ease-in-out;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin: 6px auto 10px auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 20px rgba(255, 85, 0, 0.6);
+}
+
+.feverFlame {
+  color: #ffea00;
+  animation: flameBounce 0.5s alternate infinite ease-in-out;
+}
+
+@keyframes feverGradient {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes feverGlow {
+  from { box-shadow: 0 0 12px rgba(255, 85, 0, 0.5); transform: scale(0.98); }
+  to { box-shadow: 0 0 24px rgba(255, 140, 0, 0.8); transform: scale(1.02); }
+}
+
+@keyframes flameBounce {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-2px) scale(1.15); }
 }
 

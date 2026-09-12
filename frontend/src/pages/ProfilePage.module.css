@@ -425,3 +425,106 @@
 .rulesCardArrow {
   color: var(--text-secondary);
 }
+
+/* Proof-of-Human Sentinel Styles */
+.antiCheatCard {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(13, 17, 26, 0.95));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.antiCheatHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shieldWrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.shieldGreen {
+  color: #10b981;
+}
+
+.antiCheatTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.antiCheatTitle {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+
+.verifiedTag {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #10b981;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.antiCheatSub {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin: 2px 0 0 0;
+}
+
+.antiCheatMetrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.entropyMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metricLabel {
+  font-size: 0.62rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.metricVal {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.metricValGreen {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #10b981;
+}
+
+.metricValZero {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #38bdf8;
+}

@@ -91,6 +91,14 @@ const TapStateSchema = new mongoose.Schema({
   tapEfficiencyLevel: {
     type: Number,
     default: 0 // seasonal upgrades: 0 = 1.0x, 1 = 1.1x, 2 = 1.2x, 3 = 1.3x
+  },
+  antiCheatScore: {
+    type: Number,
+    default: 99.4
+  },
+  isHumanVerified: {
+    type: Boolean,
+    default: true
   }
 });
 

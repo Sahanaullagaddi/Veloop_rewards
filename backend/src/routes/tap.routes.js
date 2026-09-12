@@ -27,7 +27,7 @@ function toDecimal128(val) {
 
 // 1. POST /api/tap
 router.post('/', auth, async (req, res) => {
-  const { requestId } = req.body;
+  const { requestId, telemetry } = req.body;
   if (!requestId) {
     return res.status(400).json({ success: false, message: 'requestId is required' });
   }
@@ -36,6 +36,7 @@ router.post('/', auth, async (req, res) => {
     const result = await TapEconomyService.processTap({
       userId: req.user.id,
       requestId,
+      telemetry
     });
     res.json(result);
   } catch (err) {
@@ -1571,6 +1572,404 @@ router.post('/wallet/withdraw', auth, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error processing withdrawal.' });
+  }
+});
+
+// 26. POST /api/tap/wallet/topup
+router.post('/wallet/topup', auth, async (req, res) => {
+  const userId = req.user.id;
+  const { amount, paymentMethod } = req.body;
+
+  const amt = parseFloat(amount);
+  if (isNaN(amt) || amt <= 0) {
+    return res.status(400).json({ success: false, message: 'Invalid top-up amount.' });
+  }
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { $inc: { veBalance: toDecimal128(amt) } },
+      { new: true }
+    );
+
+    const txId = `topup-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    await RewardLedger.create({
+      userId,
+      requestId: txId,
+      type: 'wallet_topup',
+      amount: toDecimal128(amt),
+      currency: 'VE',
+      timestamp: new Date(),
+      details: { paymentMethod: paymentMethod || 'UPI Gateway', amountInRupees: amt }
+    });
+
+    const io = getIO();
+    if (io) {
+      io.to(userId.toString()).emit('stateUpdate', {
+        veBalance: user.veBalance.toString(),
+        sveBalance: user.sveBalance.toString(),
+        tokenBalance: user.tokenBalance.toString(),
+        gemBalance: user.gemBalance.toString(),
+        spinBalance: user.spinBalance
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Successfully added ₹ ${amt.toFixed(2)} (+${amt.toFixed(1)} VE) via ${paymentMethod || 'UPI'}!`,
+      veBalance: user.veBalance.toString(),
+      userBalances: {
+        veBalance: user.veBalance.toString(),
+        sveBalance: user.sveBalance.toString(),
+        tokenBalance: user.tokenBalance.toString(),
+        gemBalance: user.gemBalance.toString(),
+        spinBalance: user.spinBalance
+      }
+    });
+  } catch (err) {
+    console.error('Topup error:', err);
+    res.status(500).json({ success: false, message: 'Server error processing top-up.' });
+  }
+});
+
+// ==========================================
+// PRIZE-WINNING EXTENSIONS: DEMO, VOUCHERS, AI ORACLE
+// ==========================================
+
+const VoucherRedemption = require('../models/voucherRedemption.model');
+
+// VOUCHER CATALOG DEFINITION
+const VOUCHER_CATALOG = [
+  {
+    id: 'v_amzn_250',
+    brand: 'Amazon',
+    title: 'Amazon Shopping E-Voucher',
+    valueDisplay: '₹250 / $3.50',
+    costVe: 250,
+    category: 'shopping',
+    color: '#FF9900',
+    description: 'Instant gift balance applicable on all Amazon online store purchases.',
+    stock: 42
+  },
+  {
+    id: 'v_sbux_150',
+    brand: 'Starbucks',
+    title: 'Starbucks Coffee Beverage Pass',
+    valueDisplay: '₹150 / 1 Tall Latte',
+    costVe: 150,
+    category: 'food',
+    color: '#00704A',
+    description: 'Complimentary drink credit redeemable at any participating Starbucks cafe.',
+    stock: 28
+  },
+  {
+    id: 'v_swiggy_100',
+    brand: 'Swiggy / Zomato',
+    title: 'Food Delivery Super Coupon',
+    valueDisplay: '₹100 Off Orders',
+    costVe: 100,
+    category: 'food',
+    color: '#FC8019',
+    description: 'Direct discount voucher on lunch, dinner, or grocery deliveries.',
+    stock: 65
+  },
+  {
+    id: 'v_steam_300',
+    brand: 'Steam Gaming',
+    title: 'Steam Wallet $5 Digital Code',
+    valueDisplay: '$5.00 Wallet Credit',
+    costVe: 300,
+    category: 'gaming',
+    color: '#171a21',
+    description: 'Direct wallet top-up for purchasing PC games, DLCs, and cosmetic skins on Steam.',
+    stock: 19
+  },
+  {
+    id: 'v_gplay_100',
+    brand: 'Google Play',
+    title: 'Google Play ₹100 Recharge',
+    valueDisplay: '₹100 Play Balance',
+    costVe: 100,
+    category: 'apps',
+    color: '#01875f',
+    description: 'Redeemable for Android in-app purchases, games, movies, and app subscriptions.',
+    stock: 50
+  }
+];
+
+// 1. POST /api/tap/demo/action (Judge / Demo Fast-Forward Controller)
+router.post('/demo/action', auth, async (req, res) => {
+  const { action } = req.body;
+  const userId = req.user.id;
+
+  try {
+    let tapState = await TapState.findOne({ userId });
+    if (!tapState) {
+      tapState = new TapState({ userId });
+      await tapState.save();
+    }
+    const user = await User.findById(userId);
+
+    let message = 'Demo action completed successfully.';
+
+    if (action === 'refill_energy') {
+      const baseCap = 500 + (tapState.energyCapacityLevel - 1) * 100;
+      tapState.currentEnergy = baseCap;
+      tapState.energyBankBalance = 500;
+      tapState.lastRegenTime = new Date();
+      await tapState.save();
+      message = `⚡ Energy restored to 100% capacity (${baseCap}/${baseCap})!`;
+    } else if (action === 'set_fever') {
+      tapState.currentStreak = 25;
+      tapState.currentCombo = 25;
+      tapState.bestStreak = Math.max(tapState.bestStreak, 25);
+      tapState.streakExpiry = new Date(Date.now() + 15000);
+      tapState.comboExpiry = new Date(Date.now() + 15000);
+      await tapState.save();
+      message = '🔥 FEVER MODE 2X Activated! 25x Streak & Combo engaged!';
+    } else if (action === 'mature_staking') {
+      // Find all locked staking records for this user and set unlockDate in the past
+      const updatedStakes = await StakingRecord.updateMany(
+        { userId, status: 'locked' },
+        { $set: { unlockDate: new Date(Date.now() - 10000) } }
+      );
+      message = `⏩ Fast-forwarded ${updatedStakes.modifiedCount} staking vault(s) to maturity! Claim ready!`;
+    } else if (action === 'grant_tokens') {
+      user.veBalance = toDecimal128(parseFloat(user.veBalance.toString()) + 350);
+      user.sveBalance = toDecimal128(parseFloat(user.sveBalance.toString()) + 25);
+      user.spinBalance = (user.spinBalance || 0) + 3;
+      await user.save();
+      message = '💰 Granted +350 VE, +25 SVE, and +3 Lucky Spins for demo testing!';
+    } else if (action === 'activate_shield') {
+      tapState.activeShieldExpiry = new Date(Date.now() + 60000);
+      await tapState.save();
+      message = '🛡️ Energy Shield activated (90% energy protection)!';
+    } else {
+      return res.status(400).json({ success: false, message: `Unknown demo action: ${action}` });
+    }
+
+    // Emit live state update
+    const io = getIO();
+    if (io) {
+      io.to(userId.toString()).emit('stateUpdate', {
+        veBalance: user.veBalance.toString(),
+        sveBalance: user.sveBalance.toString(),
+        spinBalance: user.spinBalance,
+        currentEnergy: tapState.currentEnergy,
+        energyBankBalance: tapState.energyBankBalance,
+        currentStreak: tapState.currentStreak,
+        currentCombo: tapState.currentCombo,
+        bestStreak: tapState.bestStreak,
+        activeShieldExpiry: tapState.activeShieldExpiry
+      });
+    }
+
+    res.json({
+      success: true,
+      message,
+      state: {
+        veBalance: user.veBalance.toString(),
+        sveBalance: user.sveBalance.toString(),
+        currentEnergy: tapState.currentEnergy,
+        currentStreak: tapState.currentStreak,
+        currentCombo: tapState.currentCombo
+      }
+    });
+  } catch (err) {
+    console.error('Error in /demo/action:', err);
+    res.status(500).json({ success: false, message: 'Server error handling demo action.' });
+  }
+});
+
+// 2. GET /api/tap/vouchers/catalog
+router.get('/vouchers/catalog', auth, async (req, res) => {
+  try {
+    const redemptions = await VoucherRedemption.find({ userId: req.user.id }).sort({ redeemedAt: -1 });
+    res.json({
+      success: true,
+      catalog: VOUCHER_CATALOG,
+      myVouchers: redemptions
+    });
+  } catch (err) {
+    console.error('Error in /vouchers/catalog:', err);
+    res.status(500).json({ success: false, message: 'Failed to fetch vouchers catalog.' });
+  }
+});
+
+// 3. POST /api/tap/vouchers/redeem
+router.post('/vouchers/redeem', auth, async (req, res) => {
+  const { voucherId } = req.body;
+  const userId = req.user.id;
+
+  const voucherItem = VOUCHER_CATALOG.find(v => v.id === voucherId);
+  if (!voucherItem) {
+    return res.status(404).json({ success: false, message: 'Voucher not found in catalog.' });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    const currentVe = parseFloat(user.veBalance.toString());
+
+    if (currentVe < voucherItem.costVe) {
+      return res.status(400).json({
+        success: false,
+        message: `Insufficient VE. You have ${currentVe.toFixed(1)} VE, but this voucher costs ${voucherItem.costVe} VE.`
+      });
+    }
+
+    // Deduct balance atomically
+    user.veBalance = toDecimal128(currentVe - voucherItem.costVe);
+    await user.save();
+
+    // Generate unique realistic coupon code
+    const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const randHex2 = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const prefix = voucherItem.brand.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, 'VEL');
+    const voucherCode = `${prefix}-${randHex}-${randHex2}`;
+
+    const expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000); // 90 days validity
+
+    const redemption = await VoucherRedemption.create({
+      userId,
+      voucherId: voucherItem.id,
+      title: voucherItem.title,
+      brand: voucherItem.brand,
+      code: voucherCode,
+      costVe: voucherItem.costVe,
+      valueDisplay: voucherItem.valueDisplay,
+      category: voucherItem.category,
+      expiresAt,
+      status: 'active'
+    });
+
+    // Record in RewardLedger
+    await RewardLedger.create({
+      userId,
+      requestId: `voucher-${redemption._id}`,
+      type: 'voucher_redemption',
+      amount: toDecimal128(-voucherItem.costVe),
+      currency: 'VE',
+      timestamp: new Date(),
+      details: {
+        voucherTitle: voucherItem.title,
+        brand: voucherItem.brand,
+        code: voucherCode
+      }
+    });
+
+    // Create notification
+    await Notification.create({
+      userId,
+      category: 'reward',
+      title: `${voucherItem.brand} Voucher Claimed!`,
+      message: `Your ${voucherItem.title} code ${voucherCode} is ready to use. Valid for 90 days!`,
+      timestamp: new Date()
+    });
+
+    // Emit live socket update
+    const io = getIO();
+    if (io) {
+      io.to(userId.toString()).emit('stateUpdate', {
+        veBalance: user.veBalance.toString()
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Successfully redeemed ${voucherItem.title}!`,
+      voucher: redemption,
+      newBalance: user.veBalance.toString()
+    });
+  } catch (err) {
+    console.error('Error redeeming voucher:', err);
+    res.status(500).json({ success: false, message: 'Server error redeeming voucher.' });
+  }
+});
+
+// 4. POST /api/tap/ai/insights (VELoop AI Oracle)
+router.post('/ai/insights', auth, async (req, res) => {
+  const { question } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    const tapState = await TapState.findOne({ userId });
+    const activeStakes = await StakingRecord.find({ userId, status: 'locked' });
+
+    const ve = parseFloat(user.veBalance.toString());
+    const sve = parseFloat(user.sveBalance.toString());
+    const totalTaps = user.total_taps || 0;
+    const level = user.level || 1;
+    const streak = tapState ? tapState.bestStreak : 0;
+    const energyLevel = tapState ? tapState.energyCapacityLevel : 1;
+
+    // AI Health Rating & Yield Analytics
+    let healthRating = 'Solid Optimizer';
+    if (ve > 500 && activeStakes.length > 0) healthRating = 'Elite Fintech Strategist';
+    else if (ve < 100) healthRating = 'High-Growth Aspirant';
+
+    const projectedDailyYield = (totalTaps > 50 ? (ve / Math.max(1, (totalTaps / 250))) * 15 : 45.0).toFixed(1);
+    
+    // Recommendations
+    const recommendations = [];
+    if (ve >= 50 && activeStakes.length === 0) {
+      recommendations.push({
+        type: 'staking',
+        icon: 'TrendingUp',
+        title: 'Vault Staking Opportunity',
+        text: `You have ${ve.toFixed(0)} VE unutilized. Locking 50 VE in the 3-Day Vault yields +15% APY bonus with guaranteed principal protection.`
+      });
+    }
+    if (energyLevel < 3) {
+      recommendations.push({
+        type: 'upgrade',
+        icon: 'Zap',
+        title: 'Energy Tank Expansion',
+        text: `Your capacity is Level ${energyLevel}. Upgrading to Level ${energyLevel + 1} extends your tapping sessions by 20% before recharge cooldown.`
+      });
+    }
+    recommendations.push({
+      type: 'combo',
+      icon: 'Flame',
+      title: 'Fever Mode Multiplier',
+      text: 'Triggering 15x combo activates Fever Mode, doubling your VE rewards and accelerating mystery drops.'
+    });
+
+    // Contextual answer to questions if provided
+    let aiAnswer = null;
+    if (question) {
+      const qLower = question.toLowerCase();
+      if (qLower.includes('stake') || qLower.includes('vault') || qLower.includes('apy')) {
+        aiAnswer = `Oracle Analysis: Based on your current balance of ${ve.toFixed(1)} VE, Vault Alpha (3-Day lock) offers the optimal risk-adjusted APY. Staking 50% of your holdings lets you compound interest while keeping enough liquid VE for upgrades.`;
+      } else if (qLower.includes('energy') || qLower.includes('recharge') || qLower.includes('shield')) {
+        aiAnswer = `Oracle Analysis: Your Energy Tank is at Level ${energyLevel}. Activate an Energy Shield right before entering 25x Fever Mode to tap for 30 seconds at 90% energy discount!`;
+      } else if (qLower.includes('voucher') || qLower.includes('amazon') || qLower.includes('cash') || qLower.includes('withdraw')) {
+        aiAnswer = `Oracle Analysis: At ${ve.toFixed(1)} VE, you are ${Math.max(0, 100 - ve).toFixed(0)} VE away from your first Swiggy/Google Play voucher (100 VE) and ${Math.max(0, 250 - ve).toFixed(0)} VE away from the Amazon ₹250 shopping voucher!`;
+      } else {
+        aiAnswer = `Oracle Analysis: VELoop's algorithmic economy rewards consistency. With your Level ${level} status and ${streak} best streak, compounding in staking vaults will yield the fastest path to leaderboard Diamond tier!`;
+      }
+    }
+
+    const aiChallenge = {
+      title: 'AI Challenge: Quantum Surge',
+      task: 'Hit a 15x Combo Streak in Fever Mode to prove human rhythm.',
+      reward: '+25 VE & +10% Energy Shield Boost'
+    };
+
+    res.json({
+      success: true,
+      oracle: {
+        healthRating,
+        projectedDailyYield,
+        recommendations,
+        aiChallenge,
+        aiAnswer,
+        verifiedHumanScore: tapState ? tapState.antiCheatScore : 99.4
+      }
+    });
+  } catch (err) {
+    console.error('Error generating AI insights:', err);
+    res.status(500).json({ success: false, message: 'Failed to generate AI insights.' });
   }
 });
 

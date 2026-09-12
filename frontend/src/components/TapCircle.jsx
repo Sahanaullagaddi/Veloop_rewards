@@ -131,7 +131,11 @@ export default function TapCircle() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ requestId, timestamp: new Date(now).toISOString() })
+        body: JSON.stringify({ 
+          requestId, 
+          timestamp: new Date(now).toISOString(),
+          telemetry: { x: Math.round(x), y: Math.round(y), interval: Math.max(25, now - lastTapRef.current) }
+        })
       });
       
       const data = await res.json();
@@ -176,22 +180,40 @@ export default function TapCircle() {
         ctx.resume();
       }
       
-      // Play coin pickup clink sound effect
+      const combo = Math.min(liveState?.currentCombo || 1, 25);
+      const isFever = (liveState?.currentStreak || 0) >= 15 || (liveState?.currentCombo || 0) >= 15;
+      const pitchMultiplier = 1 + (combo * 0.032);
+      
+      // Main Synth Oscillator (Melodic ascending combo pitch)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
       osc.connect(gain);
       gain.connect(ctx.destination);
       
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+      osc.type = isFever ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(587.33 * pitchMultiplier, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880 * pitchMultiplier, ctx.currentTime + 0.08);
       
-      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.setValueAtTime(isFever ? 0.16 : 0.12, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
       
       osc.start();
       osc.stop(ctx.currentTime + 0.1);
+
+      // Crystalline shimmer in Fever Mode
+      if (isFever) {
+        const shimmer = ctx.createOscillator();
+        const shimmerGain = ctx.createGain();
+        shimmer.connect(shimmerGain);
+        shimmerGain.connect(ctx.destination);
+        shimmer.type = 'sine';
+        shimmer.frequency.setValueAtTime(1760 * pitchMultiplier, ctx.currentTime);
+        shimmerGain.gain.setValueAtTime(0.06, ctx.currentTime);
+        shimmerGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+        shimmer.start();
+        shimmer.stop(ctx.currentTime + 0.07);
+      }
     } catch (err) {
       console.warn('Audio play failed:', err);
     }
@@ -223,6 +245,7 @@ export default function TapCircle() {
 
   const isBoostActive = liveState.activeBoostExpiry && new Date(liveState.activeBoostExpiry) > Date.now();
   const isShieldActive = liveState.activeShieldExpiry && new Date(liveState.activeShieldExpiry) > Date.now();
+  const isFeverActive = (liveState.currentStreak || 0) >= 15 || (liveState.currentCombo || 0) >= 15;
 
   return (
     <div className={styles.tapArea}>
@@ -236,7 +259,7 @@ export default function TapCircle() {
       {/* Tappable Core Circle with Character Podium */}
       <div 
         ref={circleRef}
-        className={`${styles.circle} ${isPressing ? styles.pressed : ''} ${isBoostActive ? styles.boosted : ''} ${isShieldActive ? styles.shielded : ''} ${isLevelingUp ? styles.levelUpFlash : ''}`}
+        className={`${styles.circle} ${isPressing ? styles.pressed : ''} ${isBoostActive ? styles.boosted : ''} ${isShieldActive ? styles.shielded : ''} ${isFeverActive ? styles.feverActive : ''} ${isLevelingUp ? styles.levelUpFlash : ''}`}
         onPointerDown={handleTap}
         onPointerUp={() => setIsPressing(false)}
         onPointerLeave={() => setIsPressing(false)}

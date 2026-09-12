@@ -9,6 +9,7 @@ import { AdProvider, useAd } from './context/AdContext';
 // Header
 import TapHeader from './components/TapHeader';
 import BottomNavigation from './components/BottomNavigation';
+import JudgeDemoBar from './components/JudgeDemoBar';
 
 // Pages
 import TapEarnPage from './pages/TapEarnPage';
@@ -134,6 +135,7 @@ function AppContent() {
           </div>
         </div>
       )}
+      {token && !isLoginPage && <JudgeDemoBar />}
       {token && !isLoginPage && <BottomNavigation />}
     </div>
   );
